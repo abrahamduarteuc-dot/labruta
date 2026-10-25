@@ -662,6 +662,51 @@ td.num{font-family:var(--f-mono);text-align:right}
 .j5res .pts{color:var(--coin);letter-spacing:2px;font-size:18px}
 .j5res .prem{font-weight:700;color:var(--st-contenta);text-align:center}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spinm .8s linear infinite;vertical-align:-3px}
+/* ---- Carretera ---- */
+.alert.ok{background:var(--bg-contenta);border-color:transparent;color:var(--st-contenta)}
+.corral-lay{display:flex;flex-direction:column;gap:16px}
+.cl-main{min-width:0}
+@media(min-width:980px){
+  .wrap:has(.corral-lay){max-width:1240px}
+  .corral-lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;align-items:start}
+  .cl-ruta{order:2;position:sticky;top:76px}
+}
+.ruta{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 12px 10px;overflow:hidden}
+.rt-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 4px 6px}
+.rt-head b{font-size:15px}.rt-head span{font-size:11.5px;color:var(--fg-mute)}
+.rt-svg{width:100%;height:auto;display:block;--pasto:#DCEBD5;--asf:#5B6670;--borde:#F2F2F2}
+.rt-pista{fill:#5B6670}
+.rt-pasto{fill:var(--pasto-l,#DCEBD5)}
+.rt-svg{border-radius:12px}
+.rt-borde{stroke:#F4F4F4;stroke-width:3}
+.rt-linea{stroke:#F7D046;stroke-width:3;stroke-dasharray:16 14;animation:rt-avanza 1.6s linear infinite}
+@keyframes rt-avanza{from{stroke-dashoffset:0}to{stroke-dashoffset:-30}}
+.rt-banda{fill:#3FC1C9;opacity:.45}
+.rt-tick{stroke:var(--fg-mute);stroke-width:1.2;opacity:.6}
+.rt-dia{font-size:10.5px;fill:var(--fg-dim);font-weight:600}
+.rt-meta{fill:#fff;stroke:#222;stroke-width:1;stroke-dasharray:4 4}
+.rt-ob{cursor:pointer}
+.rt-ob:hover>:first-child,.rt-ob:focus>:first-child{filter:brightness(1.15)}
+.rt-ob:focus{outline:none}
+.rt-lbl{font-size:10.5px;font-weight:700;fill:#fff;paint-order:stroke;stroke:#333;stroke-width:3px;stroke-linejoin:round}
+.rt-pets{display:flex;justify-content:center;gap:2px;margin-top:-6px;padding:0 36px}
+.rt-pet{width:34px;height:36px;display:grid;place-items:center;overflow:visible}
+.rt-pet svg{width:40px;height:44px}
+.rt-ley{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:11px;color:var(--fg-dim);margin-top:6px}
+.rt-ley i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.rt-que{font-size:14px;margin:0 0 12px}
+.rt-lista{display:flex;flex-direction:column;gap:6px}
+.rt-fila{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}
+.rt-fila .pm{width:30px;height:30px;display:grid;place-items:center;overflow:hidden;border-radius:50%;background:var(--surface-2)}
+.rt-fila .pm svg{width:36px;height:40px;margin-top:4px}
+.rt-fila b{font-size:13.5px;flex:1;min-width:0}
+.rt-fila .st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.rt-fila .st.ok{background:var(--bg-contenta);color:var(--st-contenta)}
+.rt-fila .st.pend{background:var(--warn-soft);color:var(--warn)}
+.rt-fila .st.na{background:var(--surface-2);color:var(--fg-mute)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .ruta{--pasto-l:#1E3323} }
+:root[data-theme="dark"] .ruta{--pasto-l:#1E3323}
+@media(prefers-reduced-motion:reduce){.rt-linea{animation:none}}
 
 </style>
 
@@ -1788,6 +1833,110 @@ const JACT={
   j5ver(d){ verEvid5(d.id); }
 };
 
+/* ====================== CALENDARIO EIME Y CARRETERA ====================== */
+const RUTA_INICIO="2026-10-26";
+const DIAS_SEM=["dom","lun","mar","mié","jue","vie","sáb"];
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const ultDiaMes=(y,m)=>new Date(y,m+1,0).getDate();
+// último día hábil (lunes a viernes) del mes, sin pasar del día «tope»
+function finHabil(y,m,tope){ let d=Math.min(tope,ultDiaMes(y,m));
+  while([0,6].includes(new Date(y,m,d).getDay())) d--; return d2s(new Date(y,m,d)); }
+/* Período EIME que contiene la fecha:
+   mensual  → todo el mes; ventana obligatoria = las 2 últimas semanas (cierra el último día hábil)
+   quincenal→ 1–15 y 16–fin; ventana = la última semana de cada quincena */
+function periodoEime(freq,fecha){
+  const d=parse(fecha), y=d.getFullYear(), m=d.getMonth(), dia=d.getDate();
+  if(freq==="quincenal"){
+    const primera=dia<=15, ini=d2s(new Date(y,m,primera?1:16)), finCal=d2s(new Date(y,m,primera?15:ultDiaMes(y,m)));
+    const fin=finHabil(y,m,primera?15:31);
+    return {ini,finCal,fin,abre:addDays(fin,-6),nombre:`${primera?"1ª":"2ª"} quincena de ${MESES[m]}`};
+  }
+  const fin=finHabil(y,m,31);
+  return {ini:d2s(new Date(y,m,1)),finCal:d2s(new Date(y,m,ultDiaMes(y,m))),fin,abre:addDays(fin,-13),nombre:`${MESES[m]} ${y}`};
+}
+const sigPeriodo=(freq,per)=>periodoEime(freq,addDays(per.finCal,1));
+const verifEn=(e,per)=>DB.verif.some(v=>v.eq===e.id&&v.fecha>=per.ini&&v.fecha<=per.finCal);
+
+/* ---- obstáculos de la carretera ---- */
+// 5S: todos los miércoles desde el inicio
+function obst5S(desde,hasta){ const L=[]; let d=desde<RUTA_INICIO?RUTA_INICIO:desde;
+  while(parse(d).getDay()!==3) d=addDays(d,1);
+  for(;d<=hasta;d=addDays(d,7)) L.push({tipo:"5s",fecha:d,id:"5s"+d,titulo:"Gestión 5S",ini:addDays(d,-6)});
+  return L; }
+// EIME: cierre de cada período (mensual y quincenal, según los equipos que existan)
+function obstEime(desde,hasta){
+  const freqs=[...new Set(DB.equipos.filter(activoEq).map(e=>e.freq==="quincenal"?"quincenal":"mensual"))], vistos={}, L=[];
+  freqs.forEach(f=>{ let per=periodoEime(f,desde<RUTA_INICIO?RUTA_INICIO:desde);
+    while(per.fin<=hasta){ const k=per.fin;
+      if(per.fin>=RUTA_INICIO&&!vistos[k]) { vistos[k]=1; L.push({tipo:"eime",fecha:per.fin,abre:per.abre,id:"eime"+per.fin,titulo:"Verificación EIME",f}); }
+      per=sigPeriodo(f,per); } });
+  return L; }
+// Misión sorpresa: una por semana, en un día hábil al azar (siempre el mismo para todos); se ve 2 días antes
+function hashTxt(s){ let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; }
+function obstMision(desde,hasta){ const L=[]; let lun=desde<RUTA_INICIO?RUTA_INICIO:desde;
+  while(parse(lun).getDay()!==1) lun=addDays(lun,-1);
+  for(;lun<=hasta;lun=addDays(lun,7)){ const d=addDays(lun,hashTxt("mision"+lun)%5);
+    if(d>=RUTA_INICIO&&d>=desde&&d<=hasta) L.push({tipo:"mision",fecha:d,id:"mi"+d,titulo:"Misión sorpresa",ini:addDays(d,-2)}); }
+  return L; }
+function obstaculos(desde,hasta){ return [...obst5S(desde,hasta),...obstEime(desde,hasta),...obstMision(desde,hasta)].sort((a,b)=>a.fecha.localeCompare(b.fecha)); }
+
+/* ---- ¿quién cumplió cada obstáculo? ---- */
+const zonasDe=uid=>planosDB().reduce((n,p)=>n+p.zonas.filter(z=>z.resp===uid).length,0);
+function cumple(o,u){
+  if(o.tipo==="eime"){ const eq=misEq(u.id).filter(e=>(e.freq==="quincenal")===(o.f==="quincenal"));
+    if(!eq.length) return null;
+    return eq.every(e=>verifEn(e,periodoEime(e.freq,o.fecha))); }
+  if(!zonasDe(u.id)) return null;
+  return evid5().some(e=>e.uid===u.id&&e.ver==="APROBADO"&&e.fecha>=o.ini&&e.fecha<=o.fecha);
+}
+const IC_OB={
+  "5s":`<rect x="-15" y="-13" width="30" height="26" rx="7" fill="#6B4BB8"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">5S</text>`,
+  eime:`<rect x="-17" y="-13" width="34" height="26" rx="7" fill="#0B6B72"/><path d="M-4 -8h8M-2.5 -8v5l-5 9h15l-5-9v-5" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>`,
+  mision:`<path d="M0-15l4.4 9 9.8 1.4-7.1 6.9 1.7 9.8L0 7.5l-8.8 4.6 1.7-9.8-7.1-6.9 9.8-1.4z" fill="#E3A21A" stroke="#fff" stroke-width="1.5"/>`
+};
+function vRuta(){
+  const movil=innerWidth<980, N=movil?10:21, hoy=hoyS(), hasta=addDays(hoy,N), yoU=yo();
+  const W=300, H=movil?380:660, y0=H-24, paso=(y0-34)/N, y=d=>y0-d*paso;
+  const obs=obstaculos(addDays(hoy,-1),hasta).filter(o=>o.tipo!=="mision"||diffDias(o.fecha)<=2);
+  const marcas=[]; for(let d=0;d<=N;d++){ const f=addDays(hoy,d), dw=parse(f).getDay();
+    marcas.push(`<line x1="58" x2="66" y1="${y(d)}" y2="${y(d)}" class="rt-tick"/>${dw===1||d===0?`<text x="52" y="${y(d)+4}" class="rt-dia" text-anchor="end">${d===0?"hoy":DIAS_SEM[dw]+" "+parse(f).getDate()}</text>`:""}`); }
+  const bandas=obs.filter(o=>o.tipo==="eime").map(o=>{ const a=Math.max(-1,diffDias(o.abre)), b=diffDias(o.fecha);
+    if(b<-1) return ""; return `<rect x="139" width="22" rx="11" y="${y(Math.min(N,b))}" height="${Math.max(0,y(Math.max(0,a))-y(Math.min(N,b)))}" class="rt-banda"/>`; }).join("");
+  const carril={"5s":108,eime:150,mision:196};
+  const fichas=obs.map(o=>{ const d=diffDias(o.fecha); if(d<0||d>N) return "";
+    const c=yoU?cumple(o,yoU):null, x=carril[o.tipo];
+    return `<g class="rt-ob" data-act="rutaOb" data-id="${o.id}" transform="translate(${x},${y(d)})" tabindex="0" role="button" aria-label="${esc(o.titulo)} ${fmt(o.fecha)}">
+      ${IC_OB[o.tipo]}${c===true?`<circle cx="13" cy="-12" r="7" fill="#2F8A3C" stroke="#fff" stroke-width="1.5"/><path d="M9.5-12l2.5 2.5 4-4.5" stroke="#fff" stroke-width="1.8" fill="none"/>`:""}
+      <text x="${o.tipo==="mision"?20:o.tipo==="eime"?22:-20}" y="4" text-anchor="${o.tipo==="5s"?"end":"start"}" class="rt-lbl">${d===0?"hoy":d===1?"mañana":DIAS_SEM[parse(o.fecha).getDay()]+" "+parse(o.fecha).getDate()}</text></g>`; }).join("");
+  const pets=activos().map(u=>`<span class="rt-pet" title="${esc(nomMascota(u))}">${petOf(u,{info:info(u)})}</span>`).join("");
+  return `<div class="ruta" data-movil="${movil}"><div class="rt-head"><b>La carretera</b><span>Lo que viene en ${N} días</span></div>
+    <svg viewBox="0 0 ${W} ${H}" class="rt-svg" role="img" aria-label="Carretera con las tareas de los próximos días">
+      <rect x="0" y="0" width="${W}" height="${H}" class="rt-pasto"/>
+      <rect x="70" y="0" width="160" height="${H}" class="rt-pista"/>
+      <line x1="70" x2="70" y1="0" y2="${H}" class="rt-borde"/><line x1="230" x2="230" y1="0" y2="${H}" class="rt-borde"/>
+      <line x1="150" x2="150" y1="-40" y2="${H}" class="rt-linea"/>
+      ${bandas}${marcas.join("")}
+      <rect x="70" y="${y0-3}" width="160" height="8" class="rt-meta"/>
+      ${fichas}
+    </svg>
+    <div class="rt-pets">${pets}</div>
+    <div class="rt-ley"><span><i style="background:#6B4BB8"></i>5S (miércoles)</span><span><i style="background:#0B6B72"></i>EIME</span><span><i style="background:#E3A21A"></i>Misión</span></div></div>`;
+}
+function abrirObst(id){
+  const hoy=hoyS(), o=obstaculos(addDays(hoy,-7),addDays(hoy,40)).find(x=>x.id===id); if(!o) return;
+  const d=diffDias(o.fecha), cuando=d===0?"hoy":d===1?"mañana":d<0?`hace ${-d} días`:`en ${d} días`;
+  const que=o.tipo==="eime"?`Cierra la ventana EIME: cada responsable verifica todos sus equipos ${o.f==="quincenal"?"quincenales":"mensuales"} antes del ${fmt(o.fecha)}. La ventana abrió el ${fmt(o.abre)}.`
+    :o.tipo==="5s"?`Día de 5S: cada uno sube su foto de antes y después de una S en su zona y el juez la aprueba. Cuenta lo aprobado desde el ${fmt(o.ini)}.`
+    :`Chequeo sorpresa: muestra que tu zona se mantiene. Sube una foto de antes y después (Disciplina u otra S ya lograda) y que el juez la apruebe.`;
+  const filas=activos().map(u=>{ const c=cumple(o,u);
+    return `<div class="rt-fila"><span class="pm">${petOf(u,{info:info(u)})}</span><b>${esc(u.nombre)}</b><span class="st ${c===true?"ok":c===false?"pend":"na"}">${c===true?"✓ Cumplido":c===false?(d<0?"Chocó":"Pendiente"):"No aplica"}</span></div>`; }).join("");
+  const ir=o.tipo==="eime"?`<button class="btn" data-act="rutaIr" data-v="eime">Ir a mis equipos</button>`:`<button class="btn" data-act="rutaIr" data-v="s5">Ir a 5S</button>`;
+  openSheet(`${phead(esc(o.titulo)+" · "+DIAS_SEM[parse(o.fecha).getDay()]+" "+fmt(o.fecha))}<div class="pbody">
+    <p class="rt-que"><b>${cuando[0].toUpperCase()+cuando.slice(1)}.</b> ${que}</p><div class="rt-lista">${filas}</div>
+    <div class="saverow">${yo()?ir:""}<button class="btn ghost" data-close>Cerrar</button></div></div>`);
+}
+const RTACT={ rutaOb(d){ abrirObst(d.id); }, rutaIr(d){ closeSheet(); go(d.v); } };
+
 "use strict";
 /* ============================================================
    CFG — al publicar, pega aquí la URL de la aplicación web del
@@ -1868,9 +2017,14 @@ function ultima(e){
   if(!_ult){ _ult={}; DB.verif.forEach(v=>{ if(!_ult[v.eq]||v.fecha>_ult[v.eq]) _ult[v.eq]=v.fecha; }); }
   const m=_ult[e.id]; return m&&m>e.ult?m:e.ult; }
 const FREQ={mensual:30,quincenal:15,semanal:7,trimestral:90};
-const vence=e=>addDays(ultima(e),FREQ[e.freq]||30);
-function estado(e){ const d=diffDias(vence(e));
-  return d<0?{k:"bad",t:"Vencido",d}:d<=7?{k:"warn",t:"Por vencer",d}:{k:"ok",t:"Al día",d}; }
+// EIME por calendario: cada período (mes o quincena) cierra su último día hábil; ver ruta.js
+const yaVerif=e=>verifEn(e,periodoEime(e.freq,hoyS()));
+const vence=e=>{ const per=periodoEime(e.freq,hoyS()); return verifEn(e,per)?sigPeriodo(e.freq,per).fin:per.fin; };
+function estado(e){ const hoy=hoyS(), per=periodoEime(e.freq,hoy);
+  if(verifEn(e,per)) return {k:"ok",t:"Al día",d:diffDias(sigPeriodo(e.freq,per).fin)};
+  const d=diffDias(per.fin);
+  if(hoy>=per.abre) return d<0?{k:"bad",t:"Vencido",d}:{k:"warn",t:"Toca ahora",d};
+  return {k:"ok",t:"Programado",d}; }
 const activoEq=e=>(e.estado||"activo")==="activo";
 const misEq=uid=>DB.equipos.filter(e=>e.resp===uid&&activoEq(e));
 function cumplimiento(uid){ const a=misEq(uid); if(!a.length) return 0; return Math.round(a.filter(x=>estado(x).k==="ok").length/a.length*100); }
@@ -1927,7 +2081,7 @@ const LOCAL={
   guardarVerificacion(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const e=eqp(p.equipoId); if(!e) return err("SIN_EQUIPO","Equipo no encontrado.");
     if(e.resp!==u.id) return err("NO_ES_TUYO","Este equipo lo verifica su responsable.");
-    if(diffDias(vence(e))>7) return err("MUY_PRONTO","Aún no toca verificar este equipo.");
+    if(yaVerif(e)){ const per=periodoEime(e.freq,hoyS()); return err("YA_VERIFICADO",`Ya verificaste este equipo en ${per.nombre}. El próximo período parte el ${fmt(sigPeriodo(e.freq,per).ini)}.`); }
     const fecha=hoyS(); let conforme=true;
     const det=e.pts.map((pt,i)=>{ const l=p.lecturas[i];
       if(e.pasa){ const ok=String(l).toUpperCase()==="PASA"; if(!ok) conforme=false; return {nom:pt.e,ind:l,err:"",rel:"",ok}; }
@@ -2118,7 +2272,7 @@ function vCorral(){
   const sub = ok===N&&N>0 ? "Todas contentas. Así se ve un laboratorio al día."
     : `${ok} de ${N} contentas o mejor. La meta es que lleguen todas.`;
   const L=["radiante","contenta","normal","flaca","enferma"];
-  return `<div class="banner">
+  return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main"><div class="banner">
     <h2>El corral</h2><p>${sub}</p>
     <div class="meter" role="img" aria-label="${ok} de ${N} mascotas contentas o mejor">${us.map(x=>`<i data-st="${x.i.est}" title="${esc(nomMascota(x.u))}: ${EST_NOM[x.i.est]}"></i>`).join("")}</div>
     <div class="metrow"><span class="legend">${L.map(k=>`<span data-st="${k}"><b></b>${EST_NOM[k]}</span>`).join("")}</span></div>
@@ -2131,7 +2285,7 @@ function vCorral(){
       <span class="row">${stPill(i.est)}<span class="cnt star">${star(1)}${u.estrellasMes||0}</span></span>
       <span class="say">“${esc(frase(u,i.est))}”</span>
     </button>`).join("")}</div>
-  ${yoU?"":`<div class="note">Toca tu mascota para entrar. La primera vez eliges un PIN de 4 dígitos.</div>`}`;
+  ${yoU?"":`<div class="note">Toca tu mascota para entrar. La primera vez eliges un PIN de 4 dígitos.</div>`}</div></div>`;
 }
 
 /* ---------- MI MASCOTA ---------- */
@@ -2481,7 +2635,7 @@ function abrirTienda(){
 /* ----- equipo (EIME) ----- */
 function abrirEq(id){
   const e=eqp(id), st=estado(e), o=e.resp?U(e.resp):null, yoU=yo();
-  const esMio=yoU&&e.resp===yoU.id, dias=diffDias(vence(e)), pronto=dias>7;
+  const esMio=yoU&&e.resp===yoU.id, pronto=yaVerif(e), perA=periodoEime(e.freq,hoyS());
   const hist=DB.verif.filter(v=>v.eq===id).sort((a,b)=>b.fecha.localeCompare(a.fecha));
   const ident=[["Descripción",e.desc],["Marca",e.marca],["Modelo",e.modelo],["Nº de serie",e.serie],["Código EIME",e.eime],
     ["Rango",e.rango],["Resolución",e.res],["Frecuencia",e.freq[0].toUpperCase()+e.freq.slice(1)],["IT de verificación",e.it],
@@ -2494,7 +2648,8 @@ function abrirEq(id){
        <span class="res" id="res${i}"></span></div>`).join("");
   let aviso="";
   if(!esMio) aviso=`<div class="alert warn" style="margin-bottom:14px"><p>${o?`Este equipo está a cargo de <b>${esc(o.nombre)}</b>. Solo su responsable puede verificarlo.`:`Este equipo aún no tiene responsable. El administrador puede asignarlo en Ajustes.`}</p></div>`;
-  else if(pronto) aviso=`<div class="alert warn" style="margin-bottom:14px"><p><b>Aún no toca.</b> Se puede verificar desde el ${fmt(addDays(vence(e),-7))}, hasta 7 días antes del vencimiento.</p></div>`;
+  else if(pronto) aviso=`<div class="alert ok" style="margin-bottom:14px"><p><b>Listo por ${esc(perA.nombre)}.</b> El próximo período parte el ${fmt(sigPeriodo(e.freq,perA).ini)} y su ventana cierra el ${fmt(vence(e))}.</p></div>`;
+  else if(hoyS()<perA.abre) aviso=`<div class="note" style="margin:0 0 14px">Puedes verificar cuando quieras. Es obligatorio entre el ${fmt(perA.abre)} y el ${fmt(perA.fin)}.</div>`;
   const form = esMio&&!pronto ? `
       <div class="eyebrow" style="margin-bottom:8px">Nueva verificación · hoy ${fmt(hoyS())}</div>
       <div class="ptable"><div class="prow head"><span>Punto patrón</span><span style="text-align:right">Lectura</span></div>${filas}</div>
@@ -2624,7 +2779,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
