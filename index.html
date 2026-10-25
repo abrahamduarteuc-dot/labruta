@@ -1829,7 +1829,7 @@ function render(){
   V.innerHTML = vista==="corral"?vCorral() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
     : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
-  if(u&&!u.mascota&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
+  if(u&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
 }
 
 /* ---------- CORRAL ---------- */
