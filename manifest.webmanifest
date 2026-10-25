@@ -1,0 +1,14 @@
+{
+  "name": "Corral Lab",
+  "short_name": "Corral Lab",
+  "description": "Corral de mascotas del laboratorio: verificación de EIME y gestión 5S",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0D1619",
+  "theme_color": "#0B6B74",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
