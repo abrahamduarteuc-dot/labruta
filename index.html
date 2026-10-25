@@ -612,7 +612,7 @@ td.num{font-family:var(--f-mono);text-align:right}
   .rg-hoja:last-child{page-break-after:auto;break-after:auto}
   .rg-res tr{page-break-inside:avoid}.rg-res thead{display:table-header-group}
 }
-@media (max-width:600px){.rg-hoja{zoom:.5}}
+@media (max-width:600px){.rg-hoja{zoom:.42}.rg-papel{padding:8px}}
 .rg-hoja *{box-sizing:border-box}
 .rg-hoja table{min-width:0!important;max-width:100%}
 .rg-hoja th,.rg-hoja td{text-transform:none!important;letter-spacing:normal!important;font-family:Arial,Helvetica,sans-serif!important;color:#111!important}
@@ -680,11 +680,12 @@ td.num{font-family:var(--f-mono);text-align:right}
 /* ---- Carretera ---- */
 .alert.ok{background:var(--bg-contenta);border-color:transparent;color:var(--st-contenta)}
 .corral-lay{display:flex;flex-direction:column;gap:16px}
-.cl-main{min-width:0}
+.cl-main{min-width:0;order:1}
+.cl-ruta{order:2}
 @media(min-width:980px){
   .wrap:has(.corral-lay){max-width:1240px}
   .corral-lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;align-items:start}
-  .cl-ruta{order:2;position:sticky;top:76px}
+  .cl-ruta{position:sticky;top:76px}
 }
 .ruta{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 12px 10px;overflow:hidden}
 .rt-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 4px 6px}
@@ -749,6 +750,49 @@ td.num{font-family:var(--f-mono);text-align:right}
 .pz-chk em{font-style:normal;font-weight:700;color:var(--fg);margin-left:auto;font-variant-numeric:tabular-nums}
 .banner-pie{margin-top:16px}
 
+/* ---- Cuadro de honor ---- */
+.ch{margin:0 0 18px}
+.ch-head h3{margin:0 0 4px;font-family:var(--f-disp);font-size:19px}
+.ch-head p{margin:0 0 12px;font-size:13px;color:var(--fg-mute);line-height:1.5;max-width:60ch}
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.ch-grid.uno{grid-template-columns:minmax(0,1fr);max-width:420px}
+.ch-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+  background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:16px;
+  padding:14px 14px 15px;box-shadow:var(--shadow);min-width:0}
+.ch-card.eime{border-top-color:#0B6B74}.ch-card.s5{border-top-color:#7A5AA8}
+.ch-card.todo{border-top-color:#D4A017;background:linear-gradient(170deg,var(--coin-soft),var(--surface) 65%)}
+.ch-card.vacia{border-top-color:var(--line);justify-content:center;min-height:120px}
+.ch-med{line-height:0}
+.ch-pet{width:76px;height:80px;display:block}.ch-pet svg{width:100%;height:100%}
+.ch-tit{font-family:var(--f-disp);font-size:15px;letter-spacing:.2px}
+.ch-nom{font-size:14.5px;font-weight:700}
+.ch-det{font-size:12.5px;color:var(--fg-mute);line-height:1.45;text-wrap:pretty}
+/* ---- Premios configurables (administrador) ---- */
+.pcfg{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.pcfg-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;flex-wrap:wrap}
+.pcfg-row .pz-ilu{width:52px;height:52px;flex:none}
+.pcfg-row label{font-size:12px;font-weight:600;color:var(--fg-mute);display:block;margin-bottom:3px}
+.pcfg-row .f{flex:1;min-width:140px}
+.pcfg-row select,.pcfg-row input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;font-size:13.5px}
+.pcfg-row .pct{max-width:110px}
+.portada{position:fixed;inset:0;z-index:300;background:radial-gradient(120% 80% at 50% 0%,var(--accent-soft),var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.pt-skip{position:absolute;top:max(14px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));color:var(--fg-mute);font-weight:600;font-size:14px;padding:8px 10px}
+.pt-card{width:100%;max-width:440px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;animation:ptin .35s cubic-bezier(.2,.8,.2,1)}
+.pt-card h2{margin:0;font-family:var(--f-disp);font-size:clamp(25px,7vw,34px);line-height:1.1;text-wrap:balance}
+.pt-card p{margin:0;font-size:16px;line-height:1.55;color:var(--fg-dim);max-width:38ch;text-wrap:pretty}
+.pt-logo{width:72px;height:72px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.18))}.pt-logo svg{width:100%;height:100%}
+.pt-num{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--f-disp);font-weight:800;font-size:20px}
+.pt-pets{display:flex;justify-content:center;gap:4px;min-height:110px}
+.pt-pet{width:104px;height:110px;display:block;animation:ptbob 2.4s ease-in-out infinite}.pt-pet:nth-child(2){animation-delay:.3s}.pt-pet:nth-child(3){animation-delay:.6s}.pt-pet:nth-child(4){animation-delay:.9s}
+.pt-pet svg{width:100%;height:100%}
+.pt-dots{display:flex;gap:7px}.pt-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.pt-dots i.on{background:var(--accent);width:22px;border-radius:99px}
+.pt-btns{display:flex;gap:10px;width:100%;max-width:440px}.pt-btns .btn{flex:1;padding:13px}
+.hbtn{padding:8px 10px;font-weight:800}
+@keyframes ptin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ptbob{50%{transform:translateY(-5px)}}
+@media(prefers-reduced-motion:reduce){.pt-card,.pt-pet{animation:none}}
+
 </style>
 
 <div id="app">
@@ -760,6 +804,7 @@ td.num{font-family:var(--f-mono);text-align:right}
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
         <span class="lk"><svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
       </button>
+      <button class="btn ghost sm hbtn" id="helpBtn" aria-label="Cómo funciona Corral Lab" title="Cómo funciona">?</button>
       <button class="btn ghost sm" id="themeBtn" aria-label="Cambiar tema" style="padding:8px 10px">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>
       </button>
@@ -1984,7 +2029,7 @@ function vRuta(){
       <text x="${o.tipo==="mision"?20:o.tipo==="eime"?22:-20}" y="4" text-anchor="${o.tipo==="5s"?"end":"start"}" class="rt-lbl">${d===0?"hoy":d===1?"mañana":DIAS_SEM[parse(o.fecha).getDay()]+" "+parse(o.fecha).getDate()}</text></g>`; }).join("");
   // la meta del ciclo: una copa al lado derecho de la carretera
   const cic=cicloActual(), dm=diffDias(cic.fin), av=avanceEquipo(cic);
-  const pr=PREMIOS.filter(p=>av.pct>=p.pct).pop(), colCopa=pr?pr.col:"#D4A017";
+  const pr=premios().filter(p=>av.pct>=p.pct).pop(), colCopa=pr?pr.col:"#D4A017";
   const yc=y(Math.min(N,dm));
   const copa=dm<0?"":`<g class="rt-copa" data-act="rutaMeta" transform="translate(262,${yc})" role="button" tabindex="0" aria-label="Meta del ciclo ${cic.n}: ${fmt(cic.fin)}">
       <path d="M-11-16h22v6a11 11 0 0 1-22 0z" fill="${colCopa}" stroke="#fff" stroke-width="1.2"/>
@@ -2022,26 +2067,64 @@ const RTACT={ rutaMeta(){ const el=document.querySelector('.pz'); if(el) el.scro
 
 /* ====================== META DEL EQUIPO (premios por ciclo de mes y medio) ====================== */
 const CICLO_DIAS=45;
-const PREMIOS=[
-  {k:"bronce",n:"Donas",pct:50,col:"#B87333",req:"Todos los EIME al día y al menos 1 evidencia 5S aprobada en cada plano"},
-  {k:"plata",n:"Pizza",pct:70,col:"#9AA3AB",req:"Lo anterior y 5 evidencias 5S aprobadas en cada plano"},
-  {k:"oro",n:"Sushi",pct:90,col:"#D4A017",req:"Lo anterior y todas las zonas con al menos 1 evidencia aprobada"}
+/* Catálogo: el administrador elige 3 de estos y a qué % corresponde cada uno */
+const CATALOGO=[
+  {k:"donas",n:"Donas",col:"#B87333"},
+  {k:"pizza",n:"Pizza",col:"#C9813D"},
+  {k:"sushi",n:"Sushi",col:"#D4A017"},
+  {k:"costillas",n:"Costillas",col:"#8C4A2F"},
+  {k:"hamburguesa",n:"Hamburguesas",col:"#C2703D"},
+  {k:"helado",n:"Helado",col:"#E89AB8"},
+  {k:"pollo",n:"Pollo frito",col:"#CF7B2A"}
 ];
+const PREMIOS_DEF=[{k:"donas",pct:50},{k:"pizza",pct:70},{k:"sushi",pct:90}];
+const REQ_PCT=["Todos los EIME al día y al menos 1 evidencia 5S aprobada en cada plano",
+  "Lo anterior y 5 evidencias 5S aprobadas en cada plano",
+  "Lo anterior y todas las zonas con al menos 1 evidencia aprobada"];
+const catal=k=>CATALOGO.find(p=>p.k===k)||CATALOGO[0];
+/* Lee la configuración del administrador; si está mal o no existe, usa la de siempre */
+function premios(){
+  let L=(DB&&DB.config&&DB.config.PREMIOS)||null;
+  if(!Array.isArray(L)||L.length!==3||L.some(p=>!p||!catal(p.k)||!(p.pct>0&&p.pct<=100))) L=PREMIOS_DEF;
+  return L.slice().sort((a,b)=>a.pct-b.pct).map((p,i)=>Object.assign({},catal(p.k),{pct:Math.round(p.pct),req:REQ_PCT[i]}));
+}
 const ILU={
-  bronce:`<g><circle cx="40" cy="42" r="25" fill="#D9A05B"/><circle cx="40" cy="40" r="23" fill="#F28DB2"/>
+  donas:`<g><circle cx="40" cy="42" r="25" fill="#D9A05B"/><circle cx="40" cy="40" r="23" fill="#F28DB2"/>
     <path d="M17 40c4 6 8 2 11 7s8 2 12 6 9-1 12-5 8-2 11-8" fill="none" stroke="#D9A05B" stroke-width="3"/>
     <circle cx="40" cy="40" r="8" fill="var(--pz-fondo)"/><circle cx="40" cy="40" r="8" fill="none" stroke="#C98A4B" stroke-width="2"/>
     ${[[27,29,"#fff"],[50,27,"#7DD3FC"],[55,42,"#FDE047"],[28,48,"#86EFAC"],[38,25,"#fff"],[47,52,"#C4B5FD"],[24,38,"#FDE047"]].map(([x,y,c],i)=>`<rect x="${x}" y="${y}" width="6" height="2.4" rx="1.2" fill="${c}" transform="rotate(${i*47} ${x+3} ${y+1})"/>`).join("")}</g>`,
-  plata:`<g><path d="M40 70L14 22a52 52 0 0 1 52 0z" fill="#F6C453"/><path d="M14 22a52 52 0 0 1 52 0l-3 6a46 46 0 0 0-46 0z" fill="#C9813D"/>
+  pizza:`<g><path d="M40 70L14 22a52 52 0 0 1 52 0z" fill="#F6C453"/><path d="M14 22a52 52 0 0 1 52 0l-3 6a46 46 0 0 0-46 0z" fill="#C9813D"/>
     <path d="M40 70L17 28a46 46 0 0 1 46 0z" fill="#F3B23B"/>
     ${[[33,36],[48,38],[40,52],[29,46]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#C2410C"/><circle cx="${x-1.5}" cy="${y-1.5}" r="1.4" fill="#F97316"/>`).join("")}
     <path d="M44 45c2 1 3 3 2 5M36 30c1 2 0 3-1 4" stroke="#4D7C0F" stroke-width="2" fill="none" stroke-linecap="round"/></g>`,
-  oro:`<g><rect x="12" y="38" width="56" height="22" rx="11" fill="#F8FAFC" stroke="#E2E8F0"/>
+  sushi:`<g><rect x="12" y="38" width="56" height="22" rx="11" fill="#F8FAFC" stroke="#E2E8F0"/>
     <path d="M12 40c4-14 52-14 56 0 0 5-4 7-28 7S12 45 12 40z" fill="#FB8B5A"/>
     <path d="M22 33l5 10M33 30l4 12M45 30l3 12M56 33l2 10" stroke="#FFE2D3" stroke-width="2.4" stroke-linecap="round"/>
-    <rect x="34" y="34" width="12" height="27" rx="2" fill="#1F2937"/><path d="M36 37h8" stroke="#374151" stroke-width="1.5"/></g>`
+    <rect x="34" y="34" width="12" height="27" rx="2" fill="#1F2937"/><path d="M36 37h8" stroke="#374151" stroke-width="1.5"/></g>`,
+  costillas:`<g>${[0,1,2].map(i=>`<g transform="translate(0 ${i*13})">
+      <rect x="18" y="22" width="40" height="11" rx="5" fill="${i%2?"#A4552F":"#8C4A2F"}"/>
+      <rect x="52" y="23.5" width="14" height="8" rx="4" fill="#F3E3C8"/>
+      <circle cx="64" cy="27.5" r="4.6" fill="#F3E3C8"/>
+      <path d="M24 26h26" stroke="#6B3620" stroke-width="2" stroke-linecap="round" opacity=".5"/></g>`).join("")}
+    <path d="M16 20c0-3 3-4 6-4h30c3 0 5 2 4 5" fill="none" stroke="#6B3620" stroke-width="2" stroke-linecap="round" opacity=".45"/></g>`,
+  hamburguesa:`<g><path d="M14 36c0-13 11-20 26-20s26 7 26 20z" fill="#E0A157"/>
+    ${[[28,26],[38,22],[48,26],[33,31],[45,31]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.6" ry="1.5" fill="#FFF4DD"/>`).join("")}
+    <path d="M13 37h54v5H13z" fill="#7BB661"/><path d="M14 42h52l-2 7H16z" fill="#8B4A2B"/>
+    <path d="M15 49h50v4H15z" fill="#F5C542"/>
+    <path d="M14 54c0 8 11 12 26 12s26-4 26-12z" fill="#E0A157"/></g>`,
+  helado:`<g><path d="M28 40h24l-10 28a2 2 0 0 1-4 0z" fill="#E3B07B"/>
+    <path d="M30 46l20 0M32 53l16 0M34 60l12 0" stroke="#C48E5B" stroke-width="1.6"/>
+    <circle cx="31" cy="34" r="11" fill="#F6A5C0"/><circle cx="49" cy="34" r="11" fill="#9FD8CB"/>
+    <circle cx="40" cy="24" r="11" fill="#FFF0C9"/>
+    <circle cx="40" cy="14" r="4" fill="#E0484C"/><path d="M40 12c2-5 6-5 7-7" stroke="#6B8E3E" stroke-width="2" fill="none" stroke-linecap="round"/></g>`,
+  pollo:`<g><path d="M30 46L18 58" stroke="#F4E7D2" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="17" cy="59" r="6" fill="#F4E7D2"/><circle cx="13" cy="64" r="5" fill="#F4E7D2"/>
+    <path d="M34 50c-8-8-7-21 3-29s23-8 30 1 5 22-4 28c-8 5-22 7-29 0z" fill="#C8752A"/>
+    <path d="M37 47c-6-7-5-17 3-23s19-6 24 1 3 17-4 22c-7 5-18 5-23 0z" fill="#E59A45"/>
+    ${[[40,30],[50,26],[58,33],[44,40],[55,43],[36,39],[49,35]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.8" fill="#A85C1E" opacity=".55"/>`).join("")}</g>`
 };
-function ilustracion(k){ return `<svg viewBox="0 0 80 80" class="pz-ilu" aria-hidden="true"><circle cx="40" cy="40" r="38" fill="var(--pz-fondo)" stroke="${PREMIOS.find(p=>p.k===k).col}" stroke-width="3"/>${ILU[k]}</svg>`; }
+function ilustracion(k){ const p=catal(k);
+  return `<svg viewBox="0 0 80 80" class="pz-ilu" aria-hidden="true"><circle cx="40" cy="40" r="38" fill="var(--pz-fondo)" stroke="${p.col}" stroke-width="3"/>${ILU[p.k]||""}</svg>`; }
 function cicloActual(){ const hoy=hoyS(); let ini=RUTA_INICIO, n=1;
   while(addDays(ini,CICLO_DIAS)<=hoy){ ini=addDays(ini,CICLO_DIAS); n++; }
   return {n,ini,fin:addDays(ini,CICLO_DIAS-1)}; }
@@ -2061,8 +2144,8 @@ function avanceEquipo(c){
   return {pct,eTot,eOk,planos:P.length,p1:porPlano.filter(n=>n>=1).length,p5:porPlano.reduce((s,n)=>s+Math.min(n,5),0),zonas:Z,zOk,eimeAlDia:eOk===eTot};
 }
 function vMetaEquipo(){
-  const c=cicloActual(), a=avanceEquipo(c), dias=diffDias(c.fin)+1;
-  const ganado=PREMIOS.filter(p=>a.pct>=p.pct).pop(), sig=PREMIOS.find(p=>a.pct<p.pct);
+  const c=cicloActual(), a=avanceEquipo(c), dias=diffDias(c.fin)+1, PR=premios();
+  const ganado=PR.filter(p=>a.pct>=p.pct).pop(), sig=PR.find(p=>a.pct<p.pct);
   const msg=ganado?`¡Ya ganamos ${ganado.n.toLowerCase()}!${sig?` Vamos por ${sig.n.toLowerCase()}.`:""}`:"Cada tarea cumplida suma para todos.";
   const chk=(ok,t)=>`<li class="${ok?"ok":""}"><span>${ok?"✓":"○"}</span>${t}</li>`;
   return `<section class="pz" aria-label="Meta del equipo">
@@ -2070,17 +2153,98 @@ function vMetaEquipo(){
       <h3>Si cumplimos todos, celebramos todos</h3>
       <p>${fmt(c.ini)} al ${fmt(c.fin)} · quedan ${dias} días. ${msg}</p>
       <div class="pz-barra" role="img" aria-label="Avance del equipo ${a.pct}%"><i style="width:${a.pct}%"></i>
-        ${PREMIOS.map(p=>`<b style="left:${p.pct}%" class="${a.pct>=p.pct?"ok":""}"></b>`).join("")}</div>
+        ${PR.map(p=>`<b style="left:${p.pct}%" class="${a.pct>=p.pct?"ok":""}"></b>`).join("")}</div>
       <ul class="pz-chk">
         ${chk(a.eimeAlDia,`EIME al día <em>${a.eOk}/${a.eTot}</em>`)}
         ${chk(a.p1===a.planos&&a.planos>0,`1 evidencia 5S por plano <em>${a.p1}/${a.planos}</em>`)}
         ${chk(a.p5===5*a.planos&&a.planos>0,`5 evidencias por plano <em>${a.p5}/${5*a.planos}</em>`)}
         ${chk(a.zOk===a.zonas&&a.zonas>0,`Todas las zonas con evidencia <em>${a.zOk}/${a.zonas}</em>`)}
       </ul></div>
-    <div class="pz-premios">${PREMIOS.map(p=>`<div class="pz-p ${a.pct>=p.pct?"ok":""}" data-k="${p.k}" title="${esc(p.req)}">
+    <div class="pz-premios">${PR.map(p=>`<div class="pz-p ${a.pct>=p.pct?"ok":""}" data-k="${p.k}" title="${esc(p.req)}">
       ${ilustracion(p.k)}<b>${p.n}</b><span>${p.pct}%</span></div>`).join("")}</div>
   </section>`;
 }
+
+/* ====================== CUADRO DE HONOR ======================
+   Dos reconocimientos por ciclo: mejor EIME y mejor gestión 5S.
+   Nadie lleva dos: si la misma persona gana ambos, es «Mejor de todo». */
+function honorEime(c){
+  const hoy=hoyS();
+  return activos().map(u=>{
+    let tot=0, ok=0, ultima="";
+    DB.equipos.filter(e=>activoEq(e)&&e.resp===u.id).forEach(e=>{
+      let per=periodoEime(e.freq,c.ini<RUTA_INICIO?RUTA_INICIO:c.ini);
+      while(per.fin<=c.fin){
+        const v=DB.verif.filter(x=>x.eq===e.id&&x.fecha>=per.ini&&x.fecha<=per.finCal).sort((a,b)=>a.fecha<b.fecha?-1:1)[0];
+        if(per.fin<hoy||v){ tot++; if(v){ ok++; if(v.fecha>ultima) ultima=v.fecha; } }
+        per=sigPeriodo(e.freq,per);
+      } });
+    return {u,tot,ok,atrasos:tot-ok,pct:tot?ok/tot:0,ultima};
+  }).filter(x=>x.tot>0&&x.ok>0)
+    .sort((a,b)=>b.pct-a.pct||a.atrasos-b.atrasos||b.ok-a.ok||(a.ultima<b.ultima?-1:a.ultima>b.ultima?1:0));
+}
+function honor5s(c){
+  const E=evid5().filter(x=>x.ver==="APROBADO"&&x.rev!=="OBSERVADA"&&x.fecha>=c.ini&&x.fecha<=c.fin);
+  return activos().map(u=>{
+    const m=E.filter(x=>x.uid===u.id);
+    return {u,n:m.length,pts:m.reduce((s,x)=>s+(x.puntaje||0),0),
+      ultima:m.reduce((f,x)=>x.fecha>f?x.fecha:f,""),zonas:misZonas(u.id)};
+  }).filter(x=>x.n>0)
+    .sort((a,b)=>b.n-a.n||b.pts-a.pts||(a.ultima<b.ultima?-1:a.ultima>b.ultima?1:0));
+}
+function cuadroHonor(){
+  const c=cicloActual(), E=honorEime(c), S=honor5s(c);
+  const ge=E[0]||null, gs=S[0]||null;
+  const ambos=ge&&gs&&ge.u.id===gs.u.id;
+  const tarjeta=(cl,ico,titulo,x,detalle)=>`<div class="ch-card ${cl}">
+    <span class="ch-med">${ico}</span>
+    <span class="ch-pet">${petOf(x.u,{info:info(x.u)})}</span>
+    <b class="ch-tit">${titulo}</b>
+    <span class="ch-nom">${esc(x.u.nombre)}</span>
+    <span class="ch-det">${detalle}</span></div>`;
+  const med=c=>`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6.5"/><path d="M8.5 7.5L6 2h12l-2.5 5.5"/></svg>`;
+  let cuerpo;
+  if(!ge&&!gs) cuerpo=`<div class="empty">Aún no hay datos de este ciclo. Verifica un equipo o sube una evidencia 5S y aparecerás aquí.</div>`;
+  else if(ambos) cuerpo=`<div class="ch-grid uno">${tarjeta("todo",med("#D4A017"),"Mejor de todo",ge,
+      `${Math.round(ge.pct*100)} % de EIME al día · ${gs.n} evidencia${gs.n===1?"":"s"} 5S aprobada${gs.n===1?"":"s"}`)}</div>`;
+  else cuerpo=`<div class="ch-grid">
+      ${ge?tarjeta("eime",med("#0B6B74"),"Mejor EIME",ge,`${Math.round(ge.pct*100)} % al día · ${ge.ok} de ${ge.tot} verificaciones${ge.atrasos?` · ${ge.atrasos} atraso${ge.atrasos===1?"":"s"}`:" · sin atrasos"}`):
+        `<div class="ch-card vacia"><b class="ch-tit">Mejor EIME</b><span class="ch-det">Nadie ha verificado todavía en este ciclo.</span></div>`}
+      ${gs?tarjeta("s5",med("#7A5AA8"),"Mejor gestión 5S",gs,`${gs.n} evidencia${gs.n===1?"":"s"} aprobada${gs.n===1?"":"s"} · ${gs.pts} estrella${gs.pts===1?"":"s"} del juez`):
+        `<div class="ch-card vacia"><b class="ch-tit">Mejor gestión 5S</b><span class="ch-det">Nadie ha subido evidencias aprobadas todavía.</span></div>`}</div>`;
+  return `<section class="ch" aria-label="Cuadro de honor">
+    <div class="ch-head"><h3>Ciclo ${c.n} · ${fmt(c.ini)} al ${fmt(c.fin)}</h3>
+      <p>Dos reconocimientos: quien mejor cuida sus equipos y quien mejor cuida su zona. Si alguien gana los dos, es «Mejor de todo».</p></div>
+    ${cuerpo}</section>`;
+}
+
+/* ====================== PORTADA DE BIENVENIDA ====================== */
+const PORTADA=[
+  {t:"Bienvenidos a Corral Lab",s:"Cuidar nuestros equipos y nuestro lugar de trabajo puede ser un juego.",pets:["perro","gato","conejo","oso"],logo:true},
+  {n:"1",t:"Cuida a tu mascota",s:"Cada mes verificas tus equipos (EIME). Tu mascota come, y tú ganas estrellas y monedas para su tienda.",pets:["perro"]},
+  {n:"2",t:"Ordena con las 5S",s:"Sube una foto del antes y otra del después de tu zona. Un juez con inteligencia artificial la evalúa y las 5S se desbloquean una a una. A veces, un compañero la revisa en secreto.",pets:["zorro"]},
+  {n:"3",t:"Juntos llegamos más lejos",s:"Si el equipo cumple, se desbloquean premios para celebrar. La carretera te muestra lo que viene cada semana.",pets:["gato","vaca","mono"]}
+];
+let PT=0;
+function abrirPortada(){ PT=0; pintaPortada(); }
+function pintaPortada(){
+  const d=PORTADA[PT], ult=PT===PORTADA.length-1;
+  const pets=d.pets.map(k=>`<span class="pt-pet">${petSVG(k,null,"contenta",[],"pt"+PT+k)}</span>`).join("");
+  const html=`<div class="portada" id="portada" role="dialog" aria-modal="true" aria-label="Bienvenida">
+    <button class="pt-skip" data-act="ptCierra">${ult?"":"Saltar"}</button>
+    <div class="pt-card" key="${PT}">
+      ${d.logo?`<div class="pt-logo">${LOGO}</div>`:`<div class="pt-num">${d.n}</div>`}
+      <div class="pt-pets">${pets}</div>
+      <h2>${d.t}</h2><p>${d.s}</p>
+    </div>
+    <div class="pt-dots">${PORTADA.map((_,i)=>`<i class="${i===PT?"on":""}"></i>`).join("")}</div>
+    <div class="pt-btns">${PT?`<button class="btn ghost" data-act="ptAtras">Atrás</button>`:""}
+      <button class="btn" data-act="${ult?"ptCierra":"ptSig"}">${ult?"¡Empezar!":"Siguiente"}</button></div>
+  </div>`;
+  const a=$("#portada"); if(a) a.remove();
+  document.body.insertAdjacentHTML("beforeend",html);
+}
+function cierraPortada(){ const a=$("#portada"); if(a) a.remove(); ST.intro=true; persist(); }
 
 "use strict";
 /* ============================================================
@@ -2196,7 +2360,7 @@ function seedDemo(){
     P("de","Danitza Espinoza","Asistente Técnico","I+D","gato","#D39A5A",0,false,{mascota:"Pigmento"}),
     P("fc","Francisco Contreras","Asistente Técnico","I+D","capibara","#B68A58",0,false,{mascota:"Don Capi"})
   ];
-  return {config:{MEDICINA:40,DECAY_DIAS:21,EMERG:{eime:null,s5:null}},usuarios:us,
+  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null}},usuarios:us,
     equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],
     planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
 }
@@ -2324,17 +2488,21 @@ const LOCAL={
     return okd({lista:evid5().filter(e=>esRevisorActual(e,u.id)).map(e=>({id:e.id,zn:e.zn,s:e.s,apelacion:e.rev==="APELACION",
       antes:((DB.fotos5||{})[e.id]||{}).antes,despues:((DB.fotos5||{})[e.id]||{}).despues}))}); },
   revisar5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
-    const e=evid5().find(x=>x.id===p.id); if(!e||!esRevisorActual(e,u.id)) return err("SIN_REVISION","Esta revisión ya no está pendiente.");
+    const e=evid5().find(x=>x.id===p.id); if(!e) return err("SIN_REVISION","No encontré esa evidencia.");
+    if(!esRevisorActual(e,u.id)) return err("SIN_REVISION",e.rev==="PENDIENTE"||e.rev==="APELACION"?"Esta revisión no es tuya.":"Esta revisión ya fue respondida.");
     const apel=e.rev==="APELACION", autor=U(e.uid); let texto;
     if(p.ok){ e.rev="CONFIRMADA"; texto="Gracias: confirmaste que la zona se ve bien."; }
     else if(!apel){ const o=activos().filter(x=>x.id!==e.uid&&x.id!==u.id&&x.tienePin!==false);
       if(o.length){ e.rev="APELACION"; e.revisor2=o[Math.floor(Math.random()*o.length)].id; texto="Gracias. Otro compañero dará una segunda mirada."; }
       else{ e.rev="CONFIRMADA"; texto="Gracias. No hay otro revisor disponible, la evidencia queda confirmada."; } }
     else{ e.rev="OBSERVADA"; texto="Gracias: tu mirada decidió. La evidencia queda observada.";
-      const quita=Math.min(e.monedas||0,Math.max(0,autor.monedas||0)); if(quita>0) aplicaEvento(autor,{comida:0,monedas:-quita,estrellas:0,motivo:"5S "+e.s+"S "+e.zn+": observada por compañeros"}); }
+      const quita=Math.min(e.monedas||0,Math.max(0,autor.monedas||0)), eq=(e.monedas||0)>=35?3:(e.monedas||0)>0?2:0; if(quita>0||eq) aplicaEvento(autor,{comida:0,monedas:-quita,estrellas:-eq,motivo:"5S "+e.s+"S "+e.zn+": observada por compañeros"}); }
     aplicaEvento(u,{comida:0,monedas:REV_PREMIO,estrellas:0,motivo:"Revisión de un compañero"});
     return okd({texto,premio:REV_PREMIO}); },
   fotos5s(p){ const f=(DB.fotos5||{})[p.id]; return f?okd(f):err("SIN_FOTOS","Sin fotos."); },
+  guardarPremios(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
+    const L=p.premios; if(!Array.isArray(L)||L.length!==3) return err("PREMIOS","Faltan premios.");
+    DB.config.PREMIOS=L.map(x=>({k:String(x.k),pct:Number(x.pct)})); return okd({}); },
   emergencia(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     if(p.gestion!=="eime"&&p.gestion!=="s5") return err("GESTION","Gestión no válida.");
     if(p.desde&&p.hasta&&p.hasta<p.desde) return err("FECHA","La fecha final es anterior a la inicial.");
@@ -2421,8 +2589,9 @@ function render(){
   V.innerHTML = vista==="corral"?vCorral() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
     : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
+  if(vista==="ajustes"&&ajTab==="premios") pInitPremios();
   if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
-  if(u&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
+  if(u&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&vista!=="ajustes"&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
 }
 
 /* ---------- CORRAL ---------- */
@@ -2517,7 +2686,10 @@ function vRank(me){
   let mes=new Date(nowMs()).toLocaleDateString("es-CL",{month:"long",year:"numeric"}).replace(" de "," "); mes=mes.charAt(0).toUpperCase()+mes.slice(1);
   const F=activos().map(u=>({u,i:info(u)})).sort((a,b)=>(b.u.estrellasMes||0)-(a.u.estrellasMes||0)||(b.u.estrellasTotal||0)-(a.u.estrellasTotal||0));
   const top=F.slice(0,3), ord=[top[1],top[0],top[2]].filter(Boolean);
-  return `<div class="pagehead"><div><h2>Empleado del mes</h2><p>${mes} · gana quien junta más estrellas</p></div></div>
+  return `<div class="pagehead"><div><h2>Cuadro de honor</h2><p>Los reconocimientos del ciclo y la tabla de estrellas del mes</p></div></div>
+  ${cuadroHonor()}
+  <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Estrellas de ${mes.toLowerCase()}</h3>
+  <p style="margin:0 0 14px;font-size:13px;color:var(--fg-mute)">Las estrellas son el juego del corral: sirven para tu mascota, no son un premio del ciclo.</p>
   <div class="podium">${ord.map(f=>{ const k=F.indexOf(f);
     return `<div class="pod ${k===0?"first":""}" data-st="${f.i.est}"><span class="rk">${["1.º","2.º","3.º"][k]}</span>
       <span class="stage">${petOf(f.u,{info:f.i,usando:k===0?[...(f.u.usando||[]).filter(x=>ACCESORIOS[x].slot!=="cabeza"),"corona"]:undefined})}</span>
@@ -2551,7 +2723,7 @@ function vS5(){
 
 /* ---------- AJUSTES (administrador) ---------- */
 function vAjustes(){
-  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos EIME"],["zonas","Zonas 5S"],["export","Auditor"]];
+  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos EIME"],["zonas","Zonas 5S"],["premios","Premios"],["export","Auditor"]];
   let cuerpo="";
   if(ajTab==="personas"){
     cuerpo=`<div class="toolrow"><button class="btn sm" data-act="perAdd">${ic("plus",16)} Agregar persona</button></div>`+
@@ -2568,12 +2740,43 @@ function vAjustes(){
     cuerpo=vEquiposAdmin();
   }else if(ajTab==="zonas"){
     cuerpo=vZonas();
+  }else if(ajTab==="premios"){
+    cuerpo=vPremiosAdmin();
   }else{
     cuerpo=vExpBody();
   }
   return `<div class="pagehead"><div><h2>Ajustes</h2><p>Emergencias, personas, equipos, zonas 5S y registro para el auditor</p></div></div>
     ${vEmergencias()}
     <div class="tabs" style="margin-bottom:14px;display:inline-flex">${T.map(([k,l])=>`<button data-act="ajtab" data-t="${k}" aria-pressed="${ajTab===k}">${l}</button>`).join("")}</div>${cuerpo}`;
+}
+/* ---------- Premios del ciclo (solo administrador) ---------- */
+function vPremiosAdmin(){
+  const PR=premios(), c=cicloActual();
+  const fila=(p,i)=>`<div class="pcfg-row">
+    <span id="pcIlu${i}">${ilustracion(p.k)}</span>
+    <span class="f"><label for="pcK${i}">Premio ${i+1}</label>
+      <select id="pcK${i}" data-act="pcIlu" data-i="${i}">${CATALOGO.map(x=>`<option value="${x.k}" ${x.k===p.k?"selected":""}>${x.n}</option>`).join("")}</select></span>
+    <span class="f pct"><label for="pcP${i}">Se gana al</label>
+      <input id="pcP${i}" type="number" min="10" max="100" step="5" value="${p.pct}"></span></div>`;
+  return `<div class="note" style="margin-top:0;margin-bottom:14px">Elige los tres premios del ciclo y a qué porcentaje de avance se gana cada uno. Puedes cambiarlos en cada ciclo de ${CICLO_DIAS} días. Ciclo actual: ${fmt(c.ini)} al ${fmt(c.fin)}.</div>
+    <div class="pcfg">${PR.map(fila).join("")}</div>
+    <div class="toolrow"><button class="btn" id="btnPremios">${ic("chk",18)} Guardar premios</button></div>`;
+}
+function pInitPremios(){
+  const b=$("#btnPremios"); if(!b) return;
+  for(let i=0;i<3;i++){ const s=$("#pcK"+i); if(s) s.onchange=()=>{ const t=$("#pcIlu"+i); if(t) t.innerHTML=ilustracion(s.value); }; }
+  b.onclick=async()=>{
+    const L=[]; for(let i=0;i<3;i++) L.push({k:$("#pcK"+i).value,pct:Number($("#pcP"+i).value)});
+    if(L.some(p=>!(p.pct>=10&&p.pct<=100))){ toast("Los porcentajes van de 10 a 100","!"); return; }
+    if(new Set(L.map(p=>p.k)).size<3){ toast("Elige tres premios distintos","!"); return; }
+    L.sort((a,b)=>a.pct-b.pct);
+    if(L[0].pct===L[1].pct||L[1].pct===L[2].pct){ toast("Cada premio necesita un porcentaje distinto","!"); return; }
+    const t=b.innerHTML; b.disabled=true; b.innerHTML=`<span class="spin"></span> Guardando…`;
+    const r=await call("guardarPremios",{premios:L});
+    b.disabled=false; b.innerHTML=t;
+    if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
+    render(); toast("Premios actualizados","★");
+  };
 }
 const HEAD=["Equipo","Código EIME","Fecha","Punto patrón","Indicación","Error abs.","Error rel. %","Resultado","Responsable","Observaciones"];
 function filasExport(){ const out=[];
@@ -2749,7 +2952,7 @@ function abrirFicha(uid){ const u=U(uid), i=info(u);
 
 /* ----- editar mascota ----- */
 function abrirEditPet(bienvenida){
-  const u=yo(); let esp=u.especie, col=u.color||ESPECIES[esp].c;
+  const u=yo(); if(!u) return; let esp=u.especie, col=u.color||ESPECIES[esp]?.c;
   if(bienvenida&&!ESP_KEYS.includes(esp)){ esp="perro"; col=ESPECIES.perro.c; }
   const claves=bienvenida?ESP_KEYS:(ESP_KEYS.includes(u.especie)?ESP_KEYS:[u.especie,...ESP_KEYS]);
   const prev=()=>{ $("#ppPrev").innerHTML=petSVG(esp,col,"contenta",u.usando||[],"pv"+(++PU)); };
@@ -2840,9 +3043,9 @@ function abrirEq(id){
   $("#btnSave",sh).onclick=async()=>{
     const lect=[];
     for(let i=0;i<e.pts.length;i++){ const el=$("#pt"+i,sh); if(!el.value){ toast("Falta completar el punto "+(i+1),"!"); el.focus(); return; } lect.push(el.value); }
-    const b=$("#btnSave",sh); b.disabled=true;
+    const b=$("#btnSave",sh), txt0=b.innerHTML; b.disabled=true; b.innerHTML=`<span class="spin"></span> Guardando…`;
     const r=await call("guardarVerificacion",{equipoId:e.id,lecturas:lect,temperatura:e.temp?$("#fTemp",sh).value:"",observaciones:$("#fObs",sh).value});
-    if(!r.ok){ b.disabled=false; toast(r.msg||"No se pudo guardar","!"); return; }
+    if(!r.ok){ b.disabled=false; b.innerHTML=txt0; toast(r.msg||"No se pudo guardar","!"); return; }
     closeSheet(); render(); mostrarPremio(r.premio);
   };
 }
@@ -2889,6 +3092,7 @@ const ACT={
     if(ad.length===1){ abrirPin(ad[0].id,"ajustes"); return; }
     openSheet(`${phead("Ajustes del laboratorio")}<div class="pbody"><p style="margin:0 0 10px;font-size:13.5px;color:var(--fg-dim)">Solo para administradores. ¿Quién eres?</p>
       <div class="respgrid">${ad.map(u=>`<button class="respbtn" data-act="gearQuien" data-id="${u.id}">${esc(primer(u.nombre))}</button>`).join("")}</div></div>`); },
+  ptSig(){ PT++; pintaPortada(); }, ptAtras(){ PT--; pintaPortada(); }, ptCierra(){ cierraPortada(); },
   gearQuien(d){ abrirPin(d.id,"ajustes"); },
   "go-eime"(){ go("eime"); }, "go-s5"(){ go("s5"); }, "go-rank"(){ go("rank"); }, "go-ajustes"(){ go("ajustes"); },
   salir(){ ST.sesion=null; persist(); vista="corral"; render(); },
@@ -2957,6 +3161,7 @@ document.addEventListener("change",async ev=>{
   const r=await call("asignarEquipo",{equipoId:t.dataset.id,responsableId:t.value});
   if(!r.ok){ toast(r.msg,"!"); render(); return; } toast("Responsable actualizado");
 });
+$("#helpBtn").onclick=abrirPortada;
 $("#userChip").onclick=()=>{ if(yo()) go("mi"); };
 $("#themeBtn").onclick=()=>{ const a=ST.tema||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
   ST.tema=a==="dark"?"light":"dark"; aplicaTema(); persist(); };
@@ -2970,6 +3175,7 @@ async function boot(){
   if(ONLINE){ await refresh(true);
     document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&Date.now()-lastSync>45000) refresh(); });
     setInterval(()=>{ if(document.visibilityState==="visible") refresh(); },120000); }
+  if(DB&&!ST.intro&&!ST.sesion) abrirPortada();
   setInterval(()=>{ if(DB&&!$("#sheet")&&!editando()&&document.visibilityState==="visible") render(); },300000);
 }
 boot();
