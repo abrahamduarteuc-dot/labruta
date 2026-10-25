@@ -578,6 +578,90 @@ td.num{font-family:var(--f-mono);text-align:right}
 .admbtn{position:relative;padding:8px 10px}
 .admbtn .lk{position:absolute;right:1px;bottom:1px;width:14px;height:14px;border-radius:50%;background:var(--surface);color:var(--fg-dim);display:grid;place-items:center;border:1px solid var(--line)}
 .admbtn .lk svg{width:9px;height:9px}
+.rg-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.rg-panel h3{margin:0 0 4px;font-size:16px}.rg-panel p{margin:0 0 12px;font-size:13px;color:var(--fg-dim)}
+.rg-sel{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+#printov{position:fixed;inset:0;z-index:200;background:#d9dfe2;overflow:auto;color:#111}
+.rg-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid #c5ced2;z-index:2}
+.rg-papel{padding:16px;display:flex;flex-direction:column;align-items:center;gap:16px;overflow-x:auto}
+.rg-hoja{background:#fff;width:210mm;min-height:297mm;padding:12mm;box-sizing:border-box;font:11px/1.35 Arial,Helvetica,sans-serif;color:#111;box-shadow:0 2px 10px rgba(0,0,0,.2);flex:none}
+.rg-cab{width:100%;border-collapse:collapse;margin-bottom:10px}.rg-cab td{border:1px solid #111;padding:5px 8px}
+.rg-cod{width:26mm;text-align:center;font-weight:700;font-size:14px}.rg-t1{text-align:center;font-weight:700;font-size:14px}.rg-t2{text-align:center;font-weight:700;font-size:15px}
+.rg-dos{display:grid;grid-template-columns:1.1fr 1fr;gap:10px;margin-bottom:8px;align-items:start}
+.rg-tit{background:#e4e9eb;border:1px solid #111;font-weight:700;padding:4px 8px;letter-spacing:.4px;font-size:11px}
+.rg-tit2{margin-top:6px}
+.rg-kv{width:100%;border-collapse:collapse}.rg-kv th,.rg-kv td{border:1px solid #888;padding:3px 6px;text-align:left;font-size:10.5px;vertical-align:top}
+.rg-kv th{width:42%;font-weight:600;background:#f6f8f9}
+.rg-res{width:100%;border-collapse:collapse;margin-top:0;table-layout:fixed}
+.rg-res th,.rg-res td{border:1px solid #444;padding:3px 4px;font-size:9.5px;text-align:center;vertical-align:middle}
+.rg-res th{background:#e4e9eb;font-weight:700}.rg-res .rg-f{white-space:nowrap}
+.rg-res .rg-obs{text-align:left;word-break:break-word}.rg-no td{font-weight:700;background:#f3f3f3}
+.rg-vacio{padding:14px!important;font-style:italic;color:#555}
+.rg-resumen{margin-top:8px;font-size:10.5px}
+.rg-firmas{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22mm;text-align:center;font-size:10px}
+.rg-firmas span{display:block;border-bottom:1px solid #111;height:14mm;margin-bottom:3px}
+@page{size:A4;margin:0}
+@media print{
+  body.rg-on>*:not(#printov){display:none!important}
+  body.rg-on{background:#fff!important}
+  #printov{position:static!important;background:#fff!important;overflow:visible!important}
+  .rg-bar{display:none!important}.rg-papel{padding:0!important;gap:0!important;display:block!important}
+  .rg-hoja{box-shadow:none!important;width:auto!important;min-height:0!important;page-break-after:always;break-after:page;padding:12mm!important}
+  .rg-hoja:last-child{page-break-after:auto;break-after:auto}
+  .rg-res tr{page-break-inside:avoid}.rg-res thead{display:table-header-group}
+}
+@media (max-width:600px){.rg-hoja{zoom:.5}}
+.rg-hoja *{box-sizing:border-box}
+.rg-hoja table{min-width:0!important;max-width:100%}
+.rg-hoja th,.rg-hoja td{text-transform:none!important;letter-spacing:normal!important;font-family:Arial,Helvetica,sans-serif!important;color:#111!important}
+.rg-hoja .rg-kv th{font-size:10.5px!important}
+.rg-hoja .rg-res th{font-size:9px!important}
+.rg-dos>div{min-width:0}
+@media print{.rg-hoja{width:210mm!important;overflow:hidden}}
+.rg-hoja .rg-res th{white-space:normal!important;overflow-wrap:break-word;line-height:1.15;padding:3px 2px!important}
+/* ---- 5S: evidencia y juez ---- */
+.j5grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.j5zona{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.j5zh{display:flex;align-items:center;gap:8px;min-width:0}
+.j5zh .sw{width:14px;height:14px;border-radius:4px;flex:none}
+.j5zh b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.j5zh .pl{margin-left:auto;font-size:11.5px;color:var(--fg-mute);white-space:nowrap}
+.j5ss{display:flex;gap:6px}
+.j5s{flex:1;text-align:center;font-size:12px;font-weight:700;padding:5px 0;border-radius:8px;background:var(--surface-2);color:var(--fg-mute);border:1px solid var(--line)}
+.j5s.ok{background:var(--bg-contenta);color:var(--st-contenta);border-color:transparent}
+.j5s.next{border-color:var(--accent);color:var(--accent)}
+.j5hist{display:flex;flex-direction:column;gap:8px}
+.j5h{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+.j5h:hover{border-color:var(--accent)}
+.j5h .vd{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;flex:none;background:var(--surface-2)}
+.j5h[data-v="APROBADO"] .vd{background:var(--bg-contenta);color:var(--st-contenta)}
+.j5h[data-v="RECHAZADO"] .vd{background:var(--bg-enferma);color:var(--st-enferma)}
+.j5h .tx{display:flex;flex-direction:column;min-width:0}
+.j5h .tx b{font-size:13.5px}
+.j5h .tx span{font-size:12px;color:var(--fg-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.j5pick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+.j5pick button{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:8px 2px;font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--fg)}
+.j5pick button small{font-weight:500;font-size:10px;color:var(--fg-mute)}
+.j5pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:#fff}
+.j5pick button[aria-pressed="true"] small{color:#fff;opacity:.85}
+.j5tip{font-size:13px;color:var(--fg-dim);margin:0 0 12px}
+.j5fotos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.j5foto{aspect-ratio:4/3;max-width:100%;border:2px dashed var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;overflow:hidden;position:relative;background:var(--surface-2);color:var(--fg-mute)}
+.j5foto.lleno{border-style:solid;border-color:var(--accent)}
+.j5foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.j5foto b,.j5foto small{position:relative;z-index:1}
+.j5foto.lleno b{background:rgba(0,0,0,.55);color:#fff;padding:2px 10px;border-radius:999px;position:absolute;bottom:8px}
+.j5foto.lleno small{display:none}
+.j5foto small{font-size:11px}
+.j5nota{font-size:11.5px;color:var(--fg-mute);margin:8px 0 0}
+.j5res{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.j5res p{text-align:left;margin:0;font-size:13.5px;width:100%}
+.j5res .big{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:34px;font-weight:800}
+.j5res[data-v="APROBADO"] .big{background:var(--bg-contenta);color:var(--st-contenta)}
+.j5res[data-v="RECHAZADO"] .big{background:var(--bg-enferma);color:var(--st-enferma)}
+.j5res .pts{color:var(--coin);letter-spacing:2px;font-size:18px}
+.j5res .prem{font-weight:700;color:var(--st-contenta);text-align:center}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spinm .8s linear infinite;vertical-align:-3px}
 
 </style>
 
@@ -968,7 +1052,7 @@ const EQUIPOS_SEED=[
  {id:"pos2",n:"Positector 2",tipo:"espesor",desc:"Medidor de espesor",marca:"DEFELSKO",modelo:"POSITECTOR 6000",serie:"711656 / PROBE FNRS139364",eime:"IN455",rango:"0 – 1500 µm",res:"1 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Plastic shims",cpatron:"S/N",cert:"NO",traz:"NO",resp:"de",ult:"2026-09-22",
   u:"µm",pts:[{v:25,tol:5},{v:50,tol:5},{v:125,tol:62.5},{v:250,tol:125},{v:500,tol:250}]},
  {id:"pos3",n:"Positector 3",tipo:"espesor",desc:"Medidor de espesor",marca:"DEFELSKO",modelo:"POSITECTOR 6000",serie:"779161 / PROBE FS173614",eime:"IN456",rango:"0 – 1500 µm",res:"1 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Plastic shims",cpatron:"S/N",cert:"NO",traz:"NO",resp:"de",ult:"2026-10-06",
-  u:"µm",pts:[{v:25,tol:5},{v:50,tol:5},{v:125,tol:62.5},{v:250,tol:125},{v:500,tol:250}]},
+  u:"µm",pts:[{v:25,tol:5},{v:50,tol:5},{v:125,tol:6.25},{v:250,tol:12.5},{v:500,tol:25}]},
  {id:"brtqc",n:"Brillómetro TQC",tipo:"brillo",desc:"Brillómetro",marca:"TQC",modelo:"TQC PolyGloss",serie:"GL0030-1660",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"GL0030-1660",cert:"GL0030-1660",traz:"Gloss Calibration Tool GL5000-002",resp:"kr",ult:"2026-10-14",
   u:"GU",pts:[{e:"20°",v:94.2,tol:2},{e:"60°",v:96.1,tol:2},{e:"85°",v:100.1,tol:2}]},
  {id:"brbyk",n:"Brillómetro BYK (SUR)",tipo:"brillo",desc:"Brillómetro",marca:"BYK",modelo:"—",serie:"—",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"—",cert:"—",traz:"—",resp:"kr",ult:"2026-10-02",
@@ -992,13 +1076,13 @@ const EQUIPOS_SEED=[
  {id:"vbk",n:"Viscosímetro BK (RT5000)",tipo:"viscobk",desc:"Viscosímetro Brookfield RV-HB",marca:"BROOKFIELD",modelo:"RVDVE",serie:"8664702",eime:"IN483",rango:"100 – 10.000.000 cP",res:"1 cP",freq:"mensual",it:"IT-SGC-06/01",patron:"RT5000",cpatron:"—",cert:"21101",traz:"N/A",resp:"ad",ult:"2026-10-07",
   u:"cP",pts:[{v:5069,tol:253}]},
  {id:"vku",n:"Viscosímetro Stormer (KU)",tipo:"stormer",desc:"Viscosímetro Stormer",marca:"BROOKFIELD",modelo:"KU-2",serie:"8670388",eime:"IN480",rango:"0 – 140 KU",res:"0,1 KU",freq:"mensual",it:"IT-SGC-06/01",patron:"Aceite calibración K-400",cpatron:"—",cert:"18102b",traz:"No aplica",resp:"ad",ult:"2026-09-11",
-  u:"KU",pts:[{v:96.5,tol:2}]},
+  u:"KU",pts:[{v:88.6,tol:2}]},
  {id:"picmf",n:"Picnómetro MF",tipo:"picnometro",desc:"Picnómetro madera",marca:"—",modelo:"—",serie:"—",eime:"IN449",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-10-13",
-  u:"g/mL",pts:[{v:0.997,tol:0.01}]},
+  u:"g/mL",pts:[{v:0.9743,tol:0.01}]},
  {id:"picenv",n:"Picnómetro Env",tipo:"picnometro",desc:"Picnómetro envase",marca:"GARDCO",modelo:"3-08",serie:"—",eime:"IN450",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-09-25",
-  u:"g/mL",pts:[{v:0.997,tol:0.01}]},
+  u:"g/mL",pts:[{v:0.9743,tol:0.01}]},
  {id:"picpp",n:"Picnómetro PP",tipo:"picnometro",desc:"Picnómetro polvo",marca:"SHEEN",modelo:"1501/1000",serie:"5964541",eime:"IN451",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-08-28",
-  u:"g/mL",pts:[{v:0.997,tol:0.01}]},
+  u:"g/mL",pts:[{v:0.9743,tol:0.01}]},
  {id:"grimf",n:"Grindómetro MF",tipo:"grindometro",desc:"Grindómetro madera",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"fc",ult:"2026-10-10",
   u:"",pasa:true,pts:[{e:"Estado de placa y rasqueta",v:"PASA"}]},
  {id:"grienv",n:"Grindómetro Env",tipo:"grindometro",desc:"Grindómetro envase",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"fc",ult:"2026-09-08",
@@ -1525,6 +1609,185 @@ document.addEventListener("click",async ev=>{
   const k=CAL.k; CAL=null; closeSheet(); render(); toast("Emergencia "+GESTION[k].n+" activada");
 });
 
+/* ====================== HOJA DE AUDITORÍA (impresión del registro RC-SGI-06-02) ====================== */
+const REG_COD={codigo:"RC-SGI-06-02",version:"01",fecha:"30-05-2018"};
+const regAnios=()=>[...new Set(DB.verif.map(v=>String(v.fecha).slice(0,4)))].sort().reverse();
+
+function regCaja(titulo,filas){
+  return `<div class="rg-bloque"><div class="rg-tit">${titulo}</div><table class="rg-kv">${filas.map(([k,v])=>
+    `<tr><th>${esc(k)}</th><td>${v?esc(v):"&nbsp;"}</td></tr>`).join("")}</table></div>`;
+}
+function regTabla(e,vs){
+  const num=!e.pasa, tem=!!e.temp;
+  const cab=num
+    ?["Fecha","Valor nominal (patrón)","Indicación del instrumento","Error absoluto","Error relativo (%)","Tolerancia (±)",...(tem?["Temp. (°C)"]:[]),"Resultado","Responsable","Hora","Observaciones"]
+    :["Fecha","Punto verificado","Criterio","Resultado","Responsable","Hora","Observaciones"];
+  const filas=[];
+  vs.forEach(v=>{
+    const n=v.det.length||1, resp=U(v.usuario)?.nombre||"";
+    v.det.forEach((d,i)=>{
+      const pt=(e.pts||[])[i], ok=d.ok?"Conforme":"No conforme";
+      const comunes=i===0?`<td rowspan="${n}">${esc(resp)}</td><td rowspan="${n}">${esc(v.hora||"")}</td><td rowspan="${n}" class="rg-obs">${esc(v.obs||"")}</td>`:"";
+      const f=i===0?`<td rowspan="${n}" class="rg-f">${fmt(v.fecha)}</td>`:"";
+      if(num){
+        const tol=pt&&pt.tol!=null?"± "+nf(pt.tol,pt.tol<1?3:pt.tol<10?1:0):"—";
+        filas.push(`<tr class="${d.ok?"":"rg-no"}">${f}<td>${esc(d.nom)}</td><td>${esc(d.ind)}</td><td>${d.err===""?"—":nf(d.err,2)}</td><td>${d.rel===""?"—":nf(d.rel,2)}</td><td>${tol}</td>${tem?(i===0?`<td rowspan="${n}">${esc(v.temp||"")}</td>`:""):""}<td>${d.ok?"✔":"✘"} ${ok}</td>${comunes}</tr>`);
+      }else{
+        filas.push(`<tr class="${d.ok?"":"rg-no"}">${f}<td>${esc(d.nom)}</td><td>${esc(pt?pt.v:"")}</td><td>${d.ok?"✔":"✘"} ${d.ind||ok}</td>${comunes}</tr>`);
+      }
+    });
+  });
+  const vacia=`<tr><td colspan="${cab.length}" class="rg-vacio">Sin verificaciones registradas en este período</td></tr>`;
+  const w=num?[15,18,20,16,16,16,...(tem?[12]:[]),21,22,10]:[15,26,20,22,26,10];
+  const cg=`<colgroup>${w.map(x=>`<col style="width:${x}mm">`).join("")}<col></colgroup>`;
+  return `<table class="rg-res">${cg}<thead><tr>${cab.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${filas.join("")||vacia}</tbody></table>`;
+}
+function regHoja(e,anio){
+  const vs=DB.verif.filter(v=>v.eq===e.id&&(anio==="todo"||String(v.fecha).startsWith(anio)))
+    .sort((a,b)=>String(a.fecha).localeCompare(String(b.fecha))||String(a.hora||"").localeCompare(String(b.hora||"")));
+  const no=vs.filter(v=>v.cumple===false||v.det.some(d=>!d.ok)).length, resp=U(e.resp)?.nombre||"Sin asignar";
+  const frec=e.freq?e.freq[0].toUpperCase()+e.freq.slice(1):"";
+  return `<section class="rg-hoja">
+    <table class="rg-cab"><tr><td class="rg-cod" rowspan="3">${esc(e.eime||"EIME")}</td>
+      <td class="rg-t1">REGISTRO</td><td>Código: ${REG_COD.codigo}</td></tr>
+      <tr><td class="rg-t2" rowspan="2">VERIFICACIÓN DE EIME</td><td>Versión: ${REG_COD.version}</td></tr>
+      <tr><td>Fecha: ${REG_COD.fecha}</td></tr></table>
+    <div class="rg-dos">
+      ${regCaja("IDENTIFICACIÓN",[["Descripción",e.desc||e.n],["Marca",e.marca],["Modelo",e.modelo],["Lote",e.lote],["Nº de serie",e.serie],
+        ["Código EIME",e.eime],["Rango",e.rango],["Resolución",e.res],["Frecuencia de verificación",frec],["IT para verificación",e.it],["Responsable",resp]])}
+      ${regCaja("TRAZABILIDAD DE LA VERIFICACIÓN",[["Patrón utilizado",e.patron],["Código patrón",e.cpatron],["Certificado Nº",e.cert],["Trazabilidad",e.traz]])}
+    </div>
+    <div class="rg-tit rg-tit2">RESULTADOS ${anio==="todo"?"· TODO EL HISTORIAL":"AÑO "+anio}</div>
+    ${regTabla(e,vs)}
+    <div class="rg-resumen">Verificaciones en el período: <b>${vs.length}</b> · No conformes: <b>${no}</b>${e.estado&&e.estado!=="activo"?` · Estado del equipo: <b>${e.estado==="baja"?"Dado de baja":"Bloqueado"}</b>`:""}</div>
+    <div class="rg-firmas"><div><span></span>Verificado por</div><div><span></span>Revisado por (auditor)</div><div><span></span>Fecha de revisión</div></div>
+  </section>`;
+}
+function regAbrir(){
+  const sel=$("#regEq").value, anio=$("#regAnio").value;
+  const lista=sel==="todos"?DB.equipos.filter(e=>(e.estado||"activo")==="activo"):DB.equipos.filter(e=>e.id===sel);
+  if(!lista.length){ toast("No hay equipos para imprimir","!"); return; }
+  regCerrar();
+  const ov=document.createElement("div"); ov.id="printov";
+  ov.innerHTML=`<div class="rg-bar"><b>Hoja de auditoría · ${lista.length} equipo${lista.length>1?"s":""}</b>
+      <span><button class="btn sm" data-act="regImprimir">Imprimir / guardar PDF</button> <button class="btn ghost sm" data-act="regCerrar">Cerrar</button></span></div>
+    <div class="rg-papel">${lista.map(e=>regHoja(e,anio)).join("")}</div>`;
+  document.body.appendChild(ov); document.body.classList.add("rg-on"); ov.scrollTop=0;
+}
+function regCerrar(){ const o=$("#printov"); if(o) o.remove(); document.body.classList.remove("rg-on"); }
+function vRegistroImprimible(){
+  const an=regAnios(), ya=String(new Date().getFullYear());
+  return `<div class="rg-panel"><h3>Hoja de auditoría imprimible</h3>
+    <p>Mismo formato del registro RC-SGI-06-02: identificación, trazabilidad y resultados. Una hoja por equipo, lista para imprimir o guardar como PDF.</p>
+    <div class="rg-sel"><div><label class="fl" for="regEq">Equipo</label><select class="inp" id="regEq"><option value="todos">Todos los equipos activos</option>
+      ${DB.equipos.map(e=>`<option value="${e.id}">${esc(e.n)}${e.eime?" · "+esc(e.eime):""}</option>`).join("")}</select></div>
+      <div><label class="fl" for="regAnio">Período</label><select class="inp" id="regAnio">${(an.includes(ya)?an:[ya,...an]).map(a=>`<option value="${a}">Año ${a}</option>`).join("")}<option value="todo">Todo el historial</option></select></div></div>
+    <button class="btn sm" data-act="regAbrir">Ver hoja de auditoría</button></div>`;
+}
+const RACT={ regAbrir, regCerrar, regImprimir(){ window.print(); } };
+
+/* ====================== 5S CON FOTOS Y JUEZ (Haiku) ====================== */
+const S5=[
+  {k:1,n:"Clasificar",j:"Seiri",t:"Sacar lo que no se usa. La foto del después debe mostrar menos objetos innecesarios."},
+  {k:2,n:"Ordenar",j:"Seiton",t:"Un lugar para cada cosa: rótulos, demarcación, lo de uso frecuente a mano."},
+  {k:3,n:"Limpiar",j:"Seiso",t:"Superficies, equipos y piso limpios, sin derrames ni polvo acumulado."},
+  {k:4,n:"Estandarizar",j:"Seiketsu",t:"Señalética, etiquetas y una forma visible de mantener el orden logrado."},
+  {k:5,n:"Disciplina",j:"Shitsuke",t:"El estándar se mantiene en el tiempo: el después se ve igual o mejor que la última vez."}
+];
+const evid5=()=>(DB&&DB.evid5s)||[];
+// Nivel de una zona = cuántas S seguidas tiene aprobadas
+function nivelZona(zid){ const ok=new Set(evid5().filter(e=>e.zona===zid&&e.ver==="APROBADO").map(e=>e.s));
+  let n=0; while(ok.has(n+1)) n++; return n; }
+let J5=null;   // estado de la hoja de evidencia abierta
+
+function vEvid5(u){
+  const mias=[]; planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp===u.id) mias.push({p,z}); }));
+  const hist=evid5().filter(e=>u.admin||e.uid===u.id).sort((a,b)=>b.ts-a.ts).slice(0,12);
+  const tarjetas=mias.length?mias.map(({p,z})=>{ const nv=nivelZona(z.id);
+    return `<div class="j5zona"><div class="j5zh"><span class="sw" style="background:${col5(u.id)}"></span><b>${esc(z.n)}</b><span class="pl">${esc(p.nombre)}</span></div>
+      <div class="j5ss">${S5.map(s=>`<span class="j5s ${s.k<=nv?"ok":s.k===nv+1?"next":""}" title="${s.n}">${s.k<=nv?"✓":s.k}S</span>`).join("")}</div>
+      <button class="btn sm" data-act="j5abrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir antes y después</button></div>`; }).join("")
+    :`<div class="empty">No tienes zonas 5S asignadas. El administrador las reparte en Ajustes → Zonas 5S.</div>`;
+  return `<div class="j5"><div class="eyebrow" style="margin:18px 0 8px">Evidencia 5S · el juez revisa cada foto</div>
+    <div class="j5grid">${tarjetas}</div>
+    ${hist.length?`<div class="eyebrow" style="margin:18px 0 8px">${u.admin?"Últimas evaluaciones del equipo":"Tus últimas evaluaciones"}</div>
+    <div class="j5hist">${hist.map(e=>`<button class="j5h" data-act="j5ver" data-id="${e.id}" data-v="${e.ver}">
+      <span class="vd">${e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
+      <span class="tx"><b>${e.s}S ${esc((S5[e.s-1]||{}).n||"")} · ${esc(e.zn)}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
+}
+
+function abrirEvid5(planoId,zonaId){
+  const p=planosDB().find(x=>x.id===planoId), z=p&&p.zonas.find(x=>x.id===zonaId); if(!z) return;
+  J5={p,z,s:Math.min(5,nivelZona(z.id)+1),antes:null,despues:null,enviando:false};
+  pintaEvid5();
+}
+function pintaEvid5(){
+  const {z,p,s}=J5, info=S5[s-1];
+  openSheet(`${phead("Evidencia 5S · "+esc(z.n))}<div class="pbody">
+    <div class="j5pick">${S5.map(x=>`<button data-act="j5s" data-s="${x.k}" aria-pressed="${x.k===s}">${x.k}S<small>${x.n}</small></button>`).join("")}</div>
+    <p class="j5tip"><b>${info.k}S ${info.n}</b> (${info.j}). ${info.t}</p>
+    <div class="j5fotos">
+      ${["antes","despues"].map(k=>`<label class="j5foto ${J5[k]?"lleno":""}">
+        <input type="file" accept="image/*" data-foto="${k}" hidden>
+        ${J5[k]?`<img src="${J5[k].mini}" alt="Foto ${k==="antes"?"antes":"después"}">`:`<span>${ic("camera",28)}</span>`}
+        <b>${k==="antes"?"Antes":"Después"}</b><small>${J5[k]?"Toca para cambiar":"Toca para sacar o elegir foto"}</small></label>`).join("")}
+    </div>
+    <label class="fl" for="j5com">Comentario para el juez (opcional)</label>
+    <textarea class="inp" id="j5com" rows="2" maxlength="300" placeholder="Qué hiciste en esta zona">${esc(J5.com||"")}</textarea>
+    <div class="saverow"><button class="btn" data-act="j5enviar" ${J5.antes&&J5.despues?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
+    <p class="j5nota">Plano ${esc(p.nombre)}. Las fotos quedan guardadas como respaldo para el auditor.</p></div>`);
+}
+// Reduce la foto: una versión para el juez (1024 px) y una miniatura para el historial
+function prepFoto(file){ return new Promise((ok,mal)=>{
+  const img=new Image(), url=URL.createObjectURL(file);
+  img.onload=()=>{ const out=(max,q)=>{ const k=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement("canvas"); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height); return c.toDataURL("image/jpeg",q); };
+    const r={full:out(1024,0.78),mini:out(260,0.6)}; URL.revokeObjectURL(url); ok(r); };
+  img.onerror=()=>{ URL.revokeObjectURL(url); mal(new Error("No pude leer la foto")); };
+  img.src=url; }); }
+document.addEventListener("change",async ev=>{
+  const inp=ev.target.closest("[data-foto]"); if(!inp||!J5||!inp.files[0]) return;
+  try{ J5.com=($("#j5com")||{}).value||J5.com; J5[inp.dataset.foto]=await prepFoto(inp.files[0]); pintaEvid5(); }
+  catch(e){ toast(e.message,"!"); }
+});
+function veredicto5(r){
+  const ok=r.ver==="APROBADO";
+  openSheet(`${phead(ok?"¡Aprobado!":"Aún no")}<div class="pbody"><div class="j5res" data-v="${r.ver}">
+    <div class="big">${ok?"✓":"✗"}</div><b>${r.s}S ${esc((S5[r.s-1]||{}).n||"")} · ${esc(r.zn)}</b>
+    <div class="pts">${"★".repeat(r.puntaje||0)}${"☆".repeat(5-(r.puntaje||0))}</div>
+    <p><b>Motivo:</b> ${esc(r.motivo)}</p><p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>
+    ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · tu mascota comió</p>`:""}
+    ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
+  </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
+}
+async function verEvid5(id){
+  const e=evid5().find(x=>x.id===id); if(!e) return;
+  openSheet(`${phead(e.s+"S "+esc((S5[e.s-1]||{}).n||"")+" · "+esc(e.zn))}<div class="pbody">
+    <div class="j5fotos" id="j5mini"><div class="j5foto"><span>…</span><b>Antes</b></div><div class="j5foto"><span>…</span><b>Después</b></div></div>
+    <div class="j5res" data-v="${e.ver}" style="margin-top:12px"><b>${e.ver} · ${fmt(e.fecha)} · ${esc((U(e.uid)||{}).nombre||"")}</b>
+    <div class="pts">${"★".repeat(e.puntaje||0)}${"☆".repeat(5-(e.puntaje||0))}</div>
+    <p><b>Motivo:</b> ${esc(e.motivo)}</p><p><b>Para mejorar:</b> ${esc(e.orient)}</p>${e.com?`<p><b>Comentario:</b> ${esc(e.com)}</p>`:""}</div></div>`);
+  const r=await call("fotos5s",{id});
+  const box=$("#j5mini"); if(!box) return;
+  if(r.ok&&r.antes) box.innerHTML=[["antes","Antes"],["despues","Después"]].map(([k,l])=>`<div class="j5foto lleno"><img src="${r[k]}" alt="${l}"><b>${l}</b></div>`).join("");
+  else box.innerHTML=`<p class="j5nota">No se pudieron cargar las fotos.</p>`;
+}
+const JACT={
+  j5abrir(d){ abrirEvid5(d.p,d.z); },
+  j5s(d){ J5.com=($("#j5com")||{}).value||J5.com; J5.s=Number(d.s); pintaEvid5(); },
+  async j5enviar(d,btn){
+    if(!J5||J5.enviando) return; J5.enviando=true; J5.com=($("#j5com")||{}).value||"";
+    btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando tus fotos…`;
+    const r=await call("juez5s",{planoId:J5.p.id,zonaId:J5.z.id,s:J5.s,comentario:J5.com,
+      antes:J5.antes.full,despues:J5.despues.full,miniAntes:J5.antes.mini,miniDespues:J5.despues.mini});
+    J5.enviando=false;
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
+    J5=null; render(); veredicto5(r.resultado);
+  },
+  j5ver(d){ verEvid5(d.id); }
+};
+
 "use strict";
 /* ============================================================
    CFG — al publicar, pega aquí la URL de la aplicación web del
@@ -1552,6 +1815,7 @@ const primer=n=>String(n||"").split(" ")[0];
 
 /* ====================== ÍCONOS ====================== */
 const ICO={
+  camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
  eime:`<path d="M9 3v5.5L4.8 16.8A2.4 2.4 0 0 0 6.9 20.5h10.2a2.4 2.4 0 0 0 2.1-3.7L15 8.5V3"/><path d="M7.5 3h9M7 14h10"/>`,
  cinco:`<path d="M4 20V9m5 11V4m5 16v-7m5 7V7"/>`,
  rank:`<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 7 11M17 6h2.5A2.5 2.5 0 0 1 17 11"/>`,
@@ -1743,6 +2007,20 @@ const LOCAL={
   cargarPlanos5s(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     if((DB.planos5s||[]).length&&!p.reemplazar) return err("YA_HAY","Ya hay planos cargados.");
     DB.planos5s=JSON.parse(JSON.stringify(PLANOS_SEED)); return okd(); },
+  juez5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
+    if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable.");
+    if(p.antes===p.despues) return err("IGUALES","La foto del antes y la del después son la misma.");
+    const ok=Math.random()<0.7, t=Date.now(), id="e"+t;
+    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,zn:z.n,s:Number(p.s),com:p.comentario||"",
+      ver:ok?"APROBADO":"RECHAZADO",puntaje:ok?4:2,
+      motivo:ok?"Se nota el cambio entre el antes y el después: la superficie quedó despejada.":"No se aprecia diferencia suficiente entre las dos fotos.",
+      orient:ok?"Mantén este orden y agrega rótulos visibles.":"Retira lo que no se usa y saca la foto desde el mismo ángulo.",
+      monedas:ok?20:0,estrellas:ok?2:0};
+    (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
+    if(ok) aplicaEvento(u,{comida:30,monedas:20,estrellas:2,motivo:"5S "+r.s+"S "+z.n});
+    return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
+  fotos5s(p){ const f=(DB.fotos5||{})[p.id]; return f?okd(f):err("SIN_FOTOS","Sin fotos."); },
   emergencia(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     if(p.gestion!=="eime"&&p.gestion!=="s5") return err("GESTION","Gestión no válida.");
     if(p.desde&&p.hasta&&p.hasta<p.desde) return err("FECHA","La fecha final es anterior a la inicial.");
@@ -1944,19 +2222,14 @@ function vS5(){
   const mias=L.filter(p=>p.zonas.some(z=>z.resp===u.id));
   if(!L.some(p=>p.id===s5Plano)) s5Plano=((mias[0]||L[0])||{}).id||"";
   const pl=L.find(p=>p.id===s5Plano), zs=pl?pl.zonas.filter(z=>z.resp===u.id):[];
-  const R=[["1","Clasificar","Sacar lo que no se usa. Foto del antes y del después de cada punto de trabajo."],
-           ["2","Ordenar","Un lugar para cada cosa, con rótulos y demarcación."],
-           ["3","Limpiar","Limpieza a fondo y detección de fuentes de suciedad."],
-           ["↻","Mantención","Chequeos sorpresa: lo logrado no puede retroceder."]];
-  const estado=e.st==="on"?`<b>5S activa.</b> ${emergTexto("s5")}.`:e.st==="prog"?`<b>5S programada.</b> ${emergTexto("s5")}.`:`<b>5S en espera.</b> El administrador activa un período cuando toca hacer 5S.`;
+  const estado=e.st==="on"?`<b>5S activa.</b> ${emergTexto("s5")}.`:e.st==="prog"?`<b>5S programada.</b> ${emergTexto("s5")}.`:`<b>Sube tus fotos cuando quieras.</b> El administrador marca los períodos obligatorios.`;
   return `<div class="pagehead"><div><h2>Gestión 5S</h2><p>Tu zona del laboratorio, marcada en el plano</p></div></div>
   <div class="s5st" data-s="${e.st}"><p>${estado}</p></div>
   ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="s5plano" data-id="${p.id}" aria-pressed="${p.id===s5Plano}">${esc(p.nombre)}${p.zonas.some(z=>z.resp===u.id)?" ●":""}</button>`).join("")}</div>
   <div class="zcard"><div class="zcanvas">${zPlanoColab(pl,u.id)}</div>
     <div class="mine">${zs.length?zs.map(z=>`<span class="pill" style="background:${col5(u.id)};color:${zContraste(col5(u.id))}">${esc(z.n)}</span>`).join(""):`<span style="font-size:13px;color:var(--fg-mute)">En este plano no tienes zonas asignadas.</span>`}</div></div>`
   :`<div class="empty">Aún no hay planos de zonas. El administrador los crea en Ajustes.</div>`}
-  <div class="route" style="margin-top:6px">${R.map(r=>`<div class="rstep"><span class="nd">${r[0]}</span><div><h4>${r[1]}</h4><p>${r[2]}</p></div></div>`).join("")}</div>
-  <div class="note"><b>Cómo va a funcionar:</b> cada etapa se prueba con una foto del antes y otra del después. Esa parte llega en la próxima entrega.</div>`;
+  ${vEvid5(u)}`;
 }
 
 /* ---------- AJUSTES (administrador) ---------- */
@@ -1992,7 +2265,7 @@ function filasExport(){ const out=[];
     vs.forEach(v=>v.det.forEach(d=>out.push([e.n,e.eime,fmt(v.fecha),d.nom,d.ind,d.err===""?"":nf(d.err,2),d.rel===""?"":nf(d.rel,2),d.ok?"Conforme":"No conforme",U(v.usuario)?.nombre||"",v.obs||""]))); });
   return out; }
 function vExpBody(){ const f=filasExport();
-  return `<div class="toolrow"><button class="btn sm" data-act="exportar">Generar Excel</button><button class="btn ghost sm" data-act="copiar">Copiar tabla</button></div>
+  return vRegistroImprimible()+`<div class="toolrow"><button class="btn sm" data-act="exportar">Generar Excel</button><button class="btn ghost sm" data-act="copiar">Copiar tabla</button></div>
   <div id="expRes"></div>
   <div class="tblwrap"><table><thead><tr>${HEAD.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
     <tbody>${f.map(r=>`<tr>${r.map((c,i)=>`<td class="${[4,5,6].includes(i)?"num":""}">${c===""?"—":esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
@@ -2351,7 +2624,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
