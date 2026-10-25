@@ -410,12 +410,6 @@ td.num{font-family:var(--f-mono);text-align:right}
 .gain .g-coin{color:var(--coin)} .gain .g-star{color:var(--brass)} .gain .g-eat{color:var(--ok)}
 
 /* ruta 5S (vista previa) */
-.route{display:flex;flex-direction:column;gap:10px}
-.rstep{display:flex;gap:13px;padding:13px 14px;border-radius:15px;background:var(--surface);border:1px solid var(--line);align-items:flex-start}
-.rstep .nd{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-family:var(--f-disp);font-weight:800;font-size:16px;background:var(--surface-2);border:1px solid var(--line);color:var(--fg-mute);flex:none}
-.rstep h4{font-size:15px;font-weight:700}
-.rstep p{margin:3px 0 0;font-size:12.5px;color:var(--fg-dim)}
-.rstep .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
 
 /* ajustes finales de la estructura */
 .demo{border-radius:10px;border:1px solid var(--line);margin-bottom:14px;padding:7px 12px;line-height:1.4}
@@ -575,9 +569,17 @@ td.num{font-family:var(--f-mono);text-align:right}
 :root[data-theme="dark"] .btn.ghost:hover{color:var(--fg)}
 .gearbtn{position:relative}.gearbtn .lk{position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-radius:50%;background:var(--surface);display:grid;place-items:center;color:var(--fg)}
 
-.admbtn{position:relative;padding:8px 10px}
-.admbtn .lk{position:absolute;right:1px;bottom:1px;width:14px;height:14px;border-radius:50%;background:var(--surface);color:var(--fg-dim);display:grid;place-items:center;border:1px solid var(--line)}
-.admbtn .lk svg{width:9px;height:9px}
+
+/* Pantalla 5S: tus zonas y fotos primero en el celular; plano a la izquierda y panel a la derecha en pantalla ancha */
+.s5lay{display:flex;flex-direction:column;gap:6px}
+.s5ev{order:-1}
+.s5ev .j5>.eyebrow:first-child{margin-top:14px}
+@media (min-width:980px){
+  .wrap:has(.s5lay){max-width:1240px}
+  .s5lay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+  .s5ev{order:0;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow:auto;padding-right:2px}
+  .s5ev .j5grid{grid-template-columns:1fr}
+}
 .rg-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
 .rg-panel h3{margin:0 0 4px;font-size:16px}.rg-panel p{margin:0 0 12px;font-size:13px;color:var(--fg-dim)}
 .rg-sel{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
@@ -619,6 +621,9 @@ td.num{font-family:var(--f-mono);text-align:right}
 .rg-dos>div{min-width:0}
 @media print{.rg-hoja{width:210mm!important;overflow:hidden}}
 .rg-hoja .rg-res th{white-space:normal!important;overflow-wrap:break-word;line-height:1.15;padding:3px 2px!important}
+
+.rg-hoja .rg-pie{margin-top:18px;padding-top:6px;border-top:1px solid #bbb;font-size:9px;color:#666;text-align:center}
+.rg-hoja .rg-res tbody tr:nth-child(even) td:not([rowspan]){background:#fafafa}
 /* ---- 5S: evidencia y juez ---- */
 .j5grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .j5zona{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -665,6 +670,13 @@ td.num{font-family:var(--f-mono);text-align:right}
 .j5pick button:disabled{opacity:.45;cursor:not-allowed}
 .j5guia{margin:0 0 12px;padding-left:20px;font-size:13px;color:var(--fg);display:grid;gap:3px}
 .j5tip em{font-style:normal;color:var(--st-contenta);font-weight:600}
+.j5res .perd{font-weight:700;color:var(--st-enferma);text-align:center}
+
+.revcard{display:flex;align-items:center;gap:12px;background:var(--bg-contenta);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.revcard .ri{font-size:24px}
+.revcard>div{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13.5px}
+.revcard>div span{font-size:12px;color:var(--fg-dim)}
+.revbtns{display:flex;gap:10px;flex-wrap:wrap}
 /* ---- Carretera ---- */
 .alert.ok{background:var(--bg-contenta);border-color:transparent;color:var(--st-contenta)}
 .corral-lay{display:flex;flex-direction:column;gap:16px}
@@ -1215,7 +1227,6 @@ const planosDB=()=>(DB&&DB.planos5s)||[];
 let ZP=null, ZID="";                       // plano en edición (copia de trabajo)
 const ZS={t:null,busy:false,dirty:false,err:""};
 let zmodo="diseno", zher="", zsel="", zver="", zdib=null, zdrag=null;
-const zp=()=>ZP;
 function zOcupado(){ return !!(zdrag||zdib); }
 
 function zNombrePorDefecto(tipo){ return `${zTipoNom[tipo]} ${ZP.zonas.filter(z=>z.tipo===tipo).length+1}`; }
@@ -1735,6 +1746,7 @@ function regHoja(e,anio){
     ${regTabla(e,vs)}
     <div class="rg-resumen">Verificaciones en el período: <b>${vs.length}</b> · No conformes: <b>${no}</b>${e.estado&&e.estado!=="activo"?` · Estado del equipo: <b>${e.estado==="baja"?"Dado de baja":"Bloqueado"}</b>`:""}</div>
     <div class="rg-firmas"><div><span></span>Verificado por</div><div><span></span>Revisado por (auditor)</div><div><span></span>Fecha de revisión</div></div>
+    <div class="rg-pie">Registro digital desde ${fmt(RUTA_INICIO)} · Emitido el ${fmt(hoyS())} · Corral Lab</div>
   </section>`;
 }
 function regAbrir(){
@@ -1777,6 +1789,16 @@ const evid5=()=>(DB&&DB.evid5s)||[];
 // Nivel de una zona = cuántas S seguidas tiene aprobadas
 function nivelZona(zid){ const ok=new Set(evid5().filter(e=>e.zona===zid&&e.ver==="APROBADO").map(e=>e.s));
   let n=0; while(ok.has(n+1)) n++; return n; }
+const REV_PREMIO=5;
+const esRevisorActual=(e,uid)=>(e.rev==="PENDIENTE"&&e.revisor===uid)||(e.rev==="APELACION"&&e.revisor2===uid);
+// Revisiones anónimas que me tocan (se piden al servidor para no mostrar quién es el autor ni quién revisa)
+let REV=[];
+function vRev(){ if(!REV.length) return ""; const n=REV.length;
+  return `<div class="revcard"><span class="ri">👀</span><div><b>${n===1?"Un compañero necesita tu mirada":n+" compañeros necesitan tu mirada"}</b>
+    <span>Es anónimo y toma un minuto. Ganas ${REV_PREMIO} monedas por cada revisión.</span></div>
+    <button class="btn sm" data-act="revAbrir" data-id="${REV[0].id}">Revisar</button></div>`; }
+function pintaRev(){ document.querySelectorAll(".revbox").forEach(el=>{ el.innerHTML=vRev(); }); }
+async function cargaRevisiones(){ if(!yo()) return; const r=await call("revisiones5s"); if(r.ok){ REV=r.lista||[]; pintaRev(); } }
 let J5=null;   // estado de la hoja de evidencia abierta
 
 function vEvid5(u){
@@ -1791,7 +1813,7 @@ function vEvid5(u){
     <div class="j5grid">${tarjetas}</div>
     ${hist.length?`<div class="eyebrow" style="margin:18px 0 8px">${u.admin?"Últimas evaluaciones del equipo":"Tus últimas evaluaciones"}</div>
     <div class="j5hist">${hist.map(e=>`<button class="j5h" data-act="j5ver" data-id="${e.id}" data-v="${e.ver}">
-      <span class="vd">${e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
+      <span class="vd">${e.rev==="OBSERVADA"?"!":e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
       <span class="tx"><b>${e.s}S ${esc((S5[e.s-1]||{}).n||"")} · ${esc(e.zn)}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
 }
 
@@ -1840,6 +1862,8 @@ function veredicto5(r){
     <div class="pts">${"★".repeat(r.puntaje||0)}${"☆".repeat(5-(r.puntaje||0))}</div>
     <p><b>Motivo:</b> ${esc(r.motivo)}</p><p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>
     ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · tu mascota comió</p>`:""}
+    ${ok&&r.mision?`<p class="prem">⭐ ¡Misión sorpresa cumplida! Incluye un bono de +${MISION_BONUS.monedas} monedas y +${MISION_BONUS.estrellas} ★</p>`:""}
+    ${!ok&&r.perdida?`<p class="perd">La zona no mantuvo el estándar: se descuentan ${r.perdida} monedas. Lo ya logrado (tus S aprobadas) no se pierde.</p>`:""}
     ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
   </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
 }
@@ -1849,7 +1873,7 @@ async function verEvid5(id){
     <div class="j5fotos" id="j5mini"><div class="j5foto"><span>…</span><b>Antes</b></div><div class="j5foto"><span>…</span><b>Después</b></div></div>
     <div class="j5res" data-v="${e.ver}" style="margin-top:12px"><b>${e.ver} · ${fmt(e.fecha)} · ${esc((U(e.uid)||{}).nombre||"")}</b>
     <div class="pts">${"★".repeat(e.puntaje||0)}${"☆".repeat(5-(e.puntaje||0))}</div>
-    <p><b>Motivo:</b> ${esc(e.motivo)}</p><p><b>Para mejorar:</b> ${esc(e.orient)}</p>${e.com?`<p><b>Comentario:</b> ${esc(e.com)}</p>`:""}</div></div>`);
+    <p><b>Motivo:</b> ${esc(e.motivo)}</p><p><b>Para mejorar:</b> ${esc(e.orient)}</p>${e.rev==="PENDIENTE"||e.rev==="APELACION"?`<p class="j5nota">Un compañero está revisando esta evidencia.</p>`:e.rev==="OBSERVADA"?`<p class="perd">Observada por compañeros: no cuenta para la meta del equipo y se descontaron las monedas ganadas.</p>`:e.rev==="CONFIRMADA"?`<p class="j5nota">Confirmada por un compañero.</p>`:""}${e.com?`<p><b>Comentario:</b> ${esc(e.com)}</p>`:""}</div></div>`);
   const r=await call("fotos5s",{id});
   const box=$("#j5mini"); if(!box) return;
   if(r.ok&&r.antes) box.innerHTML=[["antes","Antes"],["despues","Después"]].map(([k,l])=>`<div class="j5foto lleno"><img src="${r[k]}" alt="${l}"><b>${l}</b></div>`).join("");
@@ -1867,7 +1891,17 @@ const JACT={
     if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
     J5=null; render(); veredicto5(r.resultado);
   },
-  j5ver(d){ verEvid5(d.id); }
+  j5ver(d){ verEvid5(d.id); },
+  revAbrir(d){ const r=REV.find(x=>x.id===d.id); if(!r) return; const info=S5[r.s-1]||{};
+    openSheet(`${phead("Revisión de un compañero")}<div class="pbody">
+      <p class="j5tip">${r.apelacion?"<b>Segunda mirada.</b> Otro compañero dijo que no se veía bien: tu opinión decide. ":""}Mira las dos fotos de una zona del laboratorio. No sabes de quién es y quien la subió no sabrá que fuiste tú.</p>
+      <p class="j5tip"><b>${r.s}S ${esc(info.n||"")} · ${esc(r.zn)}</b>. ${esc(info.t||"")}</p>
+      <div class="j5fotos">${[["antes","Antes"],["despues","Después"]].map(([k,l])=>`<div class="j5foto lleno">${r[k]?`<img src="${r[k]}" alt="Foto ${l.toLowerCase()}">`:""}<b>${l}</b></div>`).join("")}</div>
+      <p class="j5tip"><b>¿La zona se ve ordenada y cumple con esta S?</b></p>
+      <div class="saverow revbtns"><button class="btn" data-act="revDecide" data-id="${r.id}" data-ok="1">Sí, se ve bien</button>
+      <button class="btn ghost" data-act="revDecide" data-id="${r.id}" data-ok="0">No se ve bien</button></div></div>`); },
+  async revDecide(d,btn){ btn.disabled=true; const r=await call("revisar5s",{id:d.id,ok:d.ok==="1"});
+    closeSheet(); if(!r.ok){ toast(r.msg,"!"); } else toast(`${r.texto} +${r.premio} monedas`); await cargaRevisiones(); render(); }
 };
 
 /* ====================== CALENDARIO EIME Y CARRETERA ====================== */
@@ -1915,6 +1949,9 @@ function obstMision(desde,hasta){ const L=[]; let lun=desde<RUTA_INICIO?RUTA_INI
   for(;lun<=hasta;lun=addDays(lun,7)){ const d=addDays(lun,hashTxt("mision"+lun)%5);
     if(d>=RUTA_INICIO&&d>=desde&&d<=hasta) L.push({tipo:"mision",fecha:d,id:"mi"+d,titulo:"Misión sorpresa",ini:addDays(d,-2)}); }
   return L; }
+const MISION_BONUS={monedas:15,estrellas:1}, RETROCESO_MONEDAS=10;
+// Misión que está visible hoy (2 días antes de su fecha, hasta su fecha)
+function misionActiva(hoy){ const m=obstMision(hoy,addDays(hoy,7)).find(o=>o.ini<=hoy&&hoy<=o.fecha); return m||null; }
 function obstaculos(desde,hasta){ return [...obst5S(desde,hasta),...obstEime(desde,hasta),...obstMision(desde,hasta)].sort((a,b)=>a.fecha.localeCompare(b.fecha)); }
 
 /* ---- ¿quién cumplió cada obstáculo? ---- */
@@ -1973,7 +2010,7 @@ function abrirObst(id){
   const d=diffDias(o.fecha), cuando=d===0?"hoy":d===1?"mañana":d<0?`hace ${-d} días`:`en ${d} días`;
   const que=o.tipo==="eime"?`Cierra la ventana EIME: cada responsable verifica todos sus equipos ${o.f==="quincenal"?"quincenales":"mensuales"} antes del ${fmt(o.fecha)}. La ventana abrió el ${fmt(o.abre)}.`
     :o.tipo==="5s"?`Día de 5S: cada uno sube su foto de antes y después de una S en su zona y el juez la aprueba. Cuenta lo aprobado desde el ${fmt(o.ini)}.`
-    :`Chequeo sorpresa: muestra que tu zona se mantiene. Sube una foto de antes y después (Disciplina u otra S ya lograda) y que el juez la apruebe.`;
+    :`Chequeo sorpresa: muestra que tu zona se mantiene. Sube una foto de antes y después de tu zona y que el juez la apruebe: ganas un bono de +${MISION_BONUS.monedas} monedas y +${MISION_BONUS.estrellas} ★. Si una S ya lograda no se mantiene, se descuentan ${RETROCESO_MONEDAS} monedas (las S aprobadas no se pierden).`;
   const filas=activos().map(u=>{ const c=cumple(o,u);
     return `<div class="rt-fila"><span class="pm">${petOf(u,{info:info(u)})}</span><b>${esc(u.nombre)}</b><span class="st ${c===true?"ok":c===false?"pend":"na"}">${c===true?"✓ Cumplido":c===false?(d<0?"Chocó":"Pendiente"):"No aplica"}</span></div>`; }).join("");
   const ir=o.tipo==="eime"?`<button class="btn" data-act="rutaIr" data-v="eime">Ir a mis equipos</button>`:`<button class="btn" data-act="rutaIr" data-v="s5">Ir a 5S</button>`;
@@ -2004,7 +2041,7 @@ const ILU={
     <path d="M22 33l5 10M33 30l4 12M45 30l3 12M56 33l2 10" stroke="#FFE2D3" stroke-width="2.4" stroke-linecap="round"/>
     <rect x="34" y="34" width="12" height="27" rx="2" fill="#1F2937"/><path d="M36 37h8" stroke="#374151" stroke-width="1.5"/></g>`
 };
-function ilustracion(k,logrado){ return `<svg viewBox="0 0 80 80" class="pz-ilu" aria-hidden="true"><circle cx="40" cy="40" r="38" fill="var(--pz-fondo)" stroke="${PREMIOS.find(p=>p.k===k).col}" stroke-width="3"/>${ILU[k]}${logrado?"":""}</svg>`; }
+function ilustracion(k){ return `<svg viewBox="0 0 80 80" class="pz-ilu" aria-hidden="true"><circle cx="40" cy="40" r="38" fill="var(--pz-fondo)" stroke="${PREMIOS.find(p=>p.k===k).col}" stroke-width="3"/>${ILU[k]}</svg>`; }
 function cicloActual(){ const hoy=hoyS(); let ini=RUTA_INICIO, n=1;
   while(addDays(ini,CICLO_DIAS)<=hoy){ ini=addDays(ini,CICLO_DIAS); n++; }
   return {n,ini,fin:addDays(ini,CICLO_DIAS-1)}; }
@@ -2014,7 +2051,7 @@ function avanceEquipo(c){
   let eTot=0, eOk=0;
   DB.equipos.filter(e=>activoEq(e)&&e.resp).forEach(e=>{ let per=periodoEime(e.freq,c.ini<RUTA_INICIO?RUTA_INICIO:c.ini);
     while(per.fin<=c.fin){ const v=verifEn(e,per); if(per.fin<hoy||v){ eTot++; if(v) eOk++; } per=sigPeriodo(e.freq,per); } });
-  const P=planosDB().filter(p=>p.zonas.length), E=evid5().filter(x=>x.ver==="APROBADO"&&x.fecha>=c.ini&&x.fecha<=c.fin);
+  const P=planosDB().filter(p=>p.zonas.length), E=evid5().filter(x=>x.ver==="APROBADO"&&x.rev!=="OBSERVADA"&&x.fecha>=c.ini&&x.fecha<=c.fin);
   const porPlano=P.map(p=>E.filter(x=>x.plano===p.id).length);
   const Z=P.reduce((n,p)=>n+p.zonas.length,0), zOk=P.reduce((n,p)=>n+p.zonas.filter(z=>E.some(x=>x.zona===z.id)).length,0);
   const fE=eTot?eOk/eTot:1, f1=P.length?porPlano.filter(n=>n>=1).length/P.length:0;
@@ -2102,8 +2139,8 @@ const U=id=>DB?.usuarios.find(u=>u.id===id);
 const yo=()=>ST.sesion?U(ST.sesion.id):null;
 const activos=()=>DB.usuarios.filter(u=>u.activo!==false);
 const eqp=id=>DB.equipos.find(e=>e.id===id);
-function load(){ _ult=null; try{ const r=JSON.parse(localStorage.getItem(KEY)||"null"); if(r){ ST=Object.assign(ST,r.ST||{}); DB=r.DB||null; } }catch(e){} }
-function persist(){ _ult=null; try{ localStorage.setItem(KEY,JSON.stringify({ST,DB})); }catch(e){} }
+function load(){ try{ const r=JSON.parse(localStorage.getItem(KEY)||"null"); if(r){ ST=Object.assign(ST,r.ST||{}); DB=r.DB||null; } }catch(e){} }
+function persist(){ try{ localStorage.setItem(KEY,JSON.stringify({ST,DB})); }catch(e){} }
 
 /* ----- reloj de la mascota: misma fórmula en la app y en el servidor ----- */
 const DECAY=()=>(DB&&DB.config&&DB.config.DECAY_DIAS)||21;
@@ -2120,11 +2157,6 @@ const enPausa=u=>(u.pausas||[]).some(p=>p[1]==null);
 function info(u){ const e=energia(u), sick=!!u.enferma||e<=0; return {e,sick,est:estadoDe(e,sick)}; }
 
 /* ----- equipos ----- */
-let _ult=null;   // última verificación de cada equipo, calculada una vez por cambio de datos
-function ultima(e){
-  if(!_ult){ _ult={}; DB.verif.forEach(v=>{ if(!_ult[v.eq]||v.fecha>_ult[v.eq]) _ult[v.eq]=v.fecha; }); }
-  const m=_ult[e.id]; return m&&m>e.ult?m:e.ult; }
-const FREQ={mensual:30,quincenal:15,semanal:7,trimestral:90};
 // EIME por calendario: cada período (mes o quincena) cierra su último día hábil; ver ruta.js
 const yaVerif=e=>verifEn(e,periodoEime(e.freq,hoyS()));
 const vence=e=>{ const per=periodoEime(e.freq,hoyS()); return verifEn(e,per)?sigPeriodo(e.freq,per).fin:per.fin; };
@@ -2274,15 +2306,34 @@ const LOCAL={
     if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable.");
     if(p.antes===p.despues) return err("IGUALES","La foto del antes y la del después son la misma.");
     if(Number(p.s)>nivelZona(z.id)+1) return err("S_BLOQUEADA",`Primero aprueba la ${nivelZona(z.id)+1}S en esta zona.`);
-    const ok=Math.random()<0.7, t=Date.now(), id="e"+t;
+    const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="e"+t, nv=nivelZona(z.id);
+    const mis=ok?misionActiva(hoyS()):null, bono=!!mis&&!evid5().some(e=>e.uid===u.id&&e.ver==="APROBADO"&&e.fecha>=mis.ini&&e.fecha<=mis.fecha);
+    const perdida=!ok&&Number(p.s)<=nv?Math.min(RETROCESO_MONEDAS,Math.max(0,u.monedas||0)):0;
+    const monedas=ok?20+(bono?MISION_BONUS.monedas:0):0, estrellas=ok?2+(bono?MISION_BONUS.estrellas:0):0;
     const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,zn:z.n,s:Number(p.s),com:p.comentario||"",
       ver:ok?"APROBADO":"RECHAZADO",puntaje:ok?4:2,
       motivo:ok?"Se nota el cambio entre el antes y el después: la superficie quedó despejada.":"No se aprecia diferencia suficiente entre las dos fotos.",
       orient:ok?"Mantén este orden y agrega rótulos visibles.":"Retira lo que no se usa y saca la foto desde el mismo ángulo.",
-      monedas:ok?20:0,estrellas:ok?2:0};
+      monedas,estrellas,mision:bono,perdida};
+    if(ok&&Math.random()<(window.__revP??1/3)){ const o=activos().filter(x=>x.id!==u.id&&x.tienePin!==false); if(o.length){ r.rev="PENDIENTE"; r.revisor=o[Math.floor(Math.random()*o.length)].id; } }
     (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
-    if(ok) aplicaEvento(u,{comida:30,monedas:20,estrellas:2,motivo:"5S "+r.s+"S "+z.n});
+    if(ok) aplicaEvento(u,{comida:30,monedas,estrellas,motivo:"5S "+r.s+"S "+z.n+(bono?" + misión sorpresa":"")});
+    else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+z.n+": la zona no mantuvo el estándar"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
+  revisiones5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    return okd({lista:evid5().filter(e=>esRevisorActual(e,u.id)).map(e=>({id:e.id,zn:e.zn,s:e.s,apelacion:e.rev==="APELACION",
+      antes:((DB.fotos5||{})[e.id]||{}).antes,despues:((DB.fotos5||{})[e.id]||{}).despues}))}); },
+  revisar5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const e=evid5().find(x=>x.id===p.id); if(!e||!esRevisorActual(e,u.id)) return err("SIN_REVISION","Esta revisión ya no está pendiente.");
+    const apel=e.rev==="APELACION", autor=U(e.uid); let texto;
+    if(p.ok){ e.rev="CONFIRMADA"; texto="Gracias: confirmaste que la zona se ve bien."; }
+    else if(!apel){ const o=activos().filter(x=>x.id!==e.uid&&x.id!==u.id&&x.tienePin!==false);
+      if(o.length){ e.rev="APELACION"; e.revisor2=o[Math.floor(Math.random()*o.length)].id; texto="Gracias. Otro compañero dará una segunda mirada."; }
+      else{ e.rev="CONFIRMADA"; texto="Gracias. No hay otro revisor disponible, la evidencia queda confirmada."; } }
+    else{ e.rev="OBSERVADA"; texto="Gracias: tu mirada decidió. La evidencia queda observada.";
+      const quita=Math.min(e.monedas||0,Math.max(0,autor.monedas||0)); if(quita>0) aplicaEvento(autor,{comida:0,monedas:-quita,estrellas:0,motivo:"5S "+e.s+"S "+e.zn+": observada por compañeros"}); }
+    aplicaEvento(u,{comida:0,monedas:REV_PREMIO,estrellas:0,motivo:"Revisión de un compañero"});
+    return okd({texto,premio:REV_PREMIO}); },
   fotos5s(p){ const f=(DB.fotos5||{})[p.id]; return f?okd(f):err("SIN_FOTOS","Sin fotos."); },
   emergencia(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     if(p.gestion!=="eime"&&p.gestion!=="s5") return err("GESTION","Gestión no válida.");
@@ -2370,6 +2421,7 @@ function render(){
   V.innerHTML = vista==="corral"?vCorral() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
     : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
+  if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
   if(u&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
 }
 
@@ -2381,7 +2433,7 @@ function vCorral(){
   const sub = ok===N&&N>0 ? "Todas contentas. Así se ve un laboratorio al día."
     : `${ok} de ${N} contentas o mejor. La meta es que lleguen todas.`;
   const L=["radiante","contenta","normal","flaca","enferma"];
-  return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main">  ${vMetaEquipo()}
+  return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main"><div class="revbox">${vRev()}</div>${vMetaEquipo()}
   <div class="pens">${us.map(({u,i})=>`
     <button class="pen ${yoU&&yoU.id===u.id?"me":""}" data-act="pen" data-id="${u.id}" data-st="${i.est}" aria-label="${esc(nomMascota(u))}, mascota de ${esc(u.nombre)}">
       <span class="stage">${petOf(u,{info:i})}</span>
@@ -2487,13 +2539,14 @@ function vS5(){
   if(!L.some(p=>p.id===s5Plano)) s5Plano=((mias[0]||L[0])||{}).id||"";
   const pl=L.find(p=>p.id===s5Plano), zs=pl?pl.zonas.filter(z=>z.resp===u.id):[];
   const estado=e.st==="on"?`<b>5S activa.</b> ${emergTexto("s5")}.`:e.st==="prog"?`<b>5S programada.</b> ${emergTexto("s5")}.`:`<b>Sube tus fotos cuando quieras.</b> El administrador marca los períodos obligatorios.`;
-  return `<div class="pagehead"><div><h2>Gestión 5S</h2><p>Tu zona del laboratorio, marcada en el plano</p></div></div>
+  return `<div class="pagehead"><div><h2>Gestión 5S</h2><p>Tu zona del laboratorio, marcada en el plano</p></div></div><div class="revbox">${vRev()}</div>
   <div class="s5st" data-s="${e.st}"><p>${estado}</p></div>
+  <div class="s5lay"><div class="s5map">
   ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="s5plano" data-id="${p.id}" aria-pressed="${p.id===s5Plano}">${esc(p.nombre)}${p.zonas.some(z=>z.resp===u.id)?" ●":""}</button>`).join("")}</div>
   <div class="zcard"><div class="zcanvas">${zPlanoColab(pl,u.id)}</div>
     <div class="mine">${zs.length?zs.map(z=>`<span class="pill" style="background:${col5(u.id)};color:${zContraste(col5(u.id))}">${esc(z.n)}</span>`).join(""):`<span style="font-size:13px;color:var(--fg-mute)">En este plano no tienes zonas asignadas.</span>`}</div></div>`
   :`<div class="empty">Aún no hay planos de zonas. El administrador los crea en Ajustes.</div>`}
-  ${vEvid5(u)}`;
+  </div><aside class="s5ev">${vEvid5(u)}</aside></div>`;
 }
 
 /* ---------- AJUSTES (administrador) ---------- */
