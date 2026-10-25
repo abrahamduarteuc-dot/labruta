@@ -426,6 +426,44 @@ td.num{font-family:var(--f-mono);text-align:right}
 .userchip[hidden]{display:none}
 #app{grid-template-rows:auto 1fr}
 
+/* ---------- Equipos EIME (capa de administrador) ---------- */
+.eqrow{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:10px;align-items:center;padding:10px 12px;
+  border-radius:14px;background:var(--surface);border:1px solid var(--line);margin-bottom:8px}
+@media(max-width:560px){ .eqrow{grid-template-columns:minmax(0,1fr) auto}
+  .eqrow .nm{grid-column:1/-1} .eqrow select{grid-column:1} }
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips .chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 11px;
+  font-size:12.5px;font-weight:600;color:var(--fg-dim);white-space:nowrap}
+.chips .chip b{color:var(--fg);font-variant-numeric:tabular-nums}
+.eqrow.bloqueado{background:var(--warn-soft);border-color:var(--warn)}
+.eqrow.baja{border-style:dashed}
+.eqrow.baja .nm b{text-decoration:line-through;color:var(--fg-mute)}
+.eqrow .nm{min-width:0}
+.eqrow .nm b{display:block;font-size:14.5px;font-weight:600;overflow-wrap:anywhere}
+.eqrow .nm span{font-size:11.5px;color:var(--fg-mute)}
+.eqrow .selloEq{display:block;margin-top:5px;font-size:11.5px;font-weight:600;color:var(--warn)}
+.eqrow.baja .selloEq{color:var(--bad)}
+.eqrow select{width:100%;padding:9px 8px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:13px}
+.icons{display:flex;gap:5px;justify-content:flex-end}
+.ib{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);
+  background:var(--surface);color:var(--fg-dim);cursor:pointer;padding:0;flex:none}
+.ib:hover{border-color:currentColor}
+.ib.warn{color:var(--warn);border-color:var(--warn)}
+.ib.bad{color:var(--bad);border-color:var(--bad)}
+.ib.ok{color:var(--ok);border-color:var(--ok)}
+.ptrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto;gap:6px;align-items:center;margin-bottom:6px}
+.ptrow.p1{grid-template-columns:minmax(0,1fr) auto}
+.ptrow.hd{font-size:11px;color:var(--fg-mute);font-weight:600;margin-bottom:2px}
+.ptrow .inp{padding:8px 9px;font-size:13.5px}
+.motivos{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.motivos button{font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--fg-dim);cursor:pointer}
+.motivos button:hover{border-color:var(--accent);color:var(--accent-d)}
+.hist{display:grid;gap:5px;font-size:12.5px;color:var(--fg-dim);margin-top:16px;
+  border-top:1px solid var(--line-soft);padding-top:12px}
+.hist div{display:flex;gap:9px}
+.hist time{font-family:var(--f-mono);font-size:11.5px;color:var(--fg-mute);flex:none}
+
 </style>
 
 <div id="app">
@@ -751,11 +789,11 @@ const EQUIPOS_SEED=[
   u:"µm",pts:[{v:25,tol:5},{v:50,tol:5},{v:125,tol:62.5},{v:250,tol:125},{v:500,tol:250}]},
  {id:"pos3",n:"Positector 3",tipo:"espesor",desc:"Medidor de espesor",marca:"DEFELSKO",modelo:"POSITECTOR 6000",serie:"779161 / PROBE FS173614",eime:"IN456",rango:"0 – 1500 µm",res:"1 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Plastic shims",cpatron:"S/N",cert:"NO",traz:"NO",resp:"de",ult:"2026-10-06",
   u:"µm",pts:[{v:25,tol:5},{v:50,tol:5},{v:125,tol:62.5},{v:250,tol:125},{v:500,tol:250}]},
- {id:"brtqc",n:"Brillómetro TQC",tipo:"brillo",desc:"Brillómetro",marca:"TQC",modelo:"TQC PolyGloss",serie:"GL0030-1660",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"GL0030-1660",cert:"GL0030-1660",traz:"Gloss Calibration Tool GL5000-002",resp:"ag",ult:"2026-10-14",
+ {id:"brtqc",n:"Brillómetro TQC",tipo:"brillo",desc:"Brillómetro",marca:"TQC",modelo:"TQC PolyGloss",serie:"GL0030-1660",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"GL0030-1660",cert:"GL0030-1660",traz:"Gloss Calibration Tool GL5000-002",resp:"kr",ult:"2026-10-14",
   u:"GU",pts:[{e:"20°",v:94.2,tol:2},{e:"60°",v:96.1,tol:2},{e:"85°",v:100.1,tol:2}]},
- {id:"brbyk",n:"Brillómetro BYK (SUR)",tipo:"brillo",desc:"Brillómetro",marca:"BYK",modelo:"—",serie:"—",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-10-02",
+ {id:"brbyk",n:"Brillómetro BYK (SUR)",tipo:"brillo",desc:"Brillómetro",marca:"BYK",modelo:"—",serie:"—",eime:"—",rango:"20° · 60° · 85°",res:"0,1 GU",freq:"quincenal",it:"IT-SGC-06-01",patron:"Placa interna",cpatron:"—",cert:"—",traz:"—",resp:"kr",ult:"2026-10-02",
   u:"GU",pts:[{e:"20°",v:92.9,tol:2},{e:"60°",v:95.2,tol:2},{e:"85°",v:99.5,tol:2}]},
- {id:"cfbyk",n:"Copa Ford Nº4 BYK",tipo:"copaford",desc:"Copa Ford N°4",marca:"BYK",modelo:"—",serie:"30374",eime:"IN401",rango:"—",res:"0,1 s",freq:"mensual",it:"IT-SGC-06-01",patron:"Aceite C-60",cpatron:"21501",cert:"—",traz:"—",resp:"de",ult:"2026-09-30",
+ {id:"cfbyk",n:"Copa Ford Nº4 BYK",tipo:"copaford",desc:"Copa Ford N°4",marca:"BYK",modelo:"—",serie:"30374",eime:"IN401",rango:"—",res:"0,1 s",freq:"mensual",it:"IT-SGC-06-01",patron:"Aceite C-60",cpatron:"21501",cert:"—",traz:"—",resp:"jl",ult:"2026-09-30",
   u:"s",temp:true,pts:[{v:38.83,tol:2}]},
  {id:"cfneu",n:"Copa Ford Nº4 NEURTEK",tipo:"copaford",desc:"Copa Ford N°4",marca:"NEURTEK",modelo:"ASTM D1200",serie:"0307 327",eime:"IN402",rango:"—",res:"0,1 s",freq:"mensual",it:"IT-SGC-06-01",patron:"Aceite C-60",cpatron:"21501",cert:"—",traz:"—",resp:"jl",ult:"2026-10-09",
   u:"s",temp:true,pts:[{v:38.83,tol:2}]},
@@ -765,25 +803,25 @@ const EQUIPOS_SEED=[
   u:"s",temp:true,pts:[{v:38.83,tol:2}]},
  {id:"tmalx",n:"Termómetro Alexis",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-10-16",
   u:"°C",pts:[{v:25,tol:1}]},
- {id:"tmabr",n:"Termómetro Abraham",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"ad",ult:"2026-09-18",
+ {id:"tmabr",n:"Termómetro Abraham",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-09-18",
   u:"°C",pts:[{v:25,tol:1}]},
- {id:"tmvic",n:"Termómetro Victor",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:null,ult:"2026-07-30",
+ {id:"tmvic",n:"Termómetro Francisco",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-07-30",
   u:"°C",pts:[{v:25,tol:1}]},
- {id:"tmkat",n:"Termómetro Katherine",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"kr",ult:"2026-10-21",
+ {id:"tmkat",n:"Termómetro Katherine",tipo:"termometro",desc:"Termómetro bimetálico",marca:"TEL-TRU",modelo:"—",serie:"—",eime:"—",rango:"0 – 50 °C",res:"1 °C",freq:"mensual",it:"IT-SGC-06/01",patron:"Patrón calibrado (segundo patrón)",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-10-21",
   u:"°C",pts:[{v:25,tol:1}]},
  {id:"vbk",n:"Viscosímetro BK (RT5000)",tipo:"viscobk",desc:"Viscosímetro Brookfield RV-HB",marca:"BROOKFIELD",modelo:"RVDVE",serie:"8664702",eime:"IN483",rango:"100 – 10.000.000 cP",res:"1 cP",freq:"mensual",it:"IT-SGC-06/01",patron:"RT5000",cpatron:"—",cert:"21101",traz:"N/A",resp:"ad",ult:"2026-10-07",
   u:"cP",pts:[{v:5069,tol:253}]},
  {id:"vku",n:"Viscosímetro Stormer (KU)",tipo:"stormer",desc:"Viscosímetro Stormer",marca:"BROOKFIELD",modelo:"KU-2",serie:"8670388",eime:"IN480",rango:"0 – 140 KU",res:"0,1 KU",freq:"mensual",it:"IT-SGC-06/01",patron:"Aceite calibración K-400",cpatron:"—",cert:"18102b",traz:"No aplica",resp:"ad",ult:"2026-09-11",
   u:"KU",pts:[{v:96.5,tol:2}]},
- {id:"picmf",n:"Picnómetro MF",tipo:"picnometro",desc:"Picnómetro madera",marca:"—",modelo:"—",serie:"—",eime:"IN449",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"jl",ult:"2026-10-13",
+ {id:"picmf",n:"Picnómetro MF",tipo:"picnometro",desc:"Picnómetro madera",marca:"—",modelo:"—",serie:"—",eime:"IN449",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-10-13",
   u:"g/mL",pts:[{v:0.997,tol:0.01}]},
- {id:"picenv",n:"Picnómetro Env",tipo:"picnometro",desc:"Picnómetro envase",marca:"GARDCO",modelo:"3-08",serie:"—",eime:"IN450",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"jl",ult:"2026-09-25",
+ {id:"picenv",n:"Picnómetro Env",tipo:"picnometro",desc:"Picnómetro envase",marca:"GARDCO",modelo:"3-08",serie:"—",eime:"IN450",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-09-25",
   u:"g/mL",pts:[{v:0.997,tol:0.01}]},
- {id:"picpp",n:"Picnómetro PP",tipo:"picnometro",desc:"Picnómetro polvo",marca:"SHEEN",modelo:"1501/1000",serie:"5964541",eime:"IN451",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"jl",ult:"2026-08-28",
+ {id:"picpp",n:"Picnómetro PP",tipo:"picnometro",desc:"Picnómetro polvo",marca:"SHEEN",modelo:"1501/1000",serie:"5964541",eime:"IN451",rango:"—",res:"0,001 g/mL",freq:"mensual",it:"IT-SGC-06-01",patron:"Agua destilada 25 °C",cpatron:"NE",cert:"NE",traz:"—",resp:"fc",ult:"2026-08-28",
   u:"g/mL",pts:[{v:0.997,tol:0.01}]},
- {id:"grimf",n:"Grindómetro MF",tipo:"grindometro",desc:"Grindómetro madera",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-10-10",
+ {id:"grimf",n:"Grindómetro MF",tipo:"grindometro",desc:"Grindómetro madera",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"fc",ult:"2026-10-10",
   u:"",pasa:true,pts:[{e:"Estado de placa y rasqueta",v:"PASA"}]},
- {id:"grienv",n:"Grindómetro Env",tipo:"grindometro",desc:"Grindómetro envase",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"ag",ult:"2026-09-08",
+ {id:"grienv",n:"Grindómetro Env",tipo:"grindometro",desc:"Grindómetro envase",marca:"—",modelo:"—",serie:"—",eime:"—",rango:"0 – 100 µm",res:"5 µm",freq:"mensual",it:"IT-SGC-06-01",patron:"Patrón visual interno",cpatron:"—",cert:"—",traz:"—",resp:"fc",ult:"2026-09-08",
   u:"",pasa:true,pts:[{e:"Estado de placa y rasqueta",v:"PASA"}]},
  {id:"ph4",n:"pH metro 4.01",tipo:"phmetro",desc:"pH-metro",marca:"HANNA Instruments",modelo:"HF-221",serie:"KU-2-230",eime:"IN480",rango:"0 – 16 pH",res:"0,01 pH",freq:"mensual",it:"IT-SGC-06/01",patron:"Buffer pH 4.01",cpatron:"HI7004L/C",cert:"Sin información",traz:"—",resp:"kr",ult:"2026-10-19",
   u:"pH",pts:[{v:4.01,tol:0.05}]},
@@ -799,8 +837,8 @@ const EQUIPOS_SEED=[
    vista previa con datos de ejemplo guardados en este navegador.
    ============================================================ */
 const CFG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbxceEZvvkJPT7s-icCF2lA2exjaV8VXPH7JEhK3IXj_hpfcT14_tyKGc7icM-M_k5SsGA/exec",
-  URL_APP: "https://abrahamduarteuc-dot.github.io/labruta/"
+  API_URL: "PEGA_AQUI_LA_URL_DEL_APPS_SCRIPT",
+  URL_APP: "PEGA_AQUI_LA_URL_DE_GITHUB_PAGES"
 };
 const ONLINE = !CFG.API_URL.startsWith("PEGA_AQUI");
 
@@ -831,7 +869,9 @@ const ICO={
  plus:`<path d="M12 5v14M5 12h14"/>`,
  pause:`<path d="M8 5v14M16 5v14"/>`,
  sun:`<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/>`,
- lock:`<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`
+ lock:`<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
+ equis:`<path d="M6 6l12 12M18 6L6 18"/>`,
+ volver:`<path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="M8 5L4 9l4 4"/>`
 };
 const ic=(k,w=19)=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const star=f=>`<svg viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3.3l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.8l6.1-.9z"/></svg>`;
@@ -869,7 +909,8 @@ const FREQ={mensual:30,quincenal:15,semanal:7,trimestral:90};
 const vence=e=>addDays(ultima(e),FREQ[e.freq]||30);
 function estado(e){ const d=diffDias(vence(e));
   return d<0?{k:"bad",t:"Vencido",d}:d<=7?{k:"warn",t:"Por vencer",d}:{k:"ok",t:"Al día",d}; }
-const misEq=uid=>DB.equipos.filter(e=>e.resp===uid);
+const activoEq=e=>(e.estado||"activo")==="activo";
+const misEq=uid=>DB.equipos.filter(e=>e.resp===uid&&activoEq(e));
 function cumplimiento(uid){ const a=misEq(uid); if(!a.length) return 0; return Math.round(a.filter(x=>estado(x).k==="ok").length/a.length*100); }
 function premioEime(e,fecha){
   const atraso=Math.round((parse(fecha)-parse(vence(e)))/DAY);
@@ -901,7 +942,7 @@ function seedDemo(){
   ];
   const mv=(uid,e,m)=>({id:"m"+uid,ts:mes.getTime(),uid,estrellas:e,monedas:m,comida:0,motivo:"Ejemplo"});
   return {config:{MEDICINA:40,DECAY_DIAS:21},usuarios:us,
-    equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],
+    equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],
     mov:[mv("ad",7,120),mv("kr",9,160),mv("jl",4,60),mv("ag",6,95),mv("de",11,180),mv("fc",0,0)]};
 }
 function aplicaEvento(u,ev){
@@ -971,6 +1012,30 @@ const LOCAL={
     return okd(); },
   asignarEquipo(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     const e=eqp(p.equipoId); if(e) e.resp=p.responsableId||null; return okd(); },
+  guardarEquipo(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
+    const q=p.equipo||{}, nombre=String(q.n||"").trim();
+    if(!nombre) return err("SIN_NOMBRE","El equipo necesita un nombre.");
+    let e=q.id?eqp(q.id):null, nuevo=!e;
+    if(!e){ e={id:"eq"+Date.now().toString(36),estado:"activo"}; DB.equipos.push(e); }
+    Object.assign(e,{n:nombre,tipo:q.tipo||"",desc:q.desc||"",marca:q.marca||"",modelo:q.modelo||"",lote:q.lote||"",
+      serie:q.serie||"",eime:q.eime||"",rango:q.rango||"",res:q.res||"",freq:q.freq||"mensual",it:q.it||"",
+      patron:q.patron||"",cpatron:q.cpatron||"",cert:q.cert||"",traz:q.traz||"",resp:q.resp||null,u:q.u||"",
+      temp:!!q.temp,pasa:!!q.pasa,ult:q.ult||hoyS(),
+      pts:(q.pts||[]).map(x=>q.pasa?{e:x.e||"",v:"PASA"}:{e:x.e||"",v:Number(x.v)||0,tol:Number(x.tol)||0})});
+    anotar(e.id,(nuevo?"Equipo creado por ":"Ficha editada por ")+(U(p.uid)||{}).nombre+(p.resumen?" — "+p.resumen:""));
+    return okd(); },
+  estadoEquipo(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
+    const e=eqp(p.equipoId); if(!e) return err("SIN_EQUIPO","Equipo no encontrado.");
+    const nom=(U(p.uid)||{}).nombre, motivo=String(p.motivo||"").trim();
+    if(p.estado!=="activo"&&!motivo) return err("SIN_MOTIVO","Escribe el motivo.");
+    if(p.estado==="activo"){
+      anotar(e.id,"Reactivado por "+nom+" (estaba "+(e.estado==="baja"?"de baja":"bloqueado")+": "+(e.motQ||"")+")");
+      e.estado="activo"; e.motQ=""; e.porQ=""; e.fQ="";
+    }else{
+      e.estado=p.estado; e.motQ=motivo; e.porQ=nom; e.fQ=fmtHora();
+      anotar(e.id,(p.estado==="baja"?"Dado de baja por ":"Bloqueado por ")+nom+" — "+motivo);
+    }
+    return okd(); },
   exportarExcel(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador."); return okd({demo:true}); }
 };
 
@@ -1169,7 +1234,7 @@ function vS5(){
 
 /* ---------- AJUSTES (administrador) ---------- */
 function vAjustes(){
-  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos"],["export","Auditor"]];
+  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos EIME"],["export","Auditor"]];
   let cuerpo="";
   if(ajTab==="personas"){
     cuerpo=`<div class="toolrow"><button class="btn sm" data-act="perAdd">${ic("plus",16)} Agregar persona</button></div>`+
@@ -1183,9 +1248,7 @@ function vAjustes(){
         <span class="nm"><b>${esc(u.nombre)}</b><span>${p?"En pausa":"Activa"} · ${EST_NOM[i.est].toLowerCase()}</span></span>
         <button class="btn ${p?"":"ghost"} sm" data-act="pausa" data-id="${u.id}" data-on="${p?0:1}">${p?"Reanudar":"Pausar"}</button></div>`; }).join("");
   }else if(ajTab==="equipos"){
-    cuerpo=`<div class="note" style="margin-top:0;margin-bottom:12px">Cada equipo lo verifica solo su responsable. Los equipos sin asignar no los puede verificar nadie.</div>`+
-      DB.equipos.map(e=>`<div class="prow2"><span class="nm"><b>${esc(e.n)}</b><span>${esc(e.desc)} · ${e.freq}</span></span>
-        <select data-act-change="asig" data-id="${e.id}" aria-label="Responsable de ${esc(e.n)}"><option value="">Sin asignar</option>${activos().map(u=>`<option value="${u.id}" ${e.resp===u.id?"selected":""}>${esc(u.nombre)}</option>`).join("")}</select></div>`).join("");
+    cuerpo=vEquiposAdmin();
   }else{
     cuerpo=vExpBody();
   }
@@ -1206,6 +1269,118 @@ function vExpBody(){ const f=filasExport();
   <div class="note">En la versión publicada, «Generar Excel» arma el .xlsx del registro RC-SGI-06-02 (una hoja por equipo) y deja el enlace aquí. En esta vista previa solo se puede copiar la tabla.</div>`;
 }
 function vExp(){ return vAjustes(); }
+
+/* ====================== EQUIPOS EIME (ADMINISTRADOR) ====================== */
+const TIPOS={blank:"Diseño libre (sin plantilla)",espesor:"Espesor (Positector)",brillo:"Brillómetro",copaford:"Copa Ford",
+  termometro:"Termómetro",viscobk:"Viscosímetro Brookfield",stormer:"Viscosímetro Stormer",picnometro:"Picnómetro",
+  grindometro:"Grindómetro",phmetro:"pH-metro"};
+const C_ID=[["desc","Descripción"],["marca","Marca"],["modelo","Modelo"],["lote","Lote"],["serie","N° de serie"],
+  ["eime","Código EIME"],["rango","Rango"],["res","Resolución"],["it","IT para verificación"]];
+const C_TZ=[["patron","Patrón utilizado"],["cpatron","Código patrón"],["cert","Certificado N°"],["traz","Trazabilidad"]];
+const C_NOM={}; C_ID.concat(C_TZ).forEach(([k,l])=>C_NOM[k]=l);
+Object.assign(C_NOM,{n:"Nombre",tipo:"Plantilla",freq:"Frecuencia",u:"Unidad",temp:"Temperatura",pasa:"Pasa/No pasa",ult:"Última verificación"});
+const MOTIVOS={baja:["Dañado","Descontinuado","Reemplazado","Perdido"],
+  bloqueado:["En calibración externa","En reparación","Sospecha de falla"]};
+function fmtHora(){ const d=new Date(), p=n=>String(n).padStart(2,"0");
+  return `${p(d.getDate())}-${p(d.getMonth()+1)}-${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`; }
+function anotar(eq,ev){ (DB.hist=DB.hist||[]).push({eq,t:fmtHora(),e:ev}); }
+const histDe=id=>(DB.hist||[]).filter(h=>h.eq===id);
+let eqFiltro="todos", WEQ=null, WMODO="";
+
+function filaEqAdmin(e){
+  const est=e.estado||"activo", on=est==="activo";
+  const sello=on?"":`<span class="selloEq">${est==="baja"?"Dado de baja":"Bloqueado"} por ${esc(e.porQ||"")} ${esc(e.fQ||"")} — ${esc(e.motQ||"")}</span>`;
+  const btn=on
+    ?`<button class="ib" data-act="eqFicha" data-id="${e.id}" title="Ficha" aria-label="Ficha de ${esc(e.n)}">${ic("pencil",17)}</button>
+      <button class="ib bad" data-act="eqMotivo" data-k="baja" data-id="${e.id}" title="Dar de baja" aria-label="Dar de baja ${esc(e.n)}">${ic("equis",17)}</button>
+      <button class="ib warn" data-act="eqMotivo" data-k="bloqueado" data-id="${e.id}" title="Bloquear" aria-label="Bloquear ${esc(e.n)}">${ic("lock",17)}</button>`
+    :`<button class="ib" data-act="eqFicha" data-id="${e.id}" title="Ficha" aria-label="Ficha de ${esc(e.n)}">${ic("pencil",17)}</button>
+      <button class="ib ok" data-act="eqReactivar" data-id="${e.id}" title="Reactivar" aria-label="Reactivar ${esc(e.n)}">${ic("volver",17)}</button>`;
+  return `<div class="eqrow ${est}"><span class="nm"><b>${esc(e.n)}</b><span>${esc(e.desc||"")} · ${esc(e.freq||"")}</span>${sello}</span>
+    <select data-act-change="asig" data-id="${e.id}" ${on?"":"disabled"} aria-label="Responsable de ${esc(e.n)}"><option value="">Sin asignar</option>${activos().map(u=>`<option value="${u.id}" ${e.resp===u.id?"selected":""}>${esc(u.nombre)}</option>`).join("")}</select>
+    <span class="icons">${btn}</span></div>`;
+}
+function vEquiposAdmin(){
+  const F=[["todos","Todos"],["activo","Activos"],["fuera","Bloqueados y de baja"]];
+  const cnt={}; activos().forEach(u=>cnt[u.id]=0); let sin=0;
+  DB.equipos.filter(activoEq).forEach(e=>{ if(e.resp&&cnt[e.resp]!==undefined) cnt[e.resp]++; else sin++; });
+  const fuera=DB.equipos.length-DB.equipos.filter(activoEq).length;
+  const lista=DB.equipos.filter(e=>eqFiltro==="todos"||(eqFiltro==="activo"?activoEq(e):!activoEq(e)));
+  return `<div class="chips" style="margin-bottom:12px">${activos().map(u=>`<span class="chip">${esc(u.nombre.split(" ")[0])} <b>${cnt[u.id]}</b></span>`).join("")}
+    <span class="chip">Sin asignar <b>${sin}</b></span>${fuera?`<span class="chip">Fuera de uso <b>${fuera}</b></span>`:""}</div>
+    <div class="toolrow"><div class="tabs" style="display:inline-flex">${F.map(([k,l])=>`<button data-act="eqFiltro" data-f="${k}" aria-pressed="${eqFiltro===k}">${l}</button>`).join("")}</div>
+      <button class="btn sm" data-act="eqNuevo">${ic("plus",16)} Agregar equipo</button></div>
+    ${lista.length?lista.map(filaEqAdmin).join(""):`<div class="empty">No hay equipos en esta vista.</div>`}
+    <div class="note">El lápiz abre la ficha completa del registro RC-SGI-06-02. La X da de baja y el candado bloquea: los dos piden un motivo que queda anotado en la ficha. Un equipo fuera de uso no se puede verificar ni suma puntaje.</div>`;
+}
+
+function leerFicha(){
+  if(!WEQ) return;
+  document.querySelectorAll("#sheet [data-w]").forEach(i=>{ WEQ[i.dataset.w]=i.type==="checkbox"?i.checked:i.value; });
+  const filas={};
+  document.querySelectorAll("#sheet [data-pi]").forEach(i=>{ (filas[i.dataset.pi]=filas[i.dataset.pi]||{})[i.dataset.pk]=i.value; });
+  WEQ.pts=Object.keys(filas).sort((a,b)=>a-b).map(i=>filas[i]);
+}
+function copiarDe(ref){
+  if(!ref) return;
+  ["desc","u","freq","it","patron","cpatron","cert","traz","rango","res"].forEach(k=>{ if(!WEQ[k]) WEQ[k]=ref[k]||""; });
+  WEQ.tipo=ref.tipo||""; WEQ.temp=!!ref.temp; WEQ.pasa=!!ref.pasa;
+  if(!WEQ.pts.length) WEQ.pts=(ref.pts||[]).map(p=>({e:p.e||"",v:ref.pasa?"":p.v,tol:ref.pasa?"":p.tol}));
+}
+function abrirFichaEq(id){
+  const e=id?eqp(id):null;
+  WMODO=e?(activoEq(e)?"edita":"ver"):"nuevo";
+  WEQ=e?Object.assign({},e,{pts:(e.pts||[]).map(p=>({e:p.e||"",v:e.pasa?"":p.v,tol:e.pasa?"":p.tol}))})
+       :{id:"",n:"",tipo:"",desc:"",marca:"",modelo:"",lote:"",serie:"",eime:"",rango:"",res:"",freq:"mensual",
+         it:"",patron:"",cpatron:"",cert:"",traz:"",resp:"",u:"",temp:false,pasa:false,ult:hoyS(),pts:[]};
+  pintaFicha();
+}
+function pintaFicha(){
+  const ver=WMODO==="ver", nuevo=WMODO==="nuevo", d=ver?"disabled":"", W=WEQ, e=W.id?eqp(W.id):null;
+  const campo=(k,l)=>`<div><label class="fl" for="w_${k}">${l}</label><input class="inp" id="w_${k}" data-w="${k}" value="${esc(W[k]||"")}" ${d}></div>`;
+  const fr=["mensual","quincenal","semanal","trimestral"]; if(W.freq&&fr.indexOf(W.freq)<0) fr.push(W.freq);
+  const pts=(W.pts||[]).map((p,i)=>W.pasa
+    ?`<div class="ptrow p1"><input class="inp" data-pi="${i}" data-pk="e" value="${esc(p.e||"")}" placeholder="Qué se revisa" ${d}>${ver?"":`<button class="ib" data-act="eqQuitaPt" data-i="${i}" aria-label="Quitar punto">${ic("equis",16)}</button>`}</div>`
+    :`<div class="ptrow"><input class="inp" data-pi="${i}" data-pk="e" value="${esc(p.e||"")}" placeholder="ej. 60°" ${d}>
+       <input class="inp" data-pi="${i}" data-pk="v" value="${esc(p.v===undefined?"":p.v)}" inputmode="decimal" ${d}>
+       <input class="inp" data-pi="${i}" data-pk="tol" value="${esc(p.tol===undefined?"":p.tol)}" inputmode="decimal" ${d}>
+       ${ver?"":`<button class="ib" data-act="eqQuitaPt" data-i="${i}" aria-label="Quitar punto">${ic("equis",16)}</button>`}</div>`).join("");
+  const sello=e&&!activoEq(e)?`<div class="alert ${e.estado==="baja"?"bad":"warn"}"><p><b>${e.estado==="baja"?"Dado de baja":"Bloqueado"}</b> por ${esc(e.porQ||"")} el ${esc(e.fQ||"")} — ${esc(e.motQ||"")}</p></div>`:"";
+  const h=histDe(W.id);
+  openSheet(`${phead(nuevo?"Equipo nuevo":esc(W.n))}<div class="pbody">${sello}
+    <div class="fieldrow two">${campo("n","Nombre del equipo")}
+      <div><label class="fl" for="w_resp">Responsable</label><select class="inp" id="w_resp" data-w="resp" ${d}><option value="">Sin asignar</option>${activos().map(u=>`<option value="${u.id}" ${W.resp===u.id?"selected":""}>${esc(u.nombre)}</option>`).join("")}</select></div></div>
+    <div class="fieldrow two">
+      <div><label class="fl" for="w_tipo">Plantilla del registro</label><select class="inp" id="w_tipo" data-w="tipo" data-act-change="eqTipo" ${d}><option value="">— elegir —</option>
+        ${Object.keys(TIPOS).map(k=>`<option value="${k}" ${W.tipo===k?"selected":""}>${TIPOS[k]}</option>`).join("")}
+        ${nuevo?`<optgroup label="Copiar de un equipo existente">${DB.equipos.map(q=>`<option value="eq:${q.id}">${esc(q.n)}</option>`).join("")}</optgroup>`:""}</select></div>
+      <div><label class="fl" for="w_freq">Frecuencia</label><select class="inp" id="w_freq" data-w="freq" ${d}>${fr.map(x=>`<option ${x===W.freq?"selected":""}>${esc(x)}</option>`).join("")}</select></div></div>
+    <p class="eyebrow" style="margin:14px 0 6px">Identificación</p>
+    <div class="fieldrow two">${C_ID.map(([k,l])=>campo(k,l)).join("")}</div>
+    <p class="eyebrow" style="margin:14px 0 6px">Trazabilidad de la verificación</p>
+    <div class="fieldrow two">${C_TZ.map(([k,l])=>campo(k,l)).join("")}</div>
+    <p class="eyebrow" style="margin:14px 0 6px">Puntos de verificación</p>
+    <label class="chk" style="margin-top:0"><input type="checkbox" data-w="pasa" data-act-change="eqPasa" ${W.pasa?"checked":""} ${d}> Se revisa «pasa / no pasa»</label>
+    <label class="chk"><input type="checkbox" data-w="temp" ${W.temp?"checked":""} ${d}> Registra temperatura</label>
+    ${W.pasa?"":`<div class="fieldrow">${campo("u","Unidad de medida (µm, GU, s, °C…)")}</div>
+      <div class="ptrow hd"><span>Etiqueta</span><span>Valor nominal</span><span>Tolerancia ±</span><span></span></div>`}
+    ${pts||`<p style="font-size:13px;color:var(--fg-mute)">Aún no hay puntos.</p>`}
+    ${ver?"":`<button class="btn ghost sm" data-act="eqAddPt" style="margin-top:8px">${ic("plus",16)} Punto</button>`}
+    <div class="fieldrow"><div><label class="fl" for="w_ult">Última verificación (base para el vencimiento)</label>
+      <input class="inp" type="date" id="w_ult" data-w="ult" value="${esc(W.ult||"")}" ${d}></div></div>
+    ${h.length?`<div class="hist"><p class="eyebrow">Historial de la ficha</p>${h.slice().reverse().map(x=>`<div><time>${esc(x.t)}</time><span>${esc(x.e)}</span></div>`).join("")}</div>`:""}
+    ${ver?"":`<div class="saverow"><button class="btn" data-act="eqGuardar">${ic("chk",18)} ${nuevo?"Crear equipo":"Guardar"}</button><button class="btn ghost" data-close>Cancelar</button></div>`}
+    </div>`);
+}
+function abrirMotivoEq(id,estado){
+  const e=eqp(id), t=estado==="baja"?"Dar de baja":"Bloquear";
+  openSheet(`${phead(t+": "+esc(e.n))}<div class="pbody">
+    <p style="margin:0 0 10px;font-size:13.5px;color:var(--fg-dim)">Escribe el motivo. Queda en la ficha con tu nombre y la fecha. El equipo no se podrá verificar hasta reactivarlo.</p>
+    <div class="motivos">${MOTIVOS[estado].map(m=>`<button type="button" data-act="eqChip" data-m="${esc(m)}">${esc(m)}</button>`).join("")}</div>
+    <input class="inp" id="motEq" placeholder="Motivo (obligatorio)">
+    <div class="saverow"><button class="btn" data-act="eqConfirma" data-id="${id}" data-k="${estado}">${ic("chk",18)} Confirmar</button><button class="btn ghost" data-close>Cancelar</button></div></div>`);
+  setTimeout(()=>$("#motEq")&&$("#motEq").focus(),60);
+}
 
 /* ====================== HOJAS EMERGENTES ====================== */
 function openSheet(html){ closeSheet();
@@ -1395,7 +1570,36 @@ const ACT={
     try{ await navigator.clipboard.writeText(txt); toast("Tabla copiada · pégala en Excel"); }
     catch(e){ const t=document.createElement("textarea"); t.value=txt; document.body.appendChild(t); t.select();
       try{ document.execCommand("copy"); toast("Tabla copiada"); }catch(_){ toast("No se pudo copiar","!"); } t.remove(); } },
-  reintentar(){ refresh(true); }
+  reintentar(){ refresh(true); },
+  eqFiltro(d){ eqFiltro=d.f; render(); },
+  eqFicha(d){ abrirFichaEq(d.id); },
+  eqNuevo(){ abrirFichaEq(""); },
+  eqMotivo(d){ abrirMotivoEq(d.id,d.k); },
+  eqChip(d){ const i=$("#motEq"); i.value=d.m; i.focus(); },
+  eqAddPt(){ leerFicha(); WEQ.pts.push({e:"",v:"",tol:""}); pintaFicha();
+    const p=$("#sheet .panel"); if(p) p.scrollTop=p.scrollHeight; },
+  eqQuitaPt(d){ leerFicha(); WEQ.pts.splice(Number(d.i),1); pintaFicha(); },
+  async eqConfirma(d){ const motivo=($("#motEq").value||"").trim();
+    if(!motivo){ $("#motEq").focus(); toast("Falta el motivo","!"); return; }
+    const r=await call("estadoEquipo",{equipoId:d.id,estado:d.k,motivo});
+    if(!r.ok){ toast(r.msg,"!"); return; }
+    closeSheet(); render(); toast(d.k==="baja"?"Equipo dado de baja":"Equipo bloqueado"); },
+  async eqReactivar(d){ const r=await call("estadoEquipo",{equipoId:d.id,estado:"activo"});
+    if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("Equipo reactivado"); },
+  async eqGuardar(){
+    leerFicha(); const W=WEQ, nuevo=!W.id;
+    W.n=String(W.n||"").trim();
+    if(!W.n){ toast("Falta el nombre","!"); $("#w_n")&&$("#w_n").focus(); return; }
+    W.pts=(W.pts||[]).filter(p=>String(p.e||"").trim()!==""||String(p.v||"").trim()!=="")
+      .map(p=>W.pasa?{e:String(p.e||"").trim()}:{e:String(p.e||"").trim(),v:Number(String(p.v).replace(",",".")) ||0,tol:Number(String(p.tol).replace(",",".")) ||0});
+    let resumen="";
+    if(!nuevo){ const a=eqp(W.id), c=[];
+      Object.keys(C_NOM).forEach(k=>{ if(String(a[k]||"")!==String(W[k]||"")) c.push(C_NOM[k]); });
+      if(JSON.stringify(a.pts||[])!==JSON.stringify(W.pts)) c.push("puntos de verificación");
+      resumen=c.join(", "); }
+    const r=await call("guardarEquipo",{equipo:W,resumen});
+    if(!r.ok){ toast(r.msg,"!"); return; }
+    closeSheet(); render(); toast(nuevo?"Equipo creado":"Ficha guardada"); }
 };
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
@@ -1403,6 +1607,14 @@ document.addEventListener("click",ev=>{
   ACT[t.dataset.act](t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
+  const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
+  if(f){ leerFicha();
+    if(f.dataset.actChange==="eqTipo"&&WMODO==="nuevo"){
+      if(String(WEQ.tipo).indexOf("eq:")===0){ copiarDe(eqp(WEQ.tipo.slice(3))); }
+      else if(WEQ.tipo&&WEQ.tipo!=="blank"){ copiarDe(DB.equipos.filter(q=>q.tipo===WEQ.tipo)[0]); }
+    }
+    if(f.dataset.actChange==="eqPasa") WEQ.pts=WEQ.pts.map(p=>({e:p.e||"",v:"",tol:""}));
+    pintaFicha(); return; }
   const t=ev.target.closest("[data-act-change='asig']"); if(!t) return;
   const r=await call("asignarEquipo",{equipoId:t.dataset.id,responsableId:t.value});
   if(!r.ok){ toast(r.msg,"!"); render(); return; } toast("Responsable actualizado");
