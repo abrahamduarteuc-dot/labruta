@@ -321,6 +321,7 @@ td.num{font-family:var(--f-mono);text-align:right}
 .alert{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);flex-wrap:wrap}
 .alert.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
 .alert.warn{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.alert.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
 .alert b{color:var(--fg)} .alert p{margin:0;font-size:13px;flex:1;min-width:180px;color:var(--fg-dim)}
 .alert .btn{flex:none}
 .btn.coin{background:var(--coin);color:#1b1304}
@@ -388,6 +389,7 @@ td.num{font-family:var(--f-mono);text-align:right}
 .item .price svg{width:13px;height:13px}
 .item .btn{padding:8px 10px;font-size:13px}
 .item .own{font-size:11.5px;color:var(--ok);font-weight:600}
+.item .own.bad{color:var(--bad)}
 
 /* ranking */
 .podium{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:end;margin-bottom:16px}
@@ -557,12 +559,12 @@ td.num{font-family:var(--f-mono);text-align:right}
 .z-otra .z-lb{fill:var(--fg-mute)}
 .zempty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;padding:20px;text-align:center}
 .zempty span{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--fg-mute);max-width:300px}
-.zrow{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:8px;align-items:center;padding:8px 11px;border-bottom:1px solid var(--line)}
+.zrow{display:grid;grid-template-columns:minmax(0,1fr) 150px 56px auto;gap:8px;align-items:center;padding:8px 11px;border-bottom:1px solid var(--line)}
 .zrow:last-child{border-bottom:0}
 .zrow.head{background:var(--surface-2);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-mute);font-weight:600;padding-block:7px}
 .zrow small{display:block;font-size:11px;color:var(--fg-mute);font-weight:400}
 .zrow .inp{padding:7px 9px;font-size:13px}
-@media(max-width:560px){.zrow{grid-template-columns:minmax(0,1fr) 120px auto}}
+@media(max-width:560px){.zrow{grid-template-columns:minmax(0,1fr) 110px 48px auto}}
 .zchip{display:inline-flex;align-items:center;gap:6px}
 .zchip i{width:10px;height:10px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.25)}
 .respgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -1613,15 +1615,17 @@ function zDuplicar(id){
 function zRows(){
   const el=$("#zRows"); if(!el) return;
   const opts=z=>`<option value="">Sin asignar</option>${personas5().map(p=>`<option value="${p.id}" ${p.id===z.resp?"selected":""}>${esc(p.n)}</option>`).join("")}`;
-  el.innerHTML=`<div class="zrow head"><span>Zona</span><span>Responsable</span><span></span></div>`+
+  el.innerHTML=`<div class="zrow head"><span>Zona</span><span>Responsable</span><span>🌠 EF</span><span></span></div>`+
     (ZP.zonas.map(z=>`<div class="zrow" data-id="${z.id}"><div><input class="inp" value="${esc(z.n)}" data-f="n" maxlength="40" aria-label="Nombre de la zona"><small>${zTipoNom[z.tipo]}</small></div>
       <select class="inp" data-f="resp" aria-label="Responsable de ${esc(z.n)}">${opts(z)}</select>
+      <label class="chk" style="justify-content:center" title="Habilita esta zona para el chequeo diario de estrella fugaz"><input type="checkbox" data-f="ef" ${z.ef?"checked":""} aria-label="Estrella fugaz en ${esc(z.n)}"></label>
       <button class="ib bad" data-act="zDelFila" data-id="${z.id}" aria-label="Eliminar ${esc(z.n)}">${zic("trash")}</button></div>`).join("")
       ||`<div class="empty" style="border:0">Aún no hay zonas en este plano.</div>`);
   $$(".zrow[data-id]",el).forEach(row=>{
     const z=ZP.zonas.find(q=>q.id===row.dataset.id);
     row.querySelector('[data-f="n"]').onchange=e=>{ z.n=e.target.value.trim()||"Zona"; zCambio(); zPlano(); };
     row.querySelector('[data-f="resp"]').onchange=e=>{ z.resp=e.target.value; zCambio(); zChips(); zPlano(); };
+    row.querySelector('[data-f="ef"]').onchange=e=>{ z.ef=e.target.checked; zCambio(); };
   });
 }
 
@@ -2004,7 +2008,7 @@ function veredicto5(r){
     <div class="big">${ok?"✓":"✗"}</div><b>${r.s}S ${esc((S5[r.s-1]||{}).n||"")} · ${esc(r.zn)}</b>
     <div class="pts">${"★".repeat(r.puntaje||0)}${"☆".repeat(5-(r.puntaje||0))}</div>
     <p><b>Motivo:</b> ${esc(r.motivo)}</p><p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>
-    ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · tu mascota comió</p>`:""}
+    ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · úsalas para comprarle comida a tu mascota</p>`:""}
     ${ok&&r.mision?`<p class="prem">⭐ ¡Misión sorpresa cumplida! Incluye un bono de +${MISION_BONUS.monedas} monedas y +${MISION_BONUS.estrellas} ★</p>`:""}
     ${!ok&&r.perdida?`<p class="perd">La zona no mantuvo el estándar: se descuentan ${r.perdida} monedas. Lo ya logrado (tus S aprobadas) no se pierde.</p>`:""}
     ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
@@ -2030,24 +2034,32 @@ async function verEvid5(id){
 function efCfg(){ return (DB&&DB.config&&DB.config.EF)||{activa:false,monedas:10}; }
 function efVentanaAbierta(){ const d=new Date(), dow=d.getDay(); if(dow<1||dow>5) return false; const h=d.getHours(); return h>=15&&h<18; }
 function efGanadaHoy(uid){ return (DB.estrellaFugaz||[]).some(e=>e.uid===uid&&e.fecha===hoyS()&&e.ver==="APROBADO"); }
-function efDisponible(u){ return !!u&&!u.observador&&efCfg().activa&&efVentanaAbierta()&&misZonas(u.id)>0&&!efGanadaHoy(u.id); }
+function efDisponible(u){ return !!u&&!u.observador&&efCfg().activa&&efVentanaAbierta()&&zonasEF(u.id).length>0&&!efGanadaHoy(u.id); }
 function vEstrellaFugaz(){ const u=yo(); if(!efDisponible(u)) return "";
+  const zs=zonasEF(u.id), txt=zs.length===1?`Sube una foto de "${esc(zs[0].n)}" ahora y gana ${efCfg().monedas} monedas si está ordenada.`:`Sube una foto de una de tus zonas ahora y gana ${efCfg().monedas} monedas si está ordenada.`;
   return `<div class="efcard"><span class="ei">🌠</span><div><b>¡Estrella fugaz activa!</b>
-    <span>Sube una foto de tu espacio de trabajo ahora y gana ${efCfg().monedas} monedas si está ordenado.</span></div>
+    <span>${txt}</span></div>
     <button class="btn sm" data-act="efAbrir">Subir foto</button></div>`; }
 function pintaEF(){ document.querySelectorAll(".efbox").forEach(el=>{ el.innerHTML=vEstrellaFugaz(); }); }
 let EF=null;
-function abrirEstrellaFugaz(){ EF={foto:null,enviando:false}; pintaEstrellaFugaz(); }
+function abrirEstrellaFugaz(){ const zs=zonasEF((yo()||{}).id); EF={foto:null,enviando:false,zonaId:zs.length===1?zs[0].id:""}; pintaEstrellaFugaz(); }
 function pintaEstrellaFugaz(){
+  const zs=zonasEF((yo()||{}).id);
+  const picker=zs.length>1?`<div class="fieldrow"><label class="fl" for="efZona">¿Cuál de tus zonas es?</label>
+      <select class="inp" id="efZona"><option value="">Elige una zona</option>${zs.map(z=>`<option value="${z.id}" ${EF.zonaId===z.id?"selected":""}>${esc(z.n)} · ${esc(z.plano)}</option>`).join("")}</select></div>`
+    :`<p class="j5tip"><em>${esc((zs[0]||{}).n||"")}</em></p>`;
   openSheet(`${phead("Estrella fugaz")}<div class="pbody">
-    <p class="j5tip">Chequeo sorpresa: sube una foto de cómo está tu espacio de trabajo justo ahora. Si se ve ordenado y limpio, el juez te da ${efCfg().monedas} monedas al tiro.</p>
+    <p class="j5tip">Chequeo sorpresa: sube una foto de cómo está tu zona justo ahora. Si se ve ordenada y limpia, el juez te da ${efCfg().monedas} monedas al tiro.</p>
+    ${picker}
     <div class="j5fotos"><label class="j5foto ${EF.foto?"lleno":""}" style="max-width:220px">
       <input type="file" accept="image/*" capture="environment" data-ef-foto hidden>
-      ${EF.foto?`<img src="${EF.foto.mini}" alt="Foto de tu espacio">`:`<span>${ic("camera",28)}</span>`}
-      <b>Tu espacio ahora</b><small>${EF.foto?"Toca para cambiar":"Toca para sacar la foto"}</small></label></div>
-    <div class="saverow"><button class="btn" data-act="efEnviar" ${EF.foto?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div></div>`);
+      ${EF.foto?`<img src="${EF.foto.mini}" alt="Foto de tu zona">`:`<span>${ic("camera",28)}</span>`}
+      <b>Tu zona ahora</b><small>${EF.foto?"Toca para cambiar":"Toca para sacar la foto"}</small></label></div>
+    <div class="saverow"><button class="btn" data-act="efEnviar" ${EF.foto&&EF.zonaId?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div></div>`);
 }
 document.addEventListener("change",async ev=>{
+  const sel=ev.target.closest("#efZona");
+  if(sel&&EF){ EF.zonaId=sel.value; pintaEstrellaFugaz(); return; }
   const inp=ev.target.closest("[data-ef-foto]"); if(!inp||!EF||!inp.files[0]) return;
   try{ EF.foto=await prepFoto(inp.files[0]); pintaEstrellaFugaz(); }
   catch(e){ toast(e.message,"!"); }
@@ -2063,9 +2075,9 @@ function veredictoEF(r){
 const JACT={
   efAbrir(){ abrirEstrellaFugaz(); },
   async efEnviar(d,btn){
-    if(!EF||!EF.foto||EF.enviando) return; EF.enviando=true;
+    if(!EF||!EF.foto||!EF.zonaId||EF.enviando) return; EF.enviando=true;
     btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando tu foto…`;
-    const r=await call("estrellaFugaz",{foto:EF.foto.full,mini:EF.foto.mini});
+    const r=await call("estrellaFugaz",{zonaId:EF.zonaId,foto:EF.foto.full,mini:EF.foto.mini});
     EF.enviando=false;
     if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
     EF=null; render(); veredictoEF(r.resultado);
@@ -2468,6 +2480,7 @@ function persist(){ try{ localStorage.setItem(KEY,JSON.stringify({ST,DB})); }cat
 /* ----- reloj de la mascota: misma fórmula en la app y en el servidor ----- */
 const DECAY=()=>(DB&&DB.config&&DB.config.DECAY_DIAS)||21;
 const MEDICINA=()=>(DB&&DB.config&&DB.config.MEDICINA)||40;
+const COMIDA=()=>(DB&&DB.config&&DB.config.COMIDA)||{costo:10,pct:50};
 function diasActivos(t0,t1,pausas){
   let tot=Math.max(0,t1-t0);
   (pausas||[]).forEach(p=>{ const s=Math.max(t0,p[0]), e=Math.min(t1,p[1]==null?t1:p[1]); if(e>s) tot-=(e-s); });
@@ -2477,6 +2490,41 @@ function energia(u,t){ t=t||nowMs();
   const e0=u.energia==null?70:u.energia, t0=u.tEnergia||t;
   return Math.max(0,e0-(100/DECAY())*diasActivos(t0,t,u.pausas)); }
 const enPausa=u=>(u.pausas||[]).some(p=>p[1]==null);
+
+/* ----- pérdida de accesorios por inactividad 5S/EIME: igual que la energía, se calcula al vuelo,
+   nunca se guarda un "perdido": apenas vuelve la actividad, el cálculo da 0 y todo reaparece solo ----- */
+const inactCfg=()=>(DB&&DB.config&&DB.config.INACT)||{activa:false,dias:21,cada:7};
+function diasInactivo(u,t){ if(!u.ultimaActividad) return 0; return diasActivos(u.ultimaActividad,t||nowMs(),u.pausas); }
+function nAccesoriosPerdidos(u,t){
+  const c=inactCfg(); if(!c.activa) return 0;
+  const extra=diasInactivo(u,t)-c.dias; if(extra<0) return 0;
+  return Math.floor(extra/Math.max(1,c.cada));
+}
+function accesoriosActivos(u,t){
+  const n=nAccesoriosPerdidos(u,t); if(n<=0) return u.accesorios||[];
+  const propios=(u.accesorios||[]).slice().sort((a,b)=>(ACCESORIOS[a]?.p||0)-(ACCESORIOS[b]?.p||0));
+  const perdidos=new Set(propios.slice(0,Math.min(n,propios.length)));
+  return (u.accesorios||[]).filter(k=>!perdidos.has(k));
+}
+const usandoActivo=u=>(u.usando||[]).filter(k=>accesoriosActivos(u).includes(k));
+function vComida(u,i,pct){
+  const cf=COMIDA(), falta=Math.max(0,cf.costo-(u.monedas||0));
+  if(i.sick) return `<div class="alert"><p><b>🍖 Comida:</b> cuesta ${coin}${cf.costo} y le llena ${cf.pct}% la barriga. Primero necesita la medicina.</p></div>`;
+  if(pct>=100) return `<div class="alert ok"><p><b>${esc(nomMascota(u))} ya está con la barriga llena.</b> Vuelve cuando le baje el apetito.</p></div>`;
+  return `<div class="alert"><p><b>🍖 Dale de comer.</b> Cada ración cuesta ${coin}${cf.costo} monedas y le llena ${cf.pct}% la barriga${falta?`. Te faltan ${falta} monedas`:""}.</p>
+    <button class="btn coin" data-act="comida" ${falta?"disabled":""}>${ic("plus",17)} Comprar comida</button></div>`;
+}
+function vAvisoInactividad(u){
+  const c=inactCfg(); if(!c.activa) return "";
+  const d=Math.floor(diasInactivo(u)); if(d<c.dias) return "";
+  const n=nAccesoriosPerdidos(u);
+  if(n<=0) return `<div class="alert warn"><p><b>Llevas ${d} días sin hacer una 5S o verificar un EIME.</b> Si no haces ninguna actividad en los próximos ${c.dias+c.cada-d} días, tu mascota empezará a perder sus accesorios, de a uno.</p></div>`;
+  const propios=(u.accesorios||[]).slice().sort((a,b)=>(ACCESORIOS[a]?.p||0)-(ACCESORIOS[b]?.p||0));
+  const perdidos=propios.slice(0,Math.min(n,propios.length)).map(k=>ACCESORIOS[k]?.n||k);
+  const faltanDias=c.cada-((d-c.dias)%c.cada);
+  return `<div class="alert bad"><p><b>${esc(nomMascota(u))} perdió ${perdidos.length===1?"un accesorio":perdidos.length+" accesorios"} por inactividad: ${perdidos.map(esc).join(", ")}.</b>
+    Llevas ${d} días sin hacer una 5S o verificar un EIME. Haz una actividad para recuperarlos; si sigues sin actividad, pierde el próximo en ${faltanDias} día${faltanDias===1?"":"s"}.</p></div>`;
+}
 function info(u){ const e=energia(u), sick=!!u.enferma||e<=0; return {e,sick,est:estadoDe(e,sick)}; }
 
 /* ----- equipos ----- */
@@ -2496,10 +2544,10 @@ function cumplimiento(uid){ const a=misEq(uid); if(!a.length) return 0; return M
    tener más equipos (o un equipo con más puntos de medición) no multiplica el premio — lo que cuenta es
    cumplir el ciclo completo a tiempo. El monto depende de qué tan atrasada quedó esa verificación final. */
 function premioCicloEime(atraso){
-  if(atraso<=0) return {atraso,dif:"media",monedas:40,comida:60,estrellas:3,msg:"Ciclo EIME completo, a tiempo"};
-  if(atraso===1) return {atraso,dif:"media",monedas:30,comida:45,estrellas:2,msg:"Ciclo EIME completo, con 1 día de atraso"};
-  if(atraso===2) return {atraso,dif:"baja",monedas:20,comida:30,estrellas:2,msg:"Ciclo EIME completo, con 2 días de atraso"};
-  return {atraso,dif:"baja",monedas:10,comida:20,estrellas:1,msg:`Ciclo EIME completo, con ${atraso} días de atraso`};
+  if(atraso<=0) return {atraso,dif:"media",monedas:40,comida:0,estrellas:3,msg:"Ciclo EIME completo, a tiempo"};
+  if(atraso===1) return {atraso,dif:"media",monedas:30,comida:0,estrellas:2,msg:"Ciclo EIME completo, con 1 día de atraso"};
+  if(atraso===2) return {atraso,dif:"baja",monedas:20,comida:0,estrellas:2,msg:"Ciclo EIME completo, con 2 días de atraso"};
+  return {atraso,dif:"baja",monedas:10,comida:0,estrellas:1,msg:`Ciclo EIME completo, con ${atraso} días de atraso`};
 }
 
 /* ====================== VISTA PREVIA (sin planilla) ====================== */
@@ -2523,7 +2571,7 @@ function seedDemo(){
     P("de","Danitza Espinoza","Asistente Técnico","I+D","gato","#D39A5A",0,false,{mascota:"Pigmento"}),
     P("fc","Francisco Contreras","Asistente Técnico","I+D","capibara","#B68A58",0,false,{mascota:"Don Capi"})
   ];
-  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null}},usuarios:us,
+  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50}},usuarios:us,
     equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],
     planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
 }
@@ -2558,6 +2606,7 @@ const LOCAL={
     const d=new Date();
     const fila={id:"v"+Date.now(),eq:e.id,fecha,hora:String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"),usuario:u.id,det,temp:p.temperatura||"",obs:p.observaciones||"",cumple:conforme,estrellas:0,ciclo:false,premioMonedas:0,premioComida:0};
     DB.verif.push(fila);
+    u.ultimaActividad=Date.now();
 
     const per=periodoEime(e.freq,fecha), venceCiclo=per.fin, grupo=e.freq==="quincenal"?"quincenal":"mensual";
     const misDelGrupo=misEq(u.id).filter(x=>(x.freq==="quincenal"?"quincenal":"mensual")===grupo);
@@ -2578,6 +2627,11 @@ const LOCAL={
     if(u.monedas<MEDICINA()) return err("SIN_MONEDAS",`Te faltan ${MEDICINA()-u.monedas} monedas.`);
     const t=Date.now(); u.enferma=false; u.energia=30; u.tEnergia=t;
     DB.mov.push({id:"m"+t,ts:t,uid:u.id,estrellas:0,monedas:-MEDICINA(),comida:0,motivo:"Medicina"});
+    return okd(); },
+  comprarComida(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const i=info(u); if(i.sick) return err("ENFERMA","Primero necesita la medicina: mientras esté enferma, la comida no le hace efecto.");
+    const cf=COMIDA(); if(u.monedas<cf.costo) return err("SIN_MONEDAS",`Te faltan ${cf.costo-u.monedas} monedas.`);
+    aplicaEvento(u,{comida:cf.pct,monedas:-cf.costo,estrellas:0,motivo:"Comida"});
     return okd(); },
   tienda(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const a=ACCESORIOS[p.item]; if(!a) return err("SIN_ITEM","Artículo desconocido.");
@@ -2665,7 +2719,8 @@ const LOCAL={
       monedas,estrellas,mision:bono,perdida};
     if(ok&&Math.random()<(window.__revP??1/3)){ const o=activos().filter(x=>x.id!==u.id&&x.tienePin!==false); if(o.length){ r.rev="PENDIENTE"; r.revisor=o[Math.floor(Math.random()*o.length)].id; } }
     (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
-    if(ok) aplicaEvento(u,{comida:30,monedas,estrellas,motivo:"5S "+r.s+"S "+z.n+(bono?" + misión sorpresa":"")});
+    u.ultimaActividad=t;
+    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S "+r.s+"S "+z.n+(bono?" + misión sorpresa":"")});
     else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+z.n+": la zona no mantuvo el estándar"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
   revisiones5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
@@ -2696,19 +2751,25 @@ const LOCAL={
     if(p.ef) DB.config.EF={activa:p.ef.activa===true,
       monedas:Math.min(100,Math.max(1,Math.round(Number(p.ef.monedas))||10))};
     if(p.decay) DB.config.DECAY_DIAS=Math.min(60,Math.max(1,Math.round(Number(p.decay))||21));
+    if(p.inact) DB.config.INACT={activa:p.inact.activa===true,
+      dias:Math.min(90,Math.max(1,Math.round(Number(p.inact.dias))||21)),
+      cada:Math.min(60,Math.max(1,Math.round(Number(p.inact.cada))||7))};
+    if(p.comida) DB.config.COMIDA={costo:Math.min(100,Math.max(1,Math.round(Number(p.comida.costo))||10)),
+      pct:Math.min(100,Math.max(5,Math.round(Number(p.comida.pct))||50))};
     return okd({}); },
   estrellaFugaz(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const cfg=efCfg(); if(!cfg.activa) return err("EF_OFF","La estrella fugaz no está activada.");
     if(!efVentanaAbierta()) return err("EF_HORA","La estrella fugaz solo se puede ganar entre las 15:00 y las 18:00, de lunes a viernes.");
-    if(misZonas(u.id)<=0) return err("SIN_ZONA","No tienes zonas 5S asignadas. El administrador las reparte en Ajustes → Zonas 5S.");
+    const zonas=zonasEF(u.id); if(!zonas.length) return err("SIN_ZONA","No tienes zonas habilitadas para estrella fugaz. El administrador las marca en Ajustes → Zonas 5S.");
+    const z=zonas.find(x=>x.id===p.zonaId); if(!z) return err("ZONA_INVALIDA","Elige una de tus zonas para la estrella fugaz.");
     if(!p.foto||String(p.foto).indexOf("data:image/")!==0) return err("FOTO","Falta la foto de tu espacio de trabajo.");
     const hoy=hoyS(), deHoy=(DB.estrellaFugaz=DB.estrellaFugaz||[]).filter(e=>e.uid===u.id&&e.fecha===hoy);
     if(deHoy.some(e=>e.ver==="APROBADO")) return err("YA_GANADA","Ya ganaste tu estrella fugaz de hoy.");
     if(deHoy.length>=EF_MAX_DIA) return err("LIMITE","Llegaste al máximo de intentos de hoy. Inténtalo de nuevo mañana.");
     const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="ef"+t, monedas=ok?cfg.monedas:0;
-    const r={id,ts:t,fecha:hoy,uid:u.id,mini:p.mini,
+    const r={id,ts:t,fecha:hoy,uid:u.id,zonaId:z.id,zn:z.n,mini:p.mini,
       ver:ok?"APROBADO":"RECHAZADO",
-      motivo:ok?"Se ve el espacio despejado y ordenado, sin materiales fuera de lugar.":"Se aprecian elementos sueltos o superficies sin despejar.",
+      motivo:ok?`Se ve la zona "${z.n}" despejada y ordenada, sin materiales fuera de lugar.`:`No se ve la zona "${z.n}" lo bastante ordenada: hay elementos sueltos o superficies sin despejar.`,
       monedas};
     DB.estrellaFugaz.push(r);
     if(ok) aplicaEvento(u,{comida:0,monedas,estrellas:0,motivo:"Estrella fugaz · "+r.motivo});
@@ -2753,7 +2814,7 @@ async function refresh(first){
 /* ====================== MASCOTAS EN PANTALLA ====================== */
 let PU=0;
 function petOf(u,o){ o=o||{}; const i=o.info||info(u);
-  return petSVG(u.especie,u.color,o.est||i.est,o.usando||u.usando||[],"x"+(++PU)); }
+  return petSVG(u.especie,u.color,o.est||i.est,o.usando||usandoActivo(u)||[],"x"+(++PU)); }
 const nomMascota=u=>u.mascota||ESPECIES[u.especie]?.n||"Mascota";
 const FRASES={
  radiante:["Hoy me siento certificada.","Mis equipos están más al día que mi agenda.","Pregúntame por mi tolerancia. Es excelente.","Estoy tan llena que podría auditar sola."],
@@ -2885,9 +2946,11 @@ function vMi(u){
         <div class="ebar" role="img" aria-label="Energía ${pct} por ciento"><i style="width:${pct}%"></i><u style="left:33%"></u><u style="left:50%"></u><u style="left:75%"></u></div>
         <div class="ezones"><span style="width:33%">Flaca</span><span style="width:17%">Normal</span><span style="width:25%">Contenta</span><span style="width:25%">Radiante</span></div>
         <div class="ehint">${proximoCambio(u,i)}</div></div>
+      ${vComida(u,i,pct)}
       ${i.sick?`<div class="alert bad"><p><b>${esc(nomMascota(u))} está enferma.</b> Mientras no tome la medicina, la comida no le hace efecto. Cuesta ${MEDICINA()} monedas${falta?` y te faltan ${falta}`:""}.</p>
          <button class="btn coin" data-act="medicina" ${falta?"disabled":""}>${ic("cross",17)} Dar medicina</button></div>`:""}
       ${enPausa(u)?`<div class="alert warn"><p><b>Pausa activa.</b> Tu mascota no pierde peso. Las fechas de los equipos siguen corriendo.</p></div>`:""}
+      ${vAvisoInactividad(u)}
     </div>
   </div>
   <div class="hubgrid">
@@ -2951,6 +3014,7 @@ function vRank(me){
 /* ---------- 5S ---------- */
 let s5Plano="";
 const misZonas=uid=>planosDB().reduce((n,p)=>n+p.zonas.filter(z=>z.resp===uid).length,0);
+const zonasEF=uid=>{ const out=[]; planosDB().forEach(pl=>pl.zonas.forEach(z=>{ if(z.resp===uid&&z.ef) out.push({planoId:pl.id,plano:pl.nombre,id:z.id,n:z.n}); })); return out; };
 function vS5(){
   const u=yo(), L=planosDB(), e=emerg("s5");
   const mias=L.filter(p=>p.zonas.some(z=>z.resp===u.id));
@@ -2997,7 +3061,7 @@ function vAjustes(){
 }
 /* ---------- Premios del ciclo (solo administrador) ---------- */
 function vPremiosAdmin(){
-  const PR=premios(), c=cicloActual(), mc=misionCfg(), ef=efCfg();
+  const PR=premios(), c=cicloActual(), mc=misionCfg(), ef=efCfg(), ic_=inactCfg(), cf=COMIDA();
   const fila=(p,i)=>`<div class="pcfg-row">
     <span id="pcIlu${i}">${ilustracion(p.k)}</span>
     <span class="f"><label for="pcK${i}">Premio ${i+1}</label>
@@ -3026,7 +3090,18 @@ function vPremiosAdmin(){
     <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:17px">🐾 Energía de la mascota</h3>
     <p class="note" style="margin-top:4px">Días sin alimentar (sin completar tareas) antes de que la energía empiece a bajar sola. Bájalo si ves mucho desorden para que la mascota reaccione más rápido; súbelo si todo anda bien.</p>
     <div class="fieldrow"><div><label class="fl" for="pcDecay">Días antes de que baje la energía</label><input class="inp" id="pcDecay" type="number" min="1" max="60" value="${DECAY()}" style="max-width:220px"></div></div>
-    <div class="toolrow"><button class="btn" id="btnPremios4">${ic("chk",18)} Guardar energía de la mascota</button></div>`;
+    <div class="toolrow"><button class="btn" id="btnPremios4">${ic("chk",18)} Guardar energía de la mascota</button></div>
+    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:17px">🧥 Pérdida de accesorios por inactividad</h3>
+    <label class="chk"><input type="checkbox" id="pcInOn" ${ic_.activa?"checked":""}> Activar pérdida de accesorios</label>
+    <p class="note" style="margin-top:4px">Si alguien no hace ninguna evidencia 5S ni verificación EIME por varios días, su mascota avisa y luego empieza a perder los accesorios que tiene, del más barato al más caro, uno cada cierto tiempo. En cuanto vuelve a tener actividad, se le devuelven solos.</p>
+    <div class="fieldrow two"><div><label class="fl" for="pcInDias">Días sin actividad para el primer aviso</label><input class="inp" id="pcInDias" type="number" min="1" max="90" value="${ic_.dias}"></div>
+      <div><label class="fl" for="pcInCada">Días entre cada accesorio perdido</label><input class="inp" id="pcInCada" type="number" min="1" max="60" value="${ic_.cada}"></div></div>
+    <div class="toolrow"><button class="btn" id="btnPremios5">${ic("chk",18)} Guardar pérdida de accesorios</button></div>
+    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:17px">🍖 Costo de la comida</h3>
+    <p class="note" style="margin-top:4px">La comida ya no se regala sola al hacer una 5S o un EIME: esas actividades dan monedas, y con esas monedas cada persona le compra la comida a su mascota desde "Mi mascota". Ajusta el precio y cuánta barriga llena cada ración para que sea un desafío real, no gratis ni imposible.</p>
+    <div class="fieldrow two"><div><label class="fl" for="pcComCosto">Costo por ración (monedas)</label><input class="inp" id="pcComCosto" type="number" min="1" max="100" value="${cf.costo}"></div>
+      <div><label class="fl" for="pcComPct">% de barriga que llena</label><input class="inp" id="pcComPct" type="number" min="5" max="100" value="${cf.pct}"></div></div>
+    <div class="toolrow"><button class="btn" id="btnPremios6">${ic("chk",18)} Guardar costo de la comida</button></div>`;
 }
 function pInitPremios(){
   const b=$("#btnPremios"); if(!b) return;
@@ -3073,6 +3148,26 @@ function pInitPremios(){
     b4.disabled=false; b4.innerHTML=t;
     if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
     render(); toast("Energía de la mascota actualizada","★");
+  };
+  const b5=$("#btnPremios5"); if(!b5) return;
+  b5.onclick=async()=>{
+    const dias=Number($("#pcInDias").value), cada=Number($("#pcInCada").value);
+    if(!(dias>=1&&dias<=90)||!(cada>=1&&cada<=60)){ toast("Revisa los días: entre 1 y 90 para el aviso, entre 1 y 60 entre cada pérdida","!"); return; }
+    const t=b5.innerHTML; b5.disabled=true; b5.innerHTML=`<span class="spin"></span> Guardando…`;
+    const r=await call("guardarPremios",{premios:premios().map(p=>({k:p.k,pct:p.pct})),inact:{activa:$("#pcInOn").checked,dias,cada}});
+    b5.disabled=false; b5.innerHTML=t;
+    if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
+    render(); toast("Pérdida de accesorios actualizada","★");
+  };
+  const b6=$("#btnPremios6"); if(!b6) return;
+  b6.onclick=async()=>{
+    const costo=Number($("#pcComCosto").value), pct=Number($("#pcComPct").value);
+    if(!(costo>=1&&costo<=100)||!(pct>=5&&pct<=100)){ toast("Revisa los valores: costo de 1 a 100, barriga de 5 a 100","!"); return; }
+    const t=b6.innerHTML; b6.disabled=true; b6.innerHTML=`<span class="spin"></span> Guardando…`;
+    const r=await call("guardarPremios",{premios:premios().map(p=>({k:p.k,pct:p.pct})),comida:{costo,pct}});
+    b6.disabled=false; b6.innerHTML=t;
+    if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
+    render(); toast("Costo de la comida actualizado","★");
   };
 }
 const HEAD=["Equipo","Código EIME","Fecha","Punto patrón","Indicación","Error abs.","Error rel. %","Resultado","Responsable","Observaciones"];
@@ -3301,9 +3396,10 @@ function abrirEditPet(bienvenida){
 function abrirTienda(){
   const u=yo();
   const cuerpo=()=>Object.keys(ACCESORIOS).map(k=>{ const a=ACCESORIOS[k], tengo=u.accesorios.includes(k), puesto=u.usando.includes(k);
+    const bloq=tengo&&!accesoriosActivos(u).includes(k);
     const vis=[...u.usando.filter(x=>ACCESORIOS[x].slot!==a.slot),k];
     return `<div class="item" data-st="contenta"><span class="stage">${petSVG(u.especie,u.color,"contenta",vis,"it"+(++PU))}</span><b>${a.n}</b>
-      ${tengo?`<span class="own">${puesto?"Lo estás usando":"Ya lo tienes"}</span><button class="btn ${puesto?"ghost":""}" data-sh="${puesto?"quitar":"usar"}" data-item="${k}">${puesto?"Quitar":"Usar"}</button>`
+      ${tengo?(bloq?`<span class="own bad">Bloqueado por inactividad</span>`:`<span class="own">${puesto?"Lo estás usando":"Ya lo tienes"}</span><button class="btn ${puesto?"ghost":""}" data-sh="${puesto?"quitar":"usar"}" data-item="${k}">${puesto?"Quitar":"Usar"}</button>`)
       :`<span class="price">${coin}${a.p}</span><button class="btn coin" data-sh="comprar" data-item="${k}" ${u.monedas<a.p?"disabled":""}>Comprar</button>`}</div>`; }).join("");
   const pintar=()=>{ $("#shopBody").innerHTML=`<div class="shop">${cuerpo()}</div>`; $("#shopCoins").innerHTML=`${coin}${U(u.id).monedas}`; };
   openSheet(`${phead("Tienda",`<span class="cnt coin" id="shopCoins" style="font-size:15px"></span>`)}<div class="pbody"><div id="shopBody"></div>
@@ -3377,13 +3473,11 @@ function mostrarPremio(p){
       <button class="btn" data-close>Listo</button></div></div>`);
     return;
   }
-  const titulo = p.sinEfecto ? `${esc(nomMascota(u))} sigue enferma` : `¡${esc(nomMascota(u))} comió!`;
-  const txt = p.sinEfecto ? "La comida no le hizo efecto. Dale la medicina para que vuelva a aprovecharla."
-    : `Completaste tu ciclo EIME. ${p.msg}${p.conforme?"":". Quedó fuera de tolerancia: avisa a quien corresponda."}`;
+  const txt = `Completaste tu ciclo EIME. ${p.msg}${p.conforme?"":". Quedó fuera de tolerancia: avisa a quien corresponda."} Usa tus monedas en "Mi mascota" para comprarle comida.`;
   openSheet(`${phead("¡Ciclo EIME completo!")}<div class="pbody"><div class="reward" data-st="${i.est}">
     <div class="stage" style="padding:10px 14px 0;border-radius:18px">${petOf(u,{info:i})}</div>
-    <h3>${titulo}</h3><p>${txt}</p>
-    <div class="gain"><span class="g-star">${star(1)}+${p.estrellas}</span><span class="g-coin">${coin}+${p.monedas}</span>${p.sinEfecto?"":`<span class="g-eat">+${p.comida} % barriga</span>`}</div>
+    <h3>¡${esc(nomMascota(u))} ganó premio!</h3><p>${txt}</p>
+    <div class="gain"><span class="g-star">${star(1)}+${p.estrellas}</span><span class="g-coin">${coin}+${p.monedas}</span></div>
     <button class="btn" data-close>Listo</button></div></div>`);
 }
 
@@ -3433,6 +3527,7 @@ const ACT={
   editPet(){ abrirEditPet(); }, tienda(){ abrirTienda(); },
   eq(d){ abrirEq(d.id); }, filtro(d){ filtro=d.f; render(); },
   async medicina(){ const r=await call("comprarMedicina"); if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("¡Se está recuperando!","✚"); },
+  async comida(){ const r=await call("comprarComida"); if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("¡Buen provecho!","🍖"); },
   digit(d){ pinDigit(d.d); },
   pinOk(){ pinEnviar(); },
   ajtab(d){ ajTab=d.t; render(); },
