@@ -889,7 +889,15 @@ const ACCESORIOS={
  gorro:{n:"Gorro navideño",p:45,slot:"cabeza"},
  casco:{n:"Casco de planta",p:50,slot:"cabeza"},
  bata:{n:"Bata de laboratorio",p:60,slot:"cuerpo"},
- corona:{n:"Corona del mes",p:120,slot:"cabeza"}
+ corona:{n:"Corona del mes",p:120,slot:"cabeza"},
+ orejas_murcielago:{n:"Orejas de murciélago",p:35,slot:"cabeza"},
+ sombrero_bruja:{n:"Sombrero de bruja",p:55,slot:"cabeza"},
+ capa_vampiro:{n:"Capa de vampiro",p:70,slot:"cuerpo"},
+ cuernos_reno:{n:"Cuernos de reno",p:50,slot:"cabeza"},
+ bufanda_navidena:{n:"Bufanda navideña",p:40,slot:"cuello"},
+ luces_navidad:{n:"Luces de Navidad",p:65,slot:"cuerpo"},
+ moto:{n:"Moto (fondo)",p:350,slot:"fondo"},
+ auto:{n:"Auto (fondo)",p:600,slot:"fondo"}
 };
 
 function petSVG(sp,col,est,usando,uid){
@@ -906,6 +914,23 @@ function petSVG(sp,col,est,usando,uid){
   if(sp==="conejo"){G.ny=hy+10;G.my=hy+16;}
   if(sp==="caballo"){G.ey=hy-3;G.edx=14;G.er=4;G.ny=hy+13;G.my=hy+20;}
   if(sp==="vaca"){G.ey=hy-3;G.edx=14;G.ny=hy+12;G.my=hy+20;}
+  let bgScene="";
+  if(usando.includes("auto")){
+    bgScene=`<rect x="0" y="109" width="120" height="21" fill="#D7CBBA" opacity=".55"/><rect x="0" y="109" width="120" height="2" fill="#B9AA8E" opacity=".6"/>
+      <path d="M77 101 Q77 91 85 90 L90 80 Q95 75 103 75 Q111 75 115 80 L120 90 L120 101 Z" fill="#2E7BD6" stroke="#1F5796" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M92 80 Q96 77 103 77 Q110 77 113 80 L115 89 L91 89 Z" fill="#BFE6EE" opacity=".85"/>
+      <rect x="77" y="98" width="43" height="4" fill="#1F5796"/>
+      <circle cx="85" cy="105" r="7.5" fill="#241A1D"/><circle cx="85" cy="105" r="3" fill="#9AA6AE"/>
+      <circle cx="112" cy="105" r="7.5" fill="#241A1D"/><circle cx="112" cy="105" r="3" fill="#9AA6AE"/>`;
+  }else if(usando.includes("moto")){
+    bgScene=`<rect x="0" y="109" width="120" height="21" fill="#D7CBBA" opacity=".55"/><rect x="0" y="109" width="120" height="2" fill="#B9AA8E" opacity=".6"/>
+      <g stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="88" cy="104" r="9.5" fill="none" stroke="#241A1D" stroke-width="3.4"/><circle cx="88" cy="104" r="3.2" fill="#9AA6AE"/>
+      <circle cx="113" cy="104" r="9.5" fill="none" stroke="#241A1D" stroke-width="3.4"/><circle cx="113" cy="104" r="3.2" fill="#9AA6AE"/>
+      <path d="M88 104 L99 91 L113 104" fill="none" stroke="#C2312F" stroke-width="3.4"/>
+      <path d="M99 91 L99 81" stroke="#241A1D" stroke-width="3"/><path d="M92 81 L106 81" stroke="#241A1D" stroke-width="3"/>
+      <ellipse cx="102" cy="86" rx="8.5" ry="3.8" fill="#241A1D"/></g>`;
+  }
   if(sp==="mono"){G.ey=hy-1;G.edx=11;G.er=4;G.ny=hy+9;G.my=hy+17;}
   if(sp==="oso"){G.ey=hy;G.edx=14;G.er=4;G.ny=hy+9;G.my=hy+17;}
   if(sp==="pulpo"){G.ey=hy+2;G.edx=13;G.er=5;G.ny=null;G.my=hy+16;}
@@ -934,6 +959,15 @@ function petSVG(sp,col,est,usando,uid){
   if(sp==="cocodrilo"){
     back+=`<path d="M${60+bw-3} ${by-4}Q${60+bw+26} ${by+3} ${60+bw+25} ${by+17}Q${60+bw+10} ${by+11} ${60+bw-3} ${by+9}Z" fill="${md}"/>`;
   }
+  /* accesorio de cuerpo: capa de vampiro (sobresale a los lados, como una cola) */
+  if(usando.includes("capa_vampiro")){
+    back+=`<path d="M${60-bw+2} ${by-bh+6}Q${60-bw-18} ${by+bh+8} ${60-bw*.25} ${by+bh+16}Q${60-bw+8} ${by+4} ${60-bw+2} ${by-bh+6}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M${60+bw-2} ${by-bh+6}Q${60+bw+18} ${by+bh+8} ${60+bw*.25} ${by+bh+16}Q${60+bw-8} ${by+4} ${60+bw-2} ${by-bh+6}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M${60-bw+5} ${by-bh+8}Q${60-bw-9} ${by+bh+3} ${60-bw*.35} ${by+bh+10}" fill="none" stroke="#8E2220" stroke-width="2" opacity=".55"/>
+      <path d="M${60+bw-5} ${by-bh+8}Q${60+bw+9} ${by+bh+3} ${60+bw*.35} ${by+bh+10}" fill="none" stroke="#8E2220" stroke-width="2" opacity=".55"/>
+      <path d="M${60-hw+3} ${hy+hh-6}L${60-hw-7} ${hy-10}L${60-hw+15} ${hy-2}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1"/>
+      <path d="M${60+hw-3} ${hy+hh-6}L${60+hw+7} ${hy-10}L${60+hw-15} ${hy-2}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1"/>`;
+  }
 
   /* ---- cuerpo ---- */
   const belly = sp==="pinguino" ? "#F5F8FA" : lt;
@@ -958,6 +992,14 @@ function petSVG(sp,col,est,usando,uid){
       <path d="M${60-9} ${by-bh+2}L60 ${by-bh+14}L${60+9} ${by-bh+2}" fill="#EEF3F5" stroke="#C3CED4" stroke-width="1.5" stroke-linejoin="round"/>
       <rect x="${60+bw*.34}" y="${by+3}" width="9" height="8" rx="1.5" fill="none" stroke="#C3CED4" stroke-width="1.5"/>
       <rect x="${60+bw*.34+2}" y="${by-1}" width="1.6" height="7" rx=".8" fill="#2E7BD6"/>`;
+  }
+  /* accesorio de cuerpo: luces de Navidad */
+  if(usando.includes("luces_navidad")){
+    body+=`<path d="M${60-bw*.75} ${by-bh*.5}Q60 ${by+bh*.6} ${60+bw*.75} ${by-bh*.35}" fill="none" stroke="#2E7D32" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="${60-bw*.5}" cy="${by-bh*.1}" r="3" fill="#E5484D"/>
+      <circle cx="${60-bw*.15}" cy="${by+bh*.42}" r="3" fill="#F4B400"/>
+      <circle cx="${60+bw*.2}" cy="${by+bh*.32}" r="3" fill="#2E7BD6"/>
+      <circle cx="${60+bw*.5}" cy="${by-bh*.05}" r="3" fill="#43A047"/>`;
   }
 
   /* ---- detrás de la cabeza (orejas, aleta) ---- */
@@ -1122,13 +1164,26 @@ function petSVG(sp,col,est,usando,uid){
   if(usando.includes("corona")){
     over+=`<path d="M${60-18} ${top+8}L${60-21} ${top-13}L${60-9} ${top-3}L60 ${top-18}L${60+9} ${top-3}L${60+21} ${top-13}L${60+18} ${top+8}Z" fill="#F4B400" stroke="#B8860B" stroke-width="1.6" stroke-linejoin="round"/><circle cx="60" cy="${top+1}" r="2.8" fill="#E5484D"/><circle cx="${60-10}" cy="${top+2}" r="2" fill="#2E7BD6"/><circle cx="${60+10}" cy="${top+2}" r="2" fill="#2E7BD6"/>`;
   }
+  if(usando.includes("orejas_murcielago")){
+    over+=`<path d="M${hx0+2} ${hy-2}L${hx0-4} ${top-20}L${hx0+16} ${top+2}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1" stroke-linejoin="round"/><path d="M${hx0+6} ${top-4}L${hx0+2} ${top-14}L${hx0+12} ${top}Z" fill="#4A3A58"/><path d="M${hx1-2} ${hy-2}L${hx1+4} ${top-20}L${hx1-16} ${top+2}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1" stroke-linejoin="round"/><path d="M${hx1-6} ${top-4}L${hx1-2} ${top-14}L${hx1-12} ${top}Z" fill="#4A3A58"/>`;
+  }
+  if(usando.includes("sombrero_bruja")){
+    over+=`<g transform="rotate(-6 60 ${top-5})"><ellipse cx="60" cy="${top+9}" rx="${hw+10}" ry="5" fill="#3B2754" stroke="#241A33" stroke-width="1.2"/><path d="M${hx0+5} ${top+9}Q${hx0+9} ${top-10} 60 ${top-34}Q${hx1-9} ${top-10} ${hx1-5} ${top+9}Z" fill="#4A2F6B" stroke="#241A33" stroke-width="1.2" stroke-linejoin="round"/><rect x="${60-10}" y="${top-4}" width="20" height="6" rx="1" fill="#2E2140"/><rect x="${60-3}" y="${top-6}" width="6" height="10" rx="1" fill="#F4B400" stroke="#B8860B" stroke-width="1"/></g>`;
+  }
+  if(usando.includes("cuernos_reno")){
+    over+=`<g stroke="#8B5A2B" stroke-width="4" stroke-linecap="round" fill="none"><path d="M${hx0+10} ${top+6}Q${hx0+2} ${top-20} ${hx0-6} ${top-26}M${hx0+2} ${top-14}L${hx0-10} ${top-18}M${hx0+2} ${top-14}L${hx0+2} ${top-24}"/><path d="M${hx1-10} ${top+6}Q${hx1-2} ${top-20} ${hx1+6} ${top-26}M${hx1-2} ${top-14}L${hx1+10} ${top-18}M${hx1-2} ${top-14}L${hx1-2} ${top-24}"/></g>`;
+  }
+  if(usando.includes("bufanda_navidena")){
+    const scy=hy+hh+1;
+    over+=`<path d="M${hx0+4} ${scy-6}Q60 ${scy+6} ${hx1-4} ${scy-6}L${hx1-4} ${scy+1}Q60 ${scy+13} ${hx0+4} ${scy+1}Z" fill="#C2312F"/><path d="M${hx0+8} ${scy-4}Q60 ${scy+6} ${hx1-8} ${scy-4}" fill="none" stroke="#fff" stroke-width="2.2" stroke-dasharray="4 4"/><path d="M${60+6} ${scy+7}L${60+10} ${scy+24}L${60+2} ${scy+22}Z" fill="#C2312F"/><path d="M${60+5} ${scy+12}h6M${60+4} ${scy+17}h6" stroke="#fff" stroke-width="1.6"/>`;
+  }
   if(est==="radiante"){
     over+=`<g fill="#F4B400"><path class="spk" d="M16 34l2.2 5.4 5.4 2.2-5.4 2.2L16 49.2l-2.2-5.4-5.4-2.2 5.4-2.2z"/><path class="spk s2" d="M104 24l1.8 4.4 4.4 1.8-4.4 1.8-1.8 4.4-1.8-4.4-4.4-1.8 4.4-1.8z"/><path class="spk s3" d="M100 62l1.5 3.6 3.6 1.5-3.6 1.5-1.5 3.6-1.5-3.6-3.6-1.5 3.6-1.5z"/></g>`;
   }
 
   const shadow=`<ellipse cx="60" cy="${by+bh+3}" rx="${34+f*4}" ry="4.2" fill="#000" opacity=".13"/>`;
   const filtro = est==="flaca" ? "filter:saturate(.72)" : est==="enferma" ? "filter:saturate(.55) hue-rotate(14deg)" : "";
-  return `<svg class="pet s-${est}" viewBox="0 0 120 130" role="img" aria-label="${ESPECIES[sp].n}, ${EST_NOM[est]}" style="${filtro}">${shadow}<g class="pg">${back}${body}${head}${faceS}${over}</g></svg>`;
+  return `<svg class="pet s-${est}" viewBox="0 0 120 130" role="img" aria-label="${ESPECIES[sp].n}, ${EST_NOM[est]}" style="${filtro}">${bgScene}${shadow}<g class="pg">${back}${body}${head}${faceS}${over}</g></svg>`;
 }
 
 const C={ac:"var(--accent)",ad:"var(--accent-d)",br:"var(--brass)",ln:"var(--line)",fg:"var(--fg-dim)",sf:"var(--surface)"};
@@ -2385,11 +2440,15 @@ function estado(e){ const hoy=hoyS(), per=periodoEime(e.freq,hoy);
 const activoEq=e=>(e.estado||"activo")==="activo";
 const misEq=uid=>DB.equipos.filter(e=>e.resp===uid&&activoEq(e));
 function cumplimiento(uid){ const a=misEq(uid); if(!a.length) return 0; return Math.round(a.filter(x=>estado(x).k==="ok").length/a.length*100); }
-function premioEime(e,fecha){
-  const atraso=Math.round((parse(fecha)-parse(vence(e)))/DAY);
-  if(atraso<=0) return {atraso,dif:"media",monedas:25,comida:35,estrellas:3,msg:"En fecha"};
-  if(atraso<=3) return {atraso,dif:"baja",monedas:10,comida:25,estrellas:2,msg:`Con ${atraso} d. de atraso`};
-  return {atraso,dif:"baja",monedas:10,comida:25,estrellas:1,msg:`Con ${atraso} d. de atraso`};
+/* El premio (monedas, estrellas, comida) ya NO se paga por cada equipo: se paga UNA SOLA VEZ por persona
+   y por ciclo (quincenal o mensual), cuando completa TODOS sus equipos activos de esa frecuencia. Así,
+   tener más equipos (o un equipo con más puntos de medición) no multiplica el premio — lo que cuenta es
+   cumplir el ciclo completo a tiempo. El monto depende de qué tan atrasada quedó esa verificación final. */
+function premioCicloEime(atraso){
+  if(atraso<=0) return {atraso,dif:"media",monedas:40,comida:60,estrellas:3,msg:"Ciclo EIME completo, a tiempo"};
+  if(atraso===1) return {atraso,dif:"media",monedas:30,comida:45,estrellas:2,msg:"Ciclo EIME completo, con 1 día de atraso"};
+  if(atraso===2) return {atraso,dif:"baja",monedas:20,comida:30,estrellas:2,msg:"Ciclo EIME completo, con 2 días de atraso"};
+  return {atraso,dif:"baja",monedas:10,comida:20,estrellas:1,msg:`Ciclo EIME completo, con ${atraso} días de atraso`};
 }
 
 /* ====================== VISTA PREVIA (sin planilla) ====================== */
@@ -2444,11 +2503,24 @@ const LOCAL={
       if(e.pasa){ const ok=String(l).toUpperCase()==="PASA"; if(!ok) conforme=false; return {nom:pt.e,ind:l,err:"",rel:"",ok}; }
       const val=parseFloat(String(l).replace(",",".")); const er=val-pt.v, rel=pt.v?er/pt.v*100:0, ok=Math.abs(er)<=pt.tol; if(!ok) conforme=false;
       return {nom:(pt.e?pt.e+" ":"")+pt.v+" "+e.u,ind:val,err:+er.toFixed(3),rel:+rel.toFixed(2),ok}; });
-    const pr=premioEime(e,fecha);
     const d=new Date();
-    DB.verif.push({id:"v"+Date.now(),eq:e.id,fecha,hora:String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"),usuario:u.id,det,temp:p.temperatura||"",obs:p.observaciones||"",cumple:conforme,estrellas:pr.estrellas});
-    const enf=aplicaEvento(u,{comida:pr.comida,monedas:pr.monedas,estrellas:pr.estrellas,motivo:"EIME "+e.n+" · "+pr.msg});
-    return okd({premio:{monedas:pr.monedas,estrellas:pr.estrellas,comida:pr.comida,sinEfecto:enf,conforme,msg:pr.msg,dif:pr.dif,equipo:e.n}}); },
+    const fila={id:"v"+Date.now(),eq:e.id,fecha,hora:String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"),usuario:u.id,det,temp:p.temperatura||"",obs:p.observaciones||"",cumple:conforme,estrellas:0,ciclo:false,premioMonedas:0,premioComida:0};
+    DB.verif.push(fila);
+
+    const per=periodoEime(e.freq,fecha), venceCiclo=per.fin, grupo=e.freq==="quincenal"?"quincenal":"mensual";
+    const misDelGrupo=misEq(u.id).filter(x=>(x.freq==="quincenal"?"quincenal":"mensual")===grupo);
+    const pendientesEq=misDelGrupo.filter(x=>!verifEn(x,periodoEime(x.freq,fecha)));
+    const completo=pendientesEq.length===0;
+
+    let premio={monedas:0,estrellas:0,comida:0,sinEfecto:false,conforme,equipo:e.n,ciclo:false,
+      msg:`Guardado. Te falta${pendientesEq.length===1?"":"n"} ${pendientesEq.length} equipo${pendientesEq.length===1?"":"s"} por verificar en ${per.nombre} para completar el ciclo y recibir el premio.`};
+    if(completo){
+      const atraso=Math.round((parse(fecha)-parse(venceCiclo))/DAY), pr=premioCicloEime(atraso);
+      fila.ciclo=true; fila.estrellas=pr.estrellas; fila.premioMonedas=pr.monedas; fila.premioComida=pr.comida;
+      const enf=aplicaEvento(u,{comida:pr.comida,monedas:pr.monedas,estrellas:pr.estrellas,motivo:`EIME ${per.nombre} (${grupo}) · ${pr.msg}`});
+      premio={monedas:pr.monedas,estrellas:pr.estrellas,comida:pr.comida,sinEfecto:enf,conforme,msg:pr.msg,dif:pr.dif,equipo:e.n,ciclo:true};
+    }
+    return okd({premio}); },
   comprarMedicina(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const i=info(u); if(!i.sick) return err("NO_ENFERMA","Tu mascota no necesita medicina.");
     if(u.monedas<MEDICINA()) return err("SIN_MONEDAS",`Te faltan ${MEDICINA()-u.monedas} monedas.`);
@@ -3174,7 +3246,7 @@ function abrirEq(id){
       ${aviso}${form}
       <div class="hist"><h4>Historial</h4>
         ${hist.length?hist.map(v=>`<div class="hrow"><span class="d">${fmt(v.fecha)}</span><span class="pill ${v.cumple?"ok":"bad"}">${v.cumple?"Conforme":"No conforme"}</span>
-          <span class="who2">${esc(U(v.usuario)?.nombre||"")}</span>${starsHTML(v.estrellas)}</div>`).join("")
+          <span class="who2">${esc(U(v.usuario)?.nombre||"")}</span>${v.ciclo?`<span class="who2" style="color:var(--brass);font-weight:700" title="Esta verificación completó el ciclo EIME y pagó el premio">🏆 ciclo completo</span>${starsHTML(v.estrellas)}`:""}</div>`).join("")
          :`<div class="hrow"><span class="d">${fmt(e.ult)}</span><span class="pill mute">Planilla</span><span class="who2">Última verificación cargada del Excel</span></div>`}</div></div>`);
   const sh=$("#sheet");
   if(!form) return;
@@ -3198,10 +3270,17 @@ function abrirEq(id){
 /* ----- premio tras verificar ----- */
 function mostrarPremio(p){
   const u=yo(), i=info(u);
+  if(!p.ciclo){
+    openSheet(`${phead("Verificación registrada")}<div class="pbody"><div class="reward" data-st="${i.est}">
+      <div class="stage" style="padding:10px 14px 0;border-radius:18px">${petOf(u,{info:i})}</div>
+      <h3>${esc(p.equipo)} verificado</h3><p>${esc(p.msg)}${p.conforme?"":". Quedó fuera de tolerancia: avisa a quien corresponda."}</p>
+      <button class="btn" data-close>Listo</button></div></div>`);
+    return;
+  }
   const titulo = p.sinEfecto ? `${esc(nomMascota(u))} sigue enferma` : `¡${esc(nomMascota(u))} comió!`;
   const txt = p.sinEfecto ? "La comida no le hizo efecto. Dale la medicina para que vuelva a aprovecharla."
-    : `${esc(p.equipo)} verificado. ${p.msg}${p.conforme?"":". Quedó fuera de tolerancia: avisa a quien corresponda."}`;
-  openSheet(`${phead("Verificación registrada")}<div class="pbody"><div class="reward" data-st="${i.est}">
+    : `Completaste tu ciclo EIME. ${p.msg}${p.conforme?"":". Quedó fuera de tolerancia: avisa a quien corresponda."}`;
+  openSheet(`${phead("¡Ciclo EIME completo!")}<div class="pbody"><div class="reward" data-st="${i.est}">
     <div class="stage" style="padding:10px 14px 0;border-radius:18px">${petOf(u,{info:i})}</div>
     <h3>${titulo}</h3><p>${txt}</p>
     <div class="gain"><span class="g-star">${star(1)}+${p.estrellas}</span><span class="g-coin">${coin}+${p.monedas}</span>${p.sinEfecto?"":`<span class="g-eat">+${p.comida} % barriga</span>`}</div>
