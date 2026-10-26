@@ -2678,17 +2678,24 @@ const hayObservadores=()=>DB.usuarios.some(u=>u.observador&&u.activo!==false);
 function vObservador(){
   const J=jugadores().map(u=>({u,i:info(u)}));
   const eqFila=e=>{ const est=e.estado||"activo"; return `<div class="prow2"><span class="nm"><b>${esc(e.n)}</b><span>${esc(e.eime)} · ${U(e.resp)?esc(U(e.resp).nombre):"Sin asignar"}</span></span><span class="st ${est==="activo"?"ok":"pend"}">${est==="activo"?"Activo":est==="baja"?"De baja":"Bloqueado"}</span></div>`; };
-  const zonaFila=z=>`<div class="prow2"><span class="nm"><b>${esc(z.n)}</b><span>${U(z.resp)?esc(U(z.resp).nombre):"Sin asignar"}</span></span></div>`;
-  const zonas=planosDB().reduce((L,p)=>L.concat(p.zonas.map(z=>Object.assign({},z,{plano:p.nombre}))),[]);
+  const planos=planosDB().filter(p=>p.zonas.length);
+  const planoCard=p=>`<div class="zcard" style="margin-bottom:14px"><h4 style="margin:0 0 8px;font-family:var(--f-disp);font-size:15px">${esc(p.nombre)}</h4>
+    <div class="zcanvas">${zPlanoColab(p,null)}</div>
+    <div class="mine">${p.zonas.map(z=>`<span class="pill" style="background:var(--surface-2)">${esc(z.n)} · ${U(z.resp)?esc(primer(U(z.resp).nombre)):"sin asignar"}</span>`).join("")}</div></div>`;
+  const activosEq=DB.equipos.filter(e=>(e.estado||"activo")==="activo").length, totalEq=DB.equipos.length;
   return `<div class="pagehead"><div><h2>Resumen del laboratorio</h2><p>Vista de observador: puedes ver todo, no puedes editar nada.</p></div></div>
+    <div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main">
     ${vMetaEquipo()}
     ${cuadroHonor()}
     <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Personas</h3>
     ${J.map(({u,i})=>`<div class="prow2" data-st="${i.est}"><span class="pm">${petOf(u,{info:i})}</span><span class="nm"><b>${esc(u.nombre)}</b><span>${esc(u.cargo)} · ${EST_NOM[i.est]}</span></span></div>`).join("")}
-    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Equipos EIME</h3>
-    ${DB.equipos.map(eqFila).join("")||`<p class="note">Sin equipos registrados.</p>`}
-    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Zonas 5S</h3>
-    ${zonas.map(zonaFila).join("")||`<p class="note">Sin zonas registradas.</p>`}`;
+    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Zonas 5S por plano</h3>
+    ${planos.length?planos.map(planoCard).join(""):`<p class="note">Aún no hay planos de zonas.</p>`}
+    <details style="margin-top:18px">
+      <summary style="cursor:pointer;font-family:var(--f-disp);font-size:16px;margin:0 0 10px">Equipos EIME (${activosEq} activos de ${totalEq}) — ver detalle</summary>
+      ${DB.equipos.map(eqFila).join("")||`<p class="note">Sin equipos registrados.</p>`}
+    </details>
+    </div></div>`;
 }
 
 /* ---------- MI MASCOTA ---------- */
