@@ -92,6 +92,7 @@ main{overflow-y:auto;overflow-x:hidden;min-height:0;
 .btn[disabled]{opacity:.45;pointer-events:none}
 .btn.ghost{background:transparent;color:var(--fg-dim);border:1px solid var(--line);box-shadow:none}
 .btn.ghost:hover{background:var(--surface-2);color:var(--fg)}
+.btn.bad{background:var(--bad);color:#fff}
 .btn.sm{padding:8px 13px;font-size:13.5px;border-radius:9px}
 .stars{display:inline-flex;gap:1px} .stars svg{width:14px;height:14px}
 .empty{padding:34px 20px;text-align:center;color:var(--fg-mute);border:1px dashed var(--line);border-radius:var(--r);font-size:13.5px}
@@ -2288,7 +2289,8 @@ const ICO={
  sun:`<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/>`,
  lock:`<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
  equis:`<path d="M6 6l12 12M18 6L6 18"/>`,
- volver:`<path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="M8 5L4 9l4 4"/>`
+ volver:`<path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="M8 5L4 9l4 4"/>`,
+ trash:`<path d="M4 7h16M9 7V4h6v3M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6M14 11v6"/>`
 };
 const ic=(k,w=19)=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const star=f=>`<svg viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3.3l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.8l6.1-.9z"/></svg>`;
@@ -2454,6 +2456,11 @@ const LOCAL={
       e.estado=p.estado; e.motQ=motivo; e.porQ=nom; e.fQ=fmtHora();
       anotar(e.id,(p.estado==="baja"?"Dado de baja por ":"Bloqueado por ")+nom+" — "+motivo);
     }
+    return okd(); },
+  eliminarEquipo(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
+    const e=eqp(p.equipoId); if(!e) return err("SIN_EQUIPO","Equipo no encontrado.");
+    if(DB.verif.some(v=>v.eq===e.id)) return err("TIENE_HISTORIAL","Este equipo ya tiene verificaciones: usa Dar de baja.");
+    DB.equipos=DB.equipos.filter(x=>x.id!==e.id);
     return okd(); },
   exportarExcel(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador."); return okd({demo:true}); },
   guardarPlano5s(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
@@ -2811,13 +2818,15 @@ let eqFiltro="todos", WEQ=null, WMODO="";
 
 function filaEqAdmin(e){
   const est=e.estado||"activo", on=est==="activo";
+  const sinHistorial=!DB.verif.some(v=>v.eq===e.id);
   const sello=on?"":`<span class="selloEq">${est==="baja"?"Dado de baja":"Bloqueado"} por ${esc(e.porQ||"")} ${esc(e.fQ||"")} — ${esc(e.motQ||"")}</span>`;
+  const borrar=sinHistorial?`<button class="ib bad" data-act="eqElimina" data-id="${e.id}" title="Eliminar (nunca verificado)" aria-label="Eliminar ${esc(e.n)}">${ic("trash",17)}</button>`:"";
   const btn=on
     ?`<button class="ib" data-act="eqFicha" data-id="${e.id}" title="Ficha" aria-label="Ficha de ${esc(e.n)}">${ic("pencil",17)}</button>
       <button class="ib bad" data-act="eqMotivo" data-k="baja" data-id="${e.id}" title="Dar de baja" aria-label="Dar de baja ${esc(e.n)}">${ic("equis",17)}</button>
-      <button class="ib warn" data-act="eqMotivo" data-k="bloqueado" data-id="${e.id}" title="Bloquear" aria-label="Bloquear ${esc(e.n)}">${ic("lock",17)}</button>`
+      <button class="ib warn" data-act="eqMotivo" data-k="bloqueado" data-id="${e.id}" title="Bloquear" aria-label="Bloquear ${esc(e.n)}">${ic("lock",17)}</button>${borrar}`
     :`<button class="ib" data-act="eqFicha" data-id="${e.id}" title="Ficha" aria-label="Ficha de ${esc(e.n)}">${ic("pencil",17)}</button>
-      <button class="ib ok" data-act="eqReactivar" data-id="${e.id}" title="Reactivar" aria-label="Reactivar ${esc(e.n)}">${ic("volver",17)}</button>`;
+      <button class="ib ok" data-act="eqReactivar" data-id="${e.id}" title="Reactivar" aria-label="Reactivar ${esc(e.n)}">${ic("volver",17)}</button>${borrar}`;
   return `<div class="eqrow ${est}"><span class="nm"><b>${esc(e.n)}</b><span>${esc(e.desc||"")} · ${esc(e.freq||"")}</span>${sello}</span>
     <select data-act-change="asig" data-id="${e.id}" ${on?"":"disabled"} aria-label="Responsable de ${esc(e.n)}"><option value="">Sin asignar</option>${activos().map(u=>`<option value="${u.id}" ${e.resp===u.id?"selected":""}>${esc(u.nombre)}</option>`).join("")}</select>
     <span class="icons">${btn}</span></div>`;
@@ -2902,6 +2911,12 @@ function abrirMotivoEq(id,estado){
     <input class="inp" id="motEq" placeholder="Motivo (obligatorio)">
     <div class="saverow"><button class="btn" data-act="eqConfirma" data-id="${id}" data-k="${estado}">${ic("chk",18)} Confirmar</button><button class="btn ghost" data-close>Cancelar</button></div></div>`);
   setTimeout(()=>$("#motEq")&&$("#motEq").focus(),60);
+}
+function abrirEliminaEq(id){
+  const e=eqp(id);
+  openSheet(`${phead("Eliminar: "+esc(e.n))}<div class="pbody">
+    <p style="margin:0 0 14px;font-size:13.5px;color:var(--fg-dim)">Este equipo nunca ha sido verificado, así que se puede eliminar por completo: no queda rastro en el registro ni en el historial. Si alguna vez llegó a usarse, usa "Dar de baja" en vez de esto.</p>
+    <div class="saverow"><button class="btn bad" data-act="eqEliminaOk" data-id="${id}">${ic("trash",18)} Eliminar definitivamente</button><button class="btn ghost" data-close>Cancelar</button></div></div>`);
 }
 
 /* ====================== HOJAS EMERGENTES ====================== */
@@ -3117,6 +3132,9 @@ const ACT={
   eqFicha(d){ abrirFichaEq(d.id); },
   eqNuevo(){ abrirFichaEq(""); },
   eqMotivo(d){ abrirMotivoEq(d.id,d.k); },
+  eqElimina(d){ abrirEliminaEq(d.id); },
+  async eqEliminaOk(d){ const r=await call("eliminarEquipo",{equipoId:d.id});
+    if(!r.ok){ toast(r.msg,"!"); return; } closeSheet(); render(); toast("Equipo eliminado"); },
   eqChip(d){ const i=$("#motEq"); i.value=d.m; i.focus(); },
   eqAddPt(){ leerFicha(); WEQ.pts.push({e:"",v:"",tol:""}); pintaFicha();
     const p=$("#sheet .panel"); if(p) p.scrollTop=p.scrollHeight; },
