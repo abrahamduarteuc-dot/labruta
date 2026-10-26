@@ -2457,6 +2457,7 @@ const LOCAL={
       u={id:base,nombre:"",cargo:"",area:"",admin:false,activo:true,pin:"",especie:esp,mascota:"",color:ESPECIES[esp].c,energia:0,tEnergia:Date.now(),enferma:true,pausas:[],accesorios:[],usando:[]};
       DB.usuarios.push(u); }
     u.nombre=p.nombre; u.cargo=p.cargo; u.area=p.area; u.admin=!!p.admin; u.activo=p.activo!==false; u.observador=!!p.observador;
+    if(u.observador){ u.enferma=false; u.energia=100; }
     return okd(); },
   resetPin(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador."); const u=U(p.objetivo); if(u) u.pin=""; return okd(); },
   pausa(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
@@ -2626,7 +2627,9 @@ function renderTop(){
    : `<button class="back" data-act="atras">${ic("back",17)} ${PADRE[vista]==="corral"||(vista==="ajustes"&&gearBack)?"Corral":PADRE[vista]==="ajustes"?"Ajustes":"Mi mascota"}</button>`;
   if(u&&u.observador&&DB){
     $("#userChip").hidden=false;
-    $("#userChip").innerHTML=`<b>👁 Observador</b>`;
+    $("#userChip").innerHTML=u.mascota
+      ? `<span class="pm" data-st="contenta">${petOf(u,{info:{est:"contenta"}})}</span><b>${esc(u.mascota)}</b>`
+      : `<b>👁 Observador</b>`;
   } else if(u&&DB){ const i=info(u);
     $("#userChip").hidden=false;
     $("#userChip").innerHTML=`<span class="pm" data-st="${i.est}">${petOf(u,{info:i})}</span><b>${esc(primer(u.nombre))}</b>`;
@@ -2645,7 +2648,7 @@ function render(){
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
   if(vista==="ajustes"&&ajTab==="premios") pInitPremios();
   if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
-  if(u&&!u.observador&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&vista!=="ajustes"&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota
+  if(u&&(!u.mascota||!ESP_KEYS.includes(u.especie))&&vista!=="ajustes"&&!$("#sheet")) abrirEditPet(true);   // primera vez: elegir y nombrar la mascota (también para el observador: solo cosmético, sin energía)
 }
 
 /* ---------- CORRAL ---------- */
@@ -2683,7 +2686,12 @@ function vObservador(){
     <div class="zcanvas">${zPlanoColab(p,null)}</div>
     <div class="mine">${p.zonas.map(z=>`<span class="pill" style="background:var(--surface-2)">${esc(z.n)} · ${U(z.resp)?esc(primer(U(z.resp).nombre)):"sin asignar"}</span>`).join("")}</div></div>`;
   const activosEq=DB.equipos.filter(e=>(e.estado||"activo")==="activo").length, totalEq=DB.equipos.length;
+  const yoU=yo();
+  const avatar=`<div class="petprev" data-st="contenta" style="margin-bottom:16px"><div class="pm">${petOf(yoU,{info:{est:"contenta"}})}</div>
+    <div style="flex:1;min-width:0"><b>${esc(yoU.mascota||"Tu avatar")}</b><span class="sub" style="display:block;font-size:12.5px;color:var(--fg-mute)">Solo para identificarte, no tiene energía</span></div>
+    <button class="iconbtn" data-act="editPet" aria-label="Editar avatar">${ic("pencil",16)}</button></div>`;
   return `<div class="pagehead"><div><h2>Resumen del laboratorio</h2><p>Vista de observador: puedes ver todo, no puedes editar nada.</p></div></div>
+    ${avatar}
     <div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main">
     ${vMetaEquipo()}
     ${cuadroHonor()}
@@ -3077,16 +3085,16 @@ function abrirEditPet(bienvenida){
   if(bienvenida&&!ESP_KEYS.includes(esp)){ esp="perro"; col=ESPECIES.perro.c; }
   const claves=bienvenida?ESP_KEYS:(ESP_KEYS.includes(u.especie)?ESP_KEYS:[u.especie,...ESP_KEYS]);
   const prev=()=>{ $("#ppPrev").innerHTML=petSVG(esp,col,"contenta",u.usando||[],"pv"+(++PU)); };
-  const cab=bienvenida?`<div class="phead"><h3>¡Bienvenido, ${esc(primer(u.nombre))}! Elige tu mascota</h3></div>`:phead("Tu mascota");
+  const cab=bienvenida?`<div class="phead"><h3>¡Bienvenido, ${esc(primer(u.nombre))}! Elige tu avatar</h3></div>`:phead("Tu avatar");
   openSheet(`${cab}<div class="pbody">
-    ${bienvenida?`<p style="margin:0 0 12px;font-size:13.5px;color:var(--fg-dim)">Será tu compañera en el corral: la cuidas verificando tus equipos. Elige el animal, el color y ponle nombre. Después puedes cambiarlos desde el lápiz.</p>`:""}
+    ${bienvenida?`<p style="margin:0 0 12px;font-size:13.5px;color:var(--fg-dim)">${u.observador?"Elige el animal, el color y ponle nombre para identificarte. Es solo para verte bonito, no tiene energía ni se enferma.":"Será tu compañera en el corral: la cuidas verificando tus equipos. Elige el animal, el color y ponle nombre. Después puedes cambiarlos desde el lápiz."}</p>`:""}
     <div class="petprev" data-st="contenta"><div class="pm" id="ppPrev"></div>
       <div style="flex:1;min-width:0"><label class="fl" for="pName">Nombre de tu mascota</label><input class="inp" id="pName" maxlength="16" value="${esc(u.mascota||"")}" placeholder="Ponle un nombre"></div></div>
     <div class="eyebrow" style="margin-bottom:8px">Animal</div>
     <div class="spgrid">${claves.map(k=>`<button class="spopt" data-sp="${k}" aria-pressed="${k===esp}">${petSVG(k,ESPECIES[k].c,"contenta",[],"sp"+k)}${ESPECIES[k].n}</button>`).join("")}</div>
     <div class="eyebrow" style="margin:16px 0 8px">Color</div>
     <div class="colgrid">${COLORES.map(c=>`<button class="colopt" data-co="${c}" style="background:${c}" aria-pressed="${c===col}" aria-label="Color ${c}"></button>`).join("")}</div>
-    <div class="saverow"><button class="btn" id="btnPet">${ic("chk",18)} ${bienvenida?"Listo, ir al corral":"Guardar"}</button>${bienvenida?"":`<button class="btn ghost" data-close>Cancelar</button>`}</div></div>`);
+    <div class="saverow"><button class="btn" id="btnPet">${ic("chk",18)} ${bienvenida?(u.observador?"Listo, ir al resumen":"Listo, ir al corral"):"Guardar"}</button>${bienvenida?"":`<button class="btn ghost" data-close>Cancelar</button>`}</div></div>`);
   if(bienvenida){ const sc=$("#sheet .scrim"); if(sc) sc.removeAttribute("data-close"); }
   prev();
   const sh=$("#sheet");
@@ -3098,7 +3106,7 @@ function abrirEditPet(bienvenida){
     if(bienvenida&&!nombre){ toast("Ponle un nombre a tu mascota","!"); $("#pName",sh).focus(); return; }
     const r=await call("guardarMascota",{especie:esp,color:col,mascota:nombre});
     if(!r.ok){ toast(r.msg,"!"); return; }
-    closeSheet(); if(bienvenida){ vista="corral"; gearBack=null; } render(); toast(bienvenida?"¡Tu mascota ya está en el corral!":"Mascota guardada","★"); };
+    closeSheet(); if(bienvenida){ vista="corral"; gearBack=null; } render(); toast(bienvenida?(u.observador?"¡Listo!":"¡Tu mascota ya está en el corral!"):"Avatar guardado","★"); };
 }
 
 /* ----- tienda ----- */
