@@ -2158,19 +2158,21 @@ function cicloActual(){ const hoy=hoyS(); let ini=RUTA_INICIO, n=1;
 // Avance del equipo en el ciclo: EIME al día + evidencias 5S aprobadas por plano y por zona
 // El administrador puede ajustar cuántas evidencias 5S por plano se piden en el segundo tramo (siempre fueron 5; Ajustes > Premios lo cambia).
 function metaEvidObjetivo(){ const n=Number(DB&&DB.config&&DB.config.META_EVID); return n>=1&&n<=20?n:5; }
+// El "1" del primer tramo (0-50%) también lo puede ajustar el administrador (siempre fue 1).
+function metaEvidMinimo(){ const n=Number(DB&&DB.config&&DB.config.META_EVID_MIN); return n>=1&&n<=20?n:1; }
 function avanceEquipo(c){
-  const hoy=hoyS(), obj=metaEvidObjetivo();
+  const hoy=hoyS(), obj=metaEvidObjetivo(), min=Math.min(metaEvidMinimo(),obj);
   let eTot=0, eOk=0;
   DB.equipos.filter(e=>activoEq(e)&&e.resp).forEach(e=>{ let per=periodoEime(e.freq,c.ini<RUTA_INICIO?RUTA_INICIO:c.ini);
     while(per.fin<=c.fin){ const v=verifEn(e,per); if(per.fin<hoy||v){ eTot++; if(v) eOk++; } per=sigPeriodo(e.freq,per); } });
   const P=planosDB().filter(p=>p.zonas.length), E=evid5().filter(x=>x.ver==="APROBADO"&&x.rev!=="OBSERVADA"&&x.fecha>=c.ini&&x.fecha<=c.fin);
   const porPlano=P.map(p=>E.filter(x=>x.plano===p.id).length);
   const Z=P.reduce((n,p)=>n+p.zonas.length,0), zOk=P.reduce((n,p)=>n+p.zonas.filter(z=>E.some(x=>x.zona===z.id)).length,0);
-  const fE=eTot?eOk/eTot:1, f1=P.length?porPlano.filter(n=>n>=1).length/P.length:0;
+  const fE=eTot?eOk/eTot:1, f1=P.length?porPlano.filter(n=>n>=min).length/P.length:0;
   const f5=P.length?porPlano.reduce((s,n)=>s+Math.min(n,obj),0)/(obj*P.length):0, fZ=Z?zOk/Z:0;
   const b=(fE+f1)/2;
   const pct=b<1?Math.floor(50*b):f5<1?50+Math.floor(20*f5):fZ<1?70+Math.floor(20*fZ):100;
-  return {pct,eTot,eOk,planos:P.length,p1:porPlano.filter(n=>n>=1).length,p5:porPlano.reduce((s,n)=>s+Math.min(n,obj),0),evidObj:obj,zonas:Z,zOk,eimeAlDia:eOk===eTot};
+  return {pct,eTot,eOk,planos:P.length,p1:porPlano.filter(n=>n>=min).length,evidMin:min,p5:porPlano.reduce((s,n)=>s+Math.min(n,obj),0),evidObj:obj,zonas:Z,zOk,eimeAlDia:eOk===eTot};
 }
 function vMetaEquipo(){
   const c=cicloActual(), a=avanceEquipo(c), dias=diffDias(c.fin)+1, PR=premios();
@@ -2186,7 +2188,7 @@ function vMetaEquipo(){
         ${PR.map(p=>`<b style="left:${p.pct}%" class="${a.pct>=p.pct?"ok":""}"></b>`).join("")}</div>
       <ul class="pz-chk">
         ${chk(a.eimeAlDia,`EIME al día <em>${a.eOk}/${a.eTot}</em>`)}
-        ${chk(a.p1===a.planos&&a.planos>0,`1 evidencia 5S por plano <em>${a.p1}/${a.planos}</em>`)}
+        ${chk(a.p1===a.planos&&a.planos>0,`${a.evidMin} evidencia${a.evidMin===1?"":"s"} 5S por plano <em>${a.p1}/${a.planos}</em>`)}
         ${chk(a.p5===a.evidObj*a.planos&&a.planos>0,`${a.evidObj} evidencias por plano <em>${a.p5}/${a.evidObj*a.planos}</em>`)}
         ${chk(a.zOk===a.zonas&&a.zonas>0,`Todas las zonas con evidencia <em>${a.zOk}/${a.zonas}</em>`)}
       </ul></div>
@@ -2545,6 +2547,7 @@ const LOCAL={
     const L=p.premios; if(!Array.isArray(L)||L.length!==3) return err("PREMIOS","Faltan premios.");
     DB.config.PREMIOS=L.map(x=>({k:String(x.k),pct:Number(x.pct)}));
     if(p.metaEvid) DB.config.META_EVID=Math.min(20,Math.max(1,Math.round(Number(p.metaEvid))));
+    if(p.metaEvidMin) DB.config.META_EVID_MIN=Math.min(20,Math.max(1,Math.round(Number(p.metaEvidMin))));
     if(p.mision) DB.config.MISION={activa:!!p.mision.activa,
       monedas:Math.min(100,Math.max(0,Math.round(Number(p.mision.monedas)||0))),
       estrellas:Math.min(10,Math.max(0,Math.round(Number(p.mision.estrellas)||0))),
@@ -2831,8 +2834,9 @@ function vPremiosAdmin(){
     <div class="pcfg">${PR.map(fila).join("")}</div>
     <div class="toolrow"><button class="btn" id="btnPremios">${ic("chk",18)} Guardar premios</button></div>
     <h3 style="margin:26px 0 2px;font-family:var(--f-disp);font-size:17px">Meta del equipo</h3>
-    <p class="note" style="margin-top:4px">Cuántas evidencias 5S por plano se piden en el segundo tramo de la meta (siempre fueron 5).</p>
-    <div class="fieldrow"><div><label class="fl" for="pcEvid">Evidencias por plano</label><input class="inp" id="pcEvid" type="number" min="1" max="20" value="${metaEvidObjetivo()}" style="max-width:120px"></div></div>
+    <p class="note" style="margin-top:4px">Cuántas evidencias 5S por plano se piden en cada tramo de la meta (siempre fueron 1 para llegar al 50% y 5 para llegar al 70%).</p>
+    <div class="fieldrow two"><div><label class="fl" for="pcEvidMin">Evidencias por plano para el 50%</label><input class="inp" id="pcEvidMin" type="number" min="1" max="20" value="${metaEvidMinimo()}"></div>
+      <div><label class="fl" for="pcEvid">Evidencias por plano para el 70%</label><input class="inp" id="pcEvid" type="number" min="1" max="20" value="${metaEvidObjetivo()}"></div></div>
     <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:17px">La carretera · misión sorpresa</h3>
     <label class="chk"><input type="checkbox" id="pcMisOn" ${mc.activa?"checked":""}> Hay misión sorpresa cada semana</label>
     <p class="note" style="margin-top:4px">Aparece un día al azar cada semana (lo decide el sistema, no se puede elegir el día) y se ve 2 días antes. Aquí se ajusta el premio y el castigo.</p>
@@ -2844,10 +2848,6 @@ function vPremiosAdmin(){
 function pInitPremios(){
   const b=$("#btnPremios"); if(!b) return;
   for(let i=0;i<3;i++){ const s=$("#pcK"+i); if(s) s.onchange=()=>{ const t=$("#pcIlu"+i); if(t) t.innerHTML=ilustracion(s.value); }; }
-  const guardaExtra=async()=>{
-    const metaEvid=Number($("#pcEvid").value), mision={activa:$("#pcMisOn").checked,monedas:Number($("#pcMisM").value),estrellas:Number($("#pcMisE").value),penal:Number($("#pcMisP").value)};
-    return call("guardarPremios",{premios:premios().map(p=>({k:p.k,pct:p.pct})),metaEvid,mision});
-  };
   b.onclick=async()=>{
     const L=[]; for(let i=0;i<3;i++) L.push({k:$("#pcK"+i).value,pct:Number($("#pcP"+i).value)});
     if(L.some(p=>!(p.pct>=10&&p.pct<=100))){ toast("Los porcentajes van de 10 a 100","!"); return; }
@@ -2855,16 +2855,18 @@ function pInitPremios(){
     L.sort((a,b)=>a.pct-b.pct);
     if(L[0].pct===L[1].pct||L[1].pct===L[2].pct){ toast("Cada premio necesita un porcentaje distinto","!"); return; }
     const t=b.innerHTML; b.disabled=true; b.innerHTML=`<span class="spin"></span> Guardando…`;
-    const r=await call("guardarPremios",{premios:L,metaEvid:Number($("#pcEvid").value),mision:{activa:$("#pcMisOn").checked,monedas:Number($("#pcMisM").value),estrellas:Number($("#pcMisE").value),penal:Number($("#pcMisP").value)}});
+    const r=await call("guardarPremios",{premios:L,metaEvid:Number($("#pcEvid").value),metaEvidMin:Number($("#pcEvidMin").value),mision:{activa:$("#pcMisOn").checked,monedas:Number($("#pcMisM").value),estrellas:Number($("#pcMisE").value),penal:Number($("#pcMisP").value)}});
     b.disabled=false; b.innerHTML=t;
     if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
     render(); toast("Premios actualizados","★");
   };
   const b2=$("#btnPremios2"); if(!b2) return;
   b2.onclick=async()=>{
-    const evid=Number($("#pcEvid").value); if(!(evid>=1&&evid<=20)){ toast("Las evidencias por plano van de 1 a 20","!"); return; }
+    const evid=Number($("#pcEvid").value), evidMin=Number($("#pcEvidMin").value);
+    if(!(evid>=1&&evid<=20)||!(evidMin>=1&&evidMin<=20)){ toast("Las evidencias por plano van de 1 a 20","!"); return; }
     const t=b2.innerHTML; b2.disabled=true; b2.innerHTML=`<span class="spin"></span> Guardando…`;
-    const r=await guardaExtra();
+    const r=await call("guardarPremios",{premios:premios().map(p=>({k:p.k,pct:p.pct})),metaEvid:evid,metaEvidMin:evidMin,
+      mision:{activa:$("#pcMisOn").checked,monedas:Number($("#pcMisM").value),estrellas:Number($("#pcMisE").value),penal:Number($("#pcMisP").value)}});
     b2.disabled=false; b2.innerHTML=t;
     if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
     render(); toast("Meta y carretera actualizadas","★");
