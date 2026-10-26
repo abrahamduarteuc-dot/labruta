@@ -3175,7 +3175,8 @@ async function boot(){
   if(ONLINE){ await refresh(true);
     document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&Date.now()-lastSync>45000) refresh(); });
     setInterval(()=>{ if(document.visibilityState==="visible") refresh(); },120000); }
-  if(DB&&!ST.intro&&!ST.sesion) abrirPortada();
+  // la portada sale la primera vez: sin sesión, o con sesión pero sin mascota elegida todavía
+  if(DB&&!ST.intro&&(!ST.sesion||!yo()||!yo().mascota)) abrirPortada();
   setInterval(()=>{ if(DB&&!$("#sheet")&&!editando()&&document.visibilityState==="visible") render(); },300000);
 }
 boot();
