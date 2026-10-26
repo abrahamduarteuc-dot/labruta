@@ -2509,9 +2509,9 @@ function accesoriosActivos(u,t){
 const usandoActivo=u=>(u.usando||[]).filter(k=>accesoriosActivos(u).includes(k));
 function vComida(u,i,pct){
   const cf=COMIDA(), falta=Math.max(0,cf.costo-(u.monedas||0));
-  if(i.sick) return `<div class="alert"><p><b>🍖 Comida:</b> cuesta ${coin}${cf.costo} y le llena ${cf.pct}% la barriga. Primero necesita la medicina.</p></div>`;
+  if(i.sick) return `<div class="alert"><p><b>🍖 Comida:</b> cuesta <span class="cnt coin">${coin}${cf.costo}</span> y le llena ${cf.pct}% la barriga. Primero necesita la medicina.</p></div>`;
   if(pct>=100) return `<div class="alert ok"><p><b>${esc(nomMascota(u))} ya está con la barriga llena.</b> Vuelve cuando le baje el apetito.</p></div>`;
-  return `<div class="alert"><p><b>🍖 Dale de comer.</b> Cada ración cuesta ${coin}${cf.costo} monedas y le llena ${cf.pct}% la barriga${falta?`. Te faltan ${falta} monedas`:""}.</p>
+  return `<div class="alert"><p><b>🍖 Dale de comer.</b> Cada ración cuesta <span class="cnt coin">${coin}${cf.costo}</span> monedas y le llena ${cf.pct}% la barriga${falta?`. Te faltan ${falta} monedas`:""}.</p>
     <button class="btn coin" data-act="comida" ${falta?"disabled":""}>${ic("plus",17)} Comprar comida</button></div>`;
 }
 function vAvisoInactividad(u){
