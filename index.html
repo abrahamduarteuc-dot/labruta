@@ -3185,13 +3185,15 @@ function abrirPersona(id){
     <div class="fieldrow two"><div><label class="fl" for="pC">Cargo</label><input class="inp" id="pC" value="${esc(u.cargo)}"></div>
       <div><label class="fl" for="pA">Área</label><input class="inp" id="pA" value="${esc(u.area)}"></div></div>
     <label class="chk"><input type="checkbox" id="pAd" ${u.admin?"checked":""}> Es administrador</label>
-    <label class="chk"><input type="checkbox" id="pAc" ${u.activo!==false?"checked":""}> Participa en el juego</label>
+    <label class="chk" id="pAcRow" ${u.observador?"hidden":""}><input type="checkbox" id="pAc" ${u.activo!==false?"checked":""}> Participa en el juego</label>
     <label class="chk"><input type="checkbox" id="pOb" ${u.observador?"checked":""}> Observador (entra a ver todo, no edita ni tiene mascota)</label>
     <div class="saverow"><button class="btn" id="btnPer">${ic("chk",18)} Guardar</button>${id?`<button class="btn ghost" id="btnRst">Borrar su PIN</button>`:""}</div>
     ${id?`<p style="font-size:12px;color:var(--fg-mute);margin:10px 0 0">Si alguien olvida su PIN, bórralo: elegirá uno nuevo al entrar.</p>`:""}</div>`);
   const sh=$("#sheet");
+  $("#pOb",sh).onchange=e=>{ $("#pAcRow",sh).hidden=e.target.checked; if(e.target.checked) $("#pAc",sh).checked=true; };
   $("#btnPer",sh).onclick=async()=>{ const nombre=$("#pN",sh).value.trim(); if(!nombre){ toast("Falta el nombre","!"); return; }
-    const r=await call("guardarParticipante",{id:id||"",nombre,cargo:$("#pC",sh).value.trim(),area:$("#pA",sh).value.trim(),admin:$("#pAd",sh).checked,activo:$("#pAc",sh).checked,observador:$("#pOb",sh).checked});
+    const observador=$("#pOb",sh).checked, activo=observador?true:$("#pAc",sh).checked;
+    const r=await call("guardarParticipante",{id:id||"",nombre,cargo:$("#pC",sh).value.trim(),area:$("#pA",sh).value.trim(),admin:$("#pAd",sh).checked,activo,observador});
     if(!r.ok){ toast(r.msg,"!"); return; } closeSheet(); render(); toast("Guardado"); };
   if(id) $("#btnRst",sh).onclick=async()=>{ const r=await call("resetPin",{objetivo:id}); if(!r.ok){ toast(r.msg,"!"); return; } closeSheet(); render(); toast("PIN borrado"); };
 }
