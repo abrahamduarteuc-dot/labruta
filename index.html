@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Corral Lab</title>
 <meta name="theme-color" content="#0B6B74">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,6 +68,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .back{display:flex;align-items:center;gap:6px;padding:7px 12px 7px 9px;border-radius:10px;font-weight:600;font-size:14px;color:var(--fg-dim);background:var(--surface-2);border:1px solid var(--line)}
 .back:hover{color:var(--fg);border-color:var(--accent)}
 .tb-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex:none}
+@media(max-width:400px){
+  .topbar{gap:6px}
+  .tb-right{gap:5px}
+  .tb-left b{display:none}
+  .userchip b{display:none}
+  .userchip{padding:3px 8px 3px 3px}
+  .btn.ghost.sm{padding:8px}
+}
 main{overflow-y:auto;overflow-x:hidden;min-height:0;
   padding-block:20px calc(28px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
