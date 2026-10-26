@@ -1653,6 +1653,22 @@ function zMostrarImagen(pl){
   img.src="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(xml)));
 }
 
+/* ---------- vista de todos (solo lectura, cada zona con el color de su responsable) ---------- */
+function zPlanoTodos(pl){
+  let h=`<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano ${esc(pl.nombre)}"><defs><pattern id="zg3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#zg3)"/>`;
+  if(pl.contorno) h+=`<polygon class="z-cont" points="${zPts(pl.contorno)}"/>`;
+  pl.zonas.forEach(z=>{
+    const p=pers5(z.resp), asig=!!p, fill=asig?p.c:null, txt=asig?zContraste(p.c):"var(--fg-dim)";
+    const fa=fill?`fill="${fill}" stroke="${fill}"`:"";
+    let sh;
+    if(z.tipo==="rect") sh=`<rect class="z-sh ${asig?"":"vacia"}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${fa}/>`;
+    else if(z.tipo==="circ") sh=`<circle class="z-sh ${asig?"":"vacia"}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${fa}/>`;
+    else sh=`<polygon class="z-sh ${asig?"":"vacia"}" points="${zPts(z.pts)}" ${fa}/>`;
+    const c=zCentro(z);
+    h+=`<g class="z-g"><title>${esc(z.n)} · ${asig?esc(p.n):"sin asignar"}</title>${sh}<text class="z-lb" x="${c.x}" y="${c.y-6}" fill="${txt}">${esc(z.n)}</text><text class="z-lb sub" x="${c.x}" y="${c.y+9}" fill="${txt}">${asig?esc(p.n):"sin asignar"}</text></g>`;
+  });
+  return h+`</svg>`;
+}
 /* ---------- vista del colaborador (solo lectura) ---------- */
 function zPlanoColab(pl,me){
   let h=`<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano ${esc(pl.nombre)}"><defs><pattern id="zg2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#zg2)"/>`;
@@ -2683,8 +2699,8 @@ function vObservador(){
   const eqFila=e=>{ const est=e.estado||"activo"; return `<div class="prow2"><span class="nm"><b>${esc(e.n)}</b><span>${esc(e.eime)} · ${U(e.resp)?esc(U(e.resp).nombre):"Sin asignar"}</span></span><span class="st ${est==="activo"?"ok":"pend"}">${est==="activo"?"Activo":est==="baja"?"De baja":"Bloqueado"}</span></div>`; };
   const planos=planosDB().filter(p=>p.zonas.length);
   const planoCard=p=>`<div class="zcard" style="margin-bottom:14px"><h4 style="margin:0 0 8px;font-family:var(--f-disp);font-size:15px">${esc(p.nombre)}</h4>
-    <div class="zcanvas">${zPlanoColab(p,null)}</div>
-    <div class="mine">${p.zonas.map(z=>`<span class="pill" style="background:var(--surface-2)">${esc(z.n)} · ${U(z.resp)?esc(primer(U(z.resp).nombre)):"sin asignar"}</span>`).join("")}</div></div>`;
+    <div class="zcanvas">${zPlanoTodos(p)}</div>
+    <div class="mine">${p.zonas.map(z=>{ const p5=pers5(z.resp); return `<span class="pill" style="background:${p5?p5.c:"var(--surface-2)"};color:${p5?zContraste(p5.c):"inherit"}">${esc(z.n)} · ${p5?esc(p5.n):"sin asignar"}</span>`; }).join("")}</div></div>`;
   const activosEq=DB.equipos.filter(e=>(e.estado||"activo")==="activo").length, totalEq=DB.equipos.length;
   const yoU=yo();
   const avatar=`<div class="petprev" data-st="contenta" style="margin-bottom:16px"><div class="pm">${petOf(yoU,{info:{est:"contenta"}})}</div>
