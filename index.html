@@ -713,6 +713,10 @@ td.num{font-family:var(--f-mono);text-align:right}
 .efcard .ei{font-size:26px}
 .efcard>div{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13.5px}
 .efcard>div span{font-size:12px;color:var(--fg-dim)}
+.adicard{display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.adicard .ai{font-size:24px}
+.adicard>div{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13.5px}
+.adicard>div span{font-size:12px;color:var(--fg-dim)}
 /* ---- Carretera ---- */
 .alert.ok{background:var(--bg-contenta);border-color:transparent;color:var(--st-contenta)}
 .corral-lay{display:flex;flex-direction:column;gap:16px}
@@ -1964,11 +1968,19 @@ function vEvid5(u){
       <button class="btn sm" data-act="j5abrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir antes y después</button></div>`; }).join("")
     :`<div class="empty">No tienes zonas 5S asignadas. El administrador las reparte en Ajustes → Zonas 5S.</div>`;
   return `<div class="j5"><div class="eyebrow" style="margin:18px 0 8px">Evidencia 5S · el juez revisa cada foto</div>
+    ${vAdic5(u)}
     <div class="j5grid">${tarjetas}</div>
     ${hist.length?`<div class="eyebrow" style="margin:18px 0 8px">${u.admin?"Últimas evaluaciones del equipo":"Tus últimas evaluaciones"}</div>
     <div class="j5hist">${hist.map(e=>`<button class="j5h" data-act="j5ver" data-id="${e.id}" data-v="${e.ver}">
       <span class="vd">${e.rev==="OBSERVADA"?"!":e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
-      <span class="tx"><b>${e.s}S ${esc((S5[e.s-1]||{}).n||"")} · ${esc(e.zn)}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
+      <span class="tx"><b>${e.tipo==="ADIC"?"5S adicional":`${e.s}S ${esc((S5[e.s-1]||{}).n||"")}`} · ${esc(e.zn)}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
+}
+function misZonas5s(uid){ const out=[]; planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp===uid) out.push({p,z}); })); return out; }
+function vAdic5(u){
+  if(!misZonas5s(u.id).length) return "";
+  return `<div class="adicard"><span class="ai">➕</span><div><b>¿Hiciste algo extra de orden o limpieza?</b>
+    <span>No necesitas seguir un paso del checklist: sube un antes y un después igual, y el juez decide cuánto vale el esfuerzo.</span></div>
+    <button class="btn sm" data-act="j5adicAbrir">Subir fotos</button></div>`;
 }
 
 function abrirEvid5(planoId,zonaId){
@@ -2021,9 +2033,54 @@ function veredicto5(r){
     ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
   </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
 }
+let J5A=null;   // estado de la hoja de evidencia "5S adicional" abierta
+function abrirAdic5(){
+  const u=yo(); const zs=misZonas5s(u.id); if(!zs.length) return;
+  J5A={zonas:zs,zonaSel:zs.length===1?zs[0].z.id:"",nota:"",antes:null,despues:null,enviando:false};
+  pintaAdic5();
+}
+function pintaAdic5(){
+  const zs=J5A.zonas;
+  const picker=zs.length>1?`<div class="fieldrow"><label class="fl" for="adicZona">¿En cuál de tus zonas?</label>
+      <select class="inp" id="adicZona"><option value="">Elige una zona</option>${zs.map(({p,z})=>`<option value="${z.id}" ${J5A.zonaSel===z.id?"selected":""}>${esc(z.n)} · ${esc(p.nombre)}</option>`).join("")}</select></div>`
+    :`<p class="j5tip"><em>${esc((zs[0]||{}).z.n||"")}</em></p>`;
+  openSheet(`${phead("5S adicional")}<div class="pbody">
+    <p class="j5tip">¿Hiciste orden o limpieza que no sigue un paso puntual del checklist? Sube el antes y el después igual: el juez mira el esfuerzo y decide cuánto vale.</p>
+    ${picker}
+    <label class="fl" for="adicNota">¿Qué hiciste? (cuéntale al juez)</label>
+    <textarea class="inp" id="adicNota" rows="2" maxlength="300" placeholder="Ej: ordené el estante de reactivos vencidos">${esc(J5A.nota||"")}</textarea>
+    <div class="j5fotos">
+      ${["antes","despues"].map(k=>`<label class="j5foto ${J5A[k]?"lleno":""}">
+        <input type="file" accept="image/*" capture="environment" data-afoto="${k}" hidden>
+        ${J5A[k]?`<img src="${J5A[k].mini}" alt="Foto ${k==="antes"?"antes":"después"}">`:`<span>${ic("camera",28)}</span>`}
+        <b>${k==="antes"?"Antes":"Después"}</b><small>${J5A[k]?"Toca para cambiar":"Toca para sacar o elegir foto"}</small></label>`).join("")}
+    </div>
+    <div class="saverow"><button class="btn" data-act="j5adicEnviar" ${J5A.antes&&J5A.despues&&J5A.zonaSel&&(J5A.nota||"").trim()?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
+    <p class="j5nota">Las fotos quedan guardadas como respaldo para el auditor.</p></div>`);
+}
+document.addEventListener("input",ev=>{
+  if(ev.target.id==="adicNota"&&J5A){ J5A.nota=ev.target.value; const b=$('[data-act="j5adicEnviar"]'); if(b) b.disabled=!(J5A.antes&&J5A.despues&&J5A.zonaSel&&J5A.nota.trim()); }
+});
+document.addEventListener("change",async ev=>{
+  const sel=ev.target.closest("#adicZona");
+  if(sel&&J5A){ J5A.zonaSel=sel.value; pintaAdic5(); return; }
+  const inp=ev.target.closest("[data-afoto]"); if(!inp||!J5A||!inp.files[0]) return;
+  try{ J5A.nota=($("#adicNota")||{}).value||J5A.nota; J5A[inp.dataset.afoto]=await prepFoto(inp.files[0]); pintaAdic5(); }
+  catch(e){ toast(e.message,"!"); }
+});
+function veredictoAdic(r){
+  const ok=r.ver==="APROBADO", NIVEL_TXT={BAJO:"Esfuerzo chico",MEDIO:"Buen esfuerzo",ALTO:"Esfuerzo destacado"};
+  openSheet(`${phead(ok?"¡Aprobado!":"Aún no")}<div class="pbody"><div class="j5res" data-v="${r.ver}">
+    <div class="big">${ok?"✓":"✗"}</div><b>5S adicional · ${esc(r.zn)}</b>
+    ${ok?`<p class="j5tip" style="margin-top:4px"><b>${esc(NIVEL_TXT[r.nivel]||r.nivel||"")}</b></p>`:""}
+    <p><b>Motivo:</b> ${esc(r.motivo)}</p><p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>
+    ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · úsalas para comprarle comida a tu mascota</p>`:""}
+    ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
+  </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
+}
 async function verEvid5(id){
   const e=evid5().find(x=>x.id===id); if(!e) return;
-  openSheet(`${phead(e.s+"S "+esc((S5[e.s-1]||{}).n||"")+" · "+esc(e.zn))}<div class="pbody">
+  openSheet(`${phead((e.tipo==="ADIC"?"5S adicional":e.s+"S "+esc((S5[e.s-1]||{}).n||""))+" · "+esc(e.zn))}<div class="pbody">
     <div class="j5fotos" id="j5mini"><div class="j5foto"><span>…</span><b>Antes</b></div><div class="j5foto"><span>…</span><b>Después</b></div></div>
     <div class="j5res" data-v="${e.ver}" style="margin-top:12px"><b>${e.ver} · ${fmt(e.fecha)} · ${esc((U(e.uid)||{}).nombre||"")}</b>
     <div class="pts">${"★".repeat(e.puntaje||0)}${"☆".repeat(5-(e.puntaje||0))}</div>
@@ -2039,6 +2096,7 @@ async function verEvid5(id){
    monedas UNA vez por persona por día. No cuenta para la meta del equipo ni se ve en la carretera:
    es aparte del programa 5S. */
 function efCfg(){ return (DB&&DB.config&&DB.config.EF)||{activa:false,monedas:10}; }
+function adicCfg(){ return (DB&&DB.config&&DB.config.ADIC)||{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}}; }
 function efVentanaAbierta(){ const d=new Date(), dow=d.getDay(); if(dow<1||dow>5) return false; const h=d.getHours(); return h>=15&&h<18; }
 function efGanadaHoy(uid){ return (DB.estrellaFugaz||[]).some(e=>e.uid===uid&&e.fecha===hoyS()&&e.ver==="APROBADO"); }
 function efDisponible(u){ return !!u&&!u.observador&&efCfg().activa&&efVentanaAbierta()&&zonasEF(u.id).length>0&&!efGanadaHoy(u.id); }
@@ -2090,6 +2148,19 @@ const JACT={
     EF=null; render(); veredictoEF(r.resultado);
   },
   j5abrir(d){ abrirEvid5(d.p,d.z); },
+  j5adicAbrir(){ abrirAdic5(); },
+  async j5adicEnviar(d,btn){
+    if(!J5A||J5A.enviando) return;
+    J5A.nota=($("#adicNota")||{}).value||J5A.nota||"";
+    if(!J5A.zonaSel||!J5A.nota.trim()||!J5A.antes||!J5A.despues) return;
+    J5A.enviando=true; btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando tus fotos…`;
+    const zsel=J5A.zonas.find(x=>x.z.id===J5A.zonaSel);
+    const r=await call("juez5sAdicional",{planoId:zsel.p.id,zonaId:zsel.z.id,nota:J5A.nota,
+      antes:J5A.antes.full,despues:J5A.despues.full,miniAntes:J5A.antes.mini,miniDespues:J5A.despues.mini});
+    J5A.enviando=false;
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
+    J5A=null; render(); veredictoAdic(r.resultado);
+  },
   j5s(d){ J5.com=($("#j5com")||{}).value||J5.com; J5.s=Number(d.s); pintaEvid5(); },
   async j5enviar(d,btn){
     if(!J5||J5.enviando) return; J5.enviando=true; J5.com=($("#j5com")||{}).value||"";
@@ -2578,7 +2649,7 @@ function seedDemo(){
     P("de","Danitza Espinoza","Asistente Técnico","I+D","gato","#D39A5A",0,false,{mascota:"Pigmento"}),
     P("fc","Francisco Contreras","Asistente Técnico","I+D","capibara","#B68A58",0,false,{mascota:"Don Capi"})
   ];
-  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50}},usuarios:us,
+  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}}},usuarios:us,
     equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],
     planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
 }
@@ -2730,6 +2801,24 @@ const LOCAL={
     if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S "+r.s+"S "+z.n+(bono?" + misión sorpresa":"")});
     else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+z.n+": la zona no mantuvo el estándar"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
+  juez5sAdicional(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
+    if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable.");
+    if(!String(p.nota||"").trim()) return err("SIN_NOTA","Cuéntale al juez qué hiciste.");
+    if(p.antes===p.despues) return err("IGUALES","La foto del antes y la del después son la misma.");
+    const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="e"+t;
+    const niveles=["BAJO","MEDIO","ALTO"], nivel=niveles[Math.floor(Math.random()*3)], cf=adicCfg();
+    const tierKey=nivel==="BAJO"?"bajo":nivel==="ALTO"?"alto":"medio", puntaje=nivel==="BAJO"?2:nivel==="ALTO"?5:3;
+    const monedas=ok?cf[tierKey].monedas:0, estrellas=ok?cf[tierKey].estrellas:0;
+    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,zn:z.n,s:0,com:p.nota||"",tipo:"ADIC",nivel:ok?nivel:"",
+      ver:ok?"APROBADO":"RECHAZADO",puntaje:ok?puntaje:2,
+      motivo:ok?"Se nota el esfuerzo: la zona quedó visiblemente más ordenada.":"No se aprecia diferencia suficiente entre las dos fotos.",
+      orient:ok?"Sigue así y mantén el estándar logrado.":"Retira lo que no se usa y saca la foto desde el mismo ángulo.",
+      monedas,estrellas};
+    (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
+    u.ultimaActividad=t;
+    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S adicional "+z.n+" aprobado por el juez"});
+    return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
   revisiones5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     return okd({lista:evid5().filter(e=>esRevisorActual(e,u.id)).map(e=>({id:e.id,zn:e.zn,s:e.s,apelacion:e.rev==="APELACION",
       antes:((DB.fotos5||{})[e.id]||{}).antes,despues:((DB.fotos5||{})[e.id]||{}).despues}))}); },
@@ -2763,6 +2852,10 @@ const LOCAL={
       cada:Math.min(60,Math.max(1,Math.round(Number(p.inact.cada))||7))};
     if(p.comida) DB.config.COMIDA={costo:Math.min(100,Math.max(1,Math.round(Number(p.comida.costo))||10)),
       pct:Math.min(100,Math.max(5,Math.round(Number(p.comida.pct))||50))};
+    if(p.adic) DB.config.ADIC={
+      bajo:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.bajo?.monedas))||10)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.bajo?.estrellas))||1))},
+      medio:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.medio?.monedas))||20)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.medio?.estrellas))||2))},
+      alto:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.alto?.monedas))||35)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.alto?.estrellas))||3))}};
     return okd({}); },
   estrellaFugaz(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const cfg=efCfg(); if(!cfg.activa) return err("EF_OFF","La estrella fugaz no está activada.");
@@ -3070,7 +3163,7 @@ function vAjustes(){
 }
 /* ---------- Premios del ciclo (solo administrador) ---------- */
 function vPremiosAdmin(){
-  const PR=premios(), c=cicloActual(), mc=misionCfg(), ef=efCfg(), ic_=inactCfg(), cf=COMIDA();
+  const PR=premios(), c=cicloActual(), mc=misionCfg(), ef=efCfg(), ic_=inactCfg(), cf=COMIDA(), ac=adicCfg();
   const fila=(p,i)=>`<div class="pcfg-row">
     <span id="pcIlu${i}">${ilustracion(p.k)}</span>
     <span class="f"><label for="pcK${i}">Premio ${i+1}</label>
@@ -3110,7 +3203,16 @@ function vPremiosAdmin(){
     <p class="note" style="margin-top:4px">La comida ya no se regala sola al hacer una 5S o un EIME: esas actividades dan monedas, y con esas monedas cada persona le compra la comida a su mascota desde "Mi mascota". Ajusta el precio y cuánta barriga llena cada ración para que sea un desafío real, no gratis ni imposible.</p>
     <div class="fieldrow two"><div><label class="fl" for="pcComCosto">Costo por ración (monedas)</label><input class="inp" id="pcComCosto" type="number" min="1" max="100" value="${cf.costo}"></div>
       <div><label class="fl" for="pcComPct">% de barriga que llena</label><input class="inp" id="pcComPct" type="number" min="5" max="100" value="${cf.pct}"></div></div>
-    <div class="toolrow"><button class="btn" id="btnPremios6">${ic("chk",18)} Guardar costo de la comida</button></div>`;
+    <div class="toolrow"><button class="btn" id="btnPremios6">${ic("chk",18)} Guardar costo de la comida</button></div>
+    <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:17px">➕ 5S adicional</h3>
+    <p class="note" style="margin-top:4px">Cuando alguien sube un antes y después de orden o limpieza libre (sin seguir un paso del checklist), el juez decide si aprueba y clasifica el esfuerzo en bajo, medio o alto. Aquí defines cuánto paga cada nivel.</p>
+    <div class="fieldrow two"><div><label class="fl" for="pcAdBM">Esfuerzo bajo · monedas</label><input class="inp" id="pcAdBM" type="number" min="1" max="100" value="${ac.bajo.monedas}"></div>
+      <div><label class="fl" for="pcAdBE">· estrellas</label><input class="inp" id="pcAdBE" type="number" min="0" max="10" value="${ac.bajo.estrellas}"></div></div>
+    <div class="fieldrow two"><div><label class="fl" for="pcAdMM">Esfuerzo medio · monedas</label><input class="inp" id="pcAdMM" type="number" min="1" max="100" value="${ac.medio.monedas}"></div>
+      <div><label class="fl" for="pcAdME">· estrellas</label><input class="inp" id="pcAdME" type="number" min="0" max="10" value="${ac.medio.estrellas}"></div></div>
+    <div class="fieldrow two"><div><label class="fl" for="pcAdAM">Esfuerzo alto · monedas</label><input class="inp" id="pcAdAM" type="number" min="1" max="100" value="${ac.alto.monedas}"></div>
+      <div><label class="fl" for="pcAdAE">· estrellas</label><input class="inp" id="pcAdAE" type="number" min="0" max="10" value="${ac.alto.estrellas}"></div></div>
+    <div class="toolrow"><button class="btn" id="btnPremios7">${ic("chk",18)} Guardar 5S adicional</button></div>`;
 }
 function pInitPremios(){
   const b=$("#btnPremios"); if(!b) return;
@@ -3177,6 +3279,19 @@ function pInitPremios(){
     b6.disabled=false; b6.innerHTML=t;
     if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
     render(); toast("Costo de la comida actualizado","★");
+  };
+  const b7=$("#btnPremios7"); if(!b7) return;
+  b7.onclick=async()=>{
+    const adic={bajo:{monedas:Number($("#pcAdBM").value),estrellas:Number($("#pcAdBE").value)},
+      medio:{monedas:Number($("#pcAdMM").value),estrellas:Number($("#pcAdME").value)},
+      alto:{monedas:Number($("#pcAdAM").value),estrellas:Number($("#pcAdAE").value)}};
+    const okRango=[adic.bajo,adic.medio,adic.alto].every(x=>x.monedas>=1&&x.monedas<=100&&x.estrellas>=0&&x.estrellas<=10);
+    if(!okRango){ toast("Revisa los valores: monedas de 1 a 100, estrellas de 0 a 10","!"); return; }
+    const t=b7.innerHTML; b7.disabled=true; b7.innerHTML=`<span class="spin"></span> Guardando…`;
+    const r=await call("guardarPremios",{premios:premios().map(p=>({k:p.k,pct:p.pct})),adic});
+    b7.disabled=false; b7.innerHTML=t;
+    if(!r.ok){ toast(r.msg||"No se pudo guardar","!"); return; }
+    render(); toast("5S adicional actualizado","★");
   };
 }
 const HEAD=["Equipo","Código EIME","Fecha","Punto patrón","Indicación","Error abs.","Error rel. %","Resultado","Responsable","Observaciones"];
