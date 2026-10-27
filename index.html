@@ -857,6 +857,8 @@ td.num{font-family:var(--f-mono);text-align:right}
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script>
 "use strict";
 const LOGO="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\">\n<defs><linearGradient id=\"lg-bg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1A9AA6\"/><stop offset=\"1\" stop-color=\"#064B52\"/></linearGradient>\n<clipPath id=\"lg-cp\"><rect width=\"512\" height=\"512\" rx=\"112\"/></clipPath></defs>\n<g clip-path=\"url(#lg-cp)\"><rect width=\"512\" height=\"512\" fill=\"url(#lg-bg)\"/>\n<circle cx=\"400\" cy=\"96\" r=\"150\" fill=\"#fff\" opacity=\".07\"/><path d=\"M0 410Q256 372 512 410V512H0Z\" fill=\"#053E44\" opacity=\".55\"/>\n<path d=\"M76.9 182.1L82.6 134.6L109.2 159.3Z\" fill=\"#E27B33\"/><path d=\"M149.1 182.1L143.4 134.6L116.8 159.3Z\" fill=\"#E27B33\"/><circle cx=\"113.0\" cy=\"184.0\" r=\"38.0\" fill=\"#E27B33\"/><path d=\"M84.5 201.1L113.0 221.2L141.5 201.1L113.0 195.4Z\" fill=\"#FBF3EA\"/><circle cx=\"99.3\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><circle cx=\"126.7\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><ellipse cx=\"113.0\" cy=\"194.6\" rx=\"6.1\" ry=\"4.2\" fill=\"#2B1D12\" transform=\"rotate(0 113.0 194.6)\"/><circle cx=\"170.0\" cy=\"184.0\" r=\"11.4\" fill=\"#8B5E3C\"/><circle cx=\"246.0\" cy=\"184.0\" r=\"11.4\" fill=\"#8B5E3C\"/><circle cx=\"208.0\" cy=\"184.0\" r=\"38.0\" fill=\"#8B5E3C\"/><circle cx=\"194.3\" cy=\"180.2\" r=\"13.7\" fill=\"#D9B896\"/><circle cx=\"221.7\" cy=\"180.2\" r=\"13.7\" fill=\"#D9B896\"/><ellipse cx=\"208.0\" cy=\"199.2\" rx=\"20.9\" ry=\"16.0\" fill=\"#D9B896\" transform=\"rotate(0 208.0 199.2)\"/><circle cx=\"194.3\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><circle cx=\"221.7\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><ellipse cx=\"204.2\" cy=\"195.4\" rx=\"1.9\" ry=\"2.7\" fill=\"#3A2A20\" transform=\"rotate(0 204.2 195.4)\"/><ellipse cx=\"211.8\" cy=\"195.4\" rx=\"1.9\" ry=\"2.7\" fill=\"#3A2A20\" transform=\"rotate(0 211.8 195.4)\"/><path d=\"M275.5 161.2L277.4 134.6L296.4 153.6Z\" fill=\"#A8703F\"/><path d=\"M332.5 161.2L330.6 134.6L311.6 153.6Z\" fill=\"#A8703F\"/><ellipse cx=\"340.1\" cy=\"187.8\" rx=\"11.4\" ry=\"30.4\" fill=\"#6F4526\" transform=\"rotate(0 340.1 187.8)\"/><circle cx=\"304.0\" cy=\"184.0\" r=\"38.0\" fill=\"#A8703F\"/><path d=\"M292.6 146.0L307.8 168.8L319.2 146.0Z\" fill=\"#6F4526\"/><ellipse cx=\"304.0\" cy=\"201.1\" rx=\"22.8\" ry=\"17.1\" fill=\"#D9B38A\" transform=\"rotate(0 304.0 201.1)\"/><circle cx=\"290.3\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><circle cx=\"317.7\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><ellipse cx=\"296.4\" cy=\"203.0\" rx=\"2.7\" ry=\"3.8\" fill=\"#3A2A20\" transform=\"rotate(0 296.4 203.0)\"/><ellipse cx=\"311.6\" cy=\"203.0\" rx=\"2.7\" ry=\"3.8\" fill=\"#3A2A20\" transform=\"rotate(0 311.6 203.0)\"/><ellipse cx=\"399.0\" cy=\"174.5\" rx=\"34.2\" ry=\"38.0\" fill=\"#D9667A\" transform=\"rotate(0 399.0 174.5)\"/><circle cx=\"381.9\" cy=\"161.2\" r=\"3.8\" fill=\"#B84D63\"/><circle cx=\"410.4\" cy=\"157.4\" r=\"4.6\" fill=\"#B84D63\"/><ellipse cx=\"399.0\" cy=\"187.8\" rx=\"38.0\" ry=\"34.2\" fill=\"#D9667A\" transform=\"rotate(0 399.0 187.8)\"/><circle cx=\"385.3\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><circle cx=\"412.7\" cy=\"181.0\" r=\"3.8\" fill=\"#2B1D12\"/><ellipse cx=\"399.0\" cy=\"197.3\" rx=\"4.9\" ry=\"2.7\" fill=\"#7A2332\" transform=\"rotate(0 399.0 197.3)\"/><path d=\"M21.4 263.3L23.7 213.9L61.3 235.1Z\" fill=\"#E9A24F\"/><path d=\"M110.7 263.3L108.3 213.9L70.7 235.1Z\" fill=\"#E9A24F\"/><circle cx=\"66.0\" cy=\"268.0\" r=\"47.0\" fill=\"#F0B060\"/><circle cx=\"49.1\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><circle cx=\"82.9\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><ellipse cx=\"66.0\" cy=\"279.8\" rx=\"5.6\" ry=\"3.8\" fill=\"#D9627A\" transform=\"rotate(0 66.0 279.8)\"/><ellipse cx=\"117.8\" cy=\"272.7\" rx=\"13.2\" ry=\"29.1\" fill=\"#8F5F3A\" transform=\"rotate(14 117.8 272.7)\"/><ellipse cx=\"204.2\" cy=\"272.7\" rx=\"13.2\" ry=\"29.1\" fill=\"#8F5F3A\" transform=\"rotate(-14 204.2 272.7)\"/><circle cx=\"161.0\" cy=\"268.0\" r=\"47.0\" fill=\"#D2A06C\"/><ellipse cx=\"161.0\" cy=\"286.8\" rx=\"23.5\" ry=\"17.9\" fill=\"#EBCFA7\" transform=\"rotate(0 161.0 286.8)\"/><circle cx=\"144.1\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><circle cx=\"177.9\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><ellipse cx=\"161.0\" cy=\"281.2\" rx=\"7.5\" ry=\"5.2\" fill=\"#2B1D12\" transform=\"rotate(0 161.0 281.2)\"/><path d=\"M223.1 235.1L216.1 213.9L234.8 228.1Z\" fill=\"#F4E8C8\"/><path d=\"M288.9 235.1L295.9 213.9L277.1 228.1Z\" fill=\"#F4E8C8\"/><ellipse cx=\"209.0\" cy=\"251.6\" rx=\"17.9\" ry=\"9.4\" fill=\"#B8B3AB\" transform=\"rotate(-20 209.0 251.6)\"/><ellipse cx=\"303.0\" cy=\"251.6\" rx=\"17.9\" ry=\"9.4\" fill=\"#B8B3AB\" transform=\"rotate(20 303.0 251.6)\"/><circle cx=\"256.0\" cy=\"268.0\" r=\"47.0\" fill=\"#F4EFE9\"/><ellipse cx=\"232.5\" cy=\"242.2\" rx=\"14.1\" ry=\"12.2\" fill=\"#2E2A28\" transform=\"rotate(0 232.5 242.2)\"/><ellipse cx=\"285.1\" cy=\"270.4\" rx=\"10.3\" ry=\"14.1\" fill=\"#2E2A28\" transform=\"rotate(0 285.1 270.4)\"/><ellipse cx=\"256.0\" cy=\"287.7\" rx=\"27.3\" ry=\"19.7\" fill=\"#F2B6C4\" transform=\"rotate(0 256.0 287.7)\"/><circle cx=\"239.1\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><circle cx=\"272.9\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><ellipse cx=\"246.6\" cy=\"287.7\" rx=\"3.3\" ry=\"4.7\" fill=\"#8A5A64\" transform=\"rotate(0 246.6 287.7)\"/><ellipse cx=\"265.4\" cy=\"287.7\" rx=\"3.3\" ry=\"4.7\" fill=\"#8A5A64\" transform=\"rotate(0 265.4 287.7)\"/><ellipse cx=\"333.1\" cy=\"204.6\" rx=\"11.3\" ry=\"37.6\" fill=\"#F4EFE9\" transform=\"rotate(-6 333.1 204.6)\"/><ellipse cx=\"333.1\" cy=\"206.9\" rx=\"5.6\" ry=\"28.2\" fill=\"#F2B6C4\" transform=\"rotate(-6 333.1 206.9)\"/><ellipse cx=\"368.9\" cy=\"204.6\" rx=\"11.3\" ry=\"37.6\" fill=\"#F4EFE9\" transform=\"rotate(6 368.9 204.6)\"/><ellipse cx=\"368.9\" cy=\"206.9\" rx=\"5.6\" ry=\"28.2\" fill=\"#F2B6C4\" transform=\"rotate(6 368.9 206.9)\"/><circle cx=\"351.0\" cy=\"268.0\" r=\"47.0\" fill=\"#F4EFE9\"/><circle cx=\"334.1\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><circle cx=\"367.9\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><ellipse cx=\"351.0\" cy=\"281.2\" rx=\"4.7\" ry=\"3.3\" fill=\"#E88CA0\" transform=\"rotate(0 351.0 281.2)\"/><circle cx=\"412.2\" cy=\"231.3\" r=\"15.0\" fill=\"#7A5236\"/><circle cx=\"479.8\" cy=\"231.3\" r=\"15.0\" fill=\"#7A5236\"/><circle cx=\"412.2\" cy=\"231.3\" r=\"8.0\" fill=\"#C9A98A\"/><circle cx=\"479.8\" cy=\"231.3\" r=\"8.0\" fill=\"#C9A98A\"/><circle cx=\"446.0\" cy=\"268.0\" r=\"47.0\" fill=\"#7A5236\"/><ellipse cx=\"446.0\" cy=\"284.4\" rx=\"21.2\" ry=\"16.9\" fill=\"#C9A98A\" transform=\"rotate(0 446.0 284.4)\"/><circle cx=\"429.1\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><circle cx=\"462.9\" cy=\"264.2\" r=\"4.7\" fill=\"#2B1D12\"/><ellipse cx=\"446.0\" cy=\"281.2\" rx=\"7.5\" ry=\"5.2\" fill=\"#2B1D12\" transform=\"rotate(0 446.0 281.2)\"/>\n<g fill=\"#FBF3DF\" stroke=\"#CDB98A\" stroke-width=\"5\" stroke-linejoin=\"round\"><path d=\"M34 462V328L56 300L78 328V462Z\"/><path d=\"M101 462V328L123 300L145 328V462Z\"/><path d=\"M168 462V328L190 300L212 328V462Z\"/><path d=\"M235 462V328L257 300L279 328V462Z\"/><path d=\"M302 462V328L324 300L346 328V462Z\"/><path d=\"M369 462V328L391 300L413 328V462Z\"/><path d=\"M436 462V328L458 300L480 328V462Z\"/></g>\n<rect x=\"30\" y=\"352\" width=\"452\" height=\"26\" rx=\"13\" fill=\"#E9D7AB\" stroke=\"#CDB98A\" stroke-width=\"5\"/>\n<rect x=\"30\" y=\"414\" width=\"452\" height=\"26\" rx=\"13\" fill=\"#E9D7AB\" stroke=\"#CDB98A\" stroke-width=\"5\"/></g></svg>";
@@ -2498,7 +2500,17 @@ function cierraPortada(){ const a=$("#portada"); if(a) a.remove(); ST.intro=true
    ============================================================ */
 const CFG = {
   API_URL: "https://script.google.com/macros/s/AKfycbxceEZvvkJPT7s-icCF2lA2exjaV8VXPH7JEhK3IXj_hpfcT14_tyKGc7icM-M_k5SsGA/exec",
-  URL_APP: "PEGA_AQUI_LA_URL_DE_GITHUB_PAGES"
+  URL_APP: "PEGA_AQUI_LA_URL_DE_GITHUB_PAGES",
+  // Datos públicos del proyecto de Firebase (no son secretos: identifican el proyecto, como una URL).
+  FIREBASE: {
+    apiKey: "AIzaSyCDg0zwNYuinzXonCJUt8EOiV5K2qoQ1Vw",
+    authDomain: "corral-lab-eime5s.firebaseapp.com",
+    projectId: "corral-lab-eime5s",
+    storageBucket: "corral-lab-eime5s.firebasestorage.app",
+    messagingSenderId: "165963851508",
+    appId: "1:165963851508:web:694f208618f932225460a1"
+  },
+  VAPID_KEY: "BAgV0IWnA5WlEQszu9uWKgOr7wULIAnGGn1JPMOCTSt9jyM2hdPrtYvFPAGOnA-SoUmNp-GNpCDPQjY_-KUvC0g"
 };
 const ONLINE = !CFG.API_URL.startsWith("PEGA_AQUI");
 
@@ -2535,7 +2547,8 @@ const ICO={
  equis:`<path d="M6 6l12 12M18 6L6 18"/>`,
  volver:`<path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="M8 5L4 9l4 4"/>`,
  trash:`<path d="M4 7h16M9 7V4h6v3M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6M14 11v6"/>`,
- borrar:`<path d="M9 4h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9l-6-8z"/><path d="M12 9.5l6 5M18 9.5l-6 5"/>`
+ borrar:`<path d="M9 4h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9l-6-8z"/><path d="M12 9.5l6 5M18 9.5l-6 5"/>`,
+ bell:`<path d="M6 8a6 6 0 0 1 12 0c0 3.2 1.2 5 2 6H4c.8-1 2-2.8 2-6z"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0"/>`
 };
 const ic=(k,w=19)=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const star=f=>`<svg viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3.3l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.8l6.1-.9z"/></svg>`;
@@ -2591,6 +2604,45 @@ function vComida(u,i,pct){
   if(pct>=100) return `<div class="alert ok"><p><b>${esc(nomMascota(u))} ya está con la barriga llena.</b> Vuelve cuando le baje el apetito.</p></div>`;
   return `<div class="alert"><p><b>🍖 Dale de comer.</b> Cada ración cuesta <span class="cnt coin">${coin}${cf.costo}</span> monedas y le llena ${cf.pct}% la barriga${falta?`. Te faltan ${falta} monedas`:""}.</p>
     <button class="btn coin" data-act="comida" ${falta?"disabled":""}>${ic("plus",17)} Comprar comida</button></div>`;
+}
+/* ====================== NOTIFICACIONES PUSH ====================== */
+const esIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const esStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+function estadoNotif(){
+  if(!ONLINE) return "no-soportado";
+  if(!("Notification" in window)||!("serviceWorker" in navigator)) return "no-soportado";
+  if(esIOS()&&!esStandalone()) return "ios-instala";
+  if(Notification.permission==="denied") return "denegado";
+  if(Notification.permission==="granted"&&ST.fcmToken) return "activo";
+  return "pedir";
+}
+async function pedirPush(btn){
+  const tOrig=btn&&btn.innerHTML;
+  if(btn){ btn.disabled=true; btn.innerHTML=`<span class="spin"></span> Activando…`; }
+  try{
+    const permiso=await Notification.requestPermission();
+    if(permiso!=="granted"){ toast("No se concedió el permiso de notificaciones","!"); return; }
+    const reg=await navigator.serviceWorker.register("firebase-messaging-sw.js");
+    if(!firebase.apps.length) firebase.initializeApp(CFG.FIREBASE);
+    const messaging=firebase.messaging();
+    const token=await messaging.getToken({vapidKey:CFG.VAPID_KEY,serviceWorkerRegistration:reg});
+    if(!token) throw new Error("sin token");
+    const r=await call("guardarFcmToken",{token});
+    if(!r.ok){ toast(r.msg||"No se pudo activar","!"); return; }
+    ST.fcmToken=token; persist();
+    toast("Notificaciones activadas 🔔");
+  }catch(e){ toast("No se pudo activar: revisa tu conexión e inténtalo de nuevo","!"); }
+  finally{ if(btn){ btn.disabled=false; btn.innerHTML=tOrig; } render(); }
+}
+function vNotif(){
+  const st=estadoNotif();
+  if(st==="no-soportado") return "";
+  if(st==="activo") return `<div class="note">${ic("bell",15)} Notificaciones activadas.
+    <button class="linklike" data-act="probarPush">Enviar una de prueba</button></div>`;
+  if(st==="ios-instala") return `<div class="alert warn"><p><b>Activa las notificaciones:</b> en tu iPhone, primero agrega Corral Lab a la pantalla de inicio desde Safari (botón compartir → «Agregar a inicio»), ábrela desde ese ícono y vuelve a entrar aquí.</p></div>`;
+  if(st==="denegado") return `<div class="alert warn"><p><b>Notificaciones bloqueadas.</b> Las bloqueaste antes; para activarlas, habilítalas para este sitio en los permisos de notificación de tu navegador.</p></div>`;
+  return `<div class="alert warn"><p><b>Activa las notificaciones</b> para enterarte de estrellas fugaces, misiones sorpresa, tu mascota con hambre y equipos por vencer, aunque tengas la app cerrada.</p>
+    <button class="btn" data-act="activarNotif">${ic("bell",16)} Activar notificaciones</button></div>`;
 }
 function vAvisoInactividad(u){
   const c=inactCfg(); if(!c.activa) return "";
@@ -2878,7 +2930,9 @@ const LOCAL={
     if(p.gestion!=="eime"&&p.gestion!=="s5") return err("GESTION","Gestión no válida.");
     if(p.desde&&p.hasta&&p.hasta<p.desde) return err("FECHA","La fecha final es anterior a la inicial.");
     const c=DB.config=DB.config||{}, E=c.EMERG=c.EMERG||{eime:null,s5:null};
-    E[p.gestion]=p.desde&&p.hasta?{d:p.desde,h:p.hasta}:null; return okd(); }
+    E[p.gestion]=p.desde&&p.hasta?{d:p.desde,h:p.hasta}:null; return okd(); },
+  guardarFcmToken(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar."); return okd(); },
+  probarPush(p){ return err("NO_IMPL","Las notificaciones no están disponibles en la vista previa."); }
 };
 
 async function call(action,p){
@@ -3033,7 +3087,7 @@ function vMi(u){
   const venc=pend.filter(e=>estado(e).k==="bad").length;
   const pct=Math.round(i.e), falta=Math.max(0,MEDICINA()-u.monedas);
   const B=(act,c,col,t,sub,bdg)=>`<button class="hubbtn" data-act="${act}" style="--c:${col}"><span class="ic">${ic(c,27)}</span><h3>${t}</h3><span class="sb">${sub}</span>${bdg||""}</button>`;
-  return `${bannerEmerg()}<div class="me-top" data-st="${i.est}">
+  return `${bannerEmerg()}${vNotif()}<div class="me-top" data-st="${i.est}">
     <div>
       <div class="bigstage"><div class="bubble">“${esc(frase(u,i.est))}”</div><div style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}</div>
         <div class="hpbar" role="img" aria-label="Energía ${pct} por ciento"><div class="hpbar-track"><div class="hpbar-fill" style="width:${pct}%"></div></div></div></div>
@@ -3648,6 +3702,8 @@ const ACT={
   metaCfg(){ gearBack="corral"; ajTab="premios"; go("ajustes"); },
   "go-eime"(){ go("eime"); }, "go-s5"(){ go("s5"); }, "go-rank"(){ go("rank"); }, "go-ajustes"(){ go("ajustes"); },
   salir(){ ST.sesion=null; persist(); vista="corral"; render(); },
+  activarNotif(d,t){ pedirPush(t); },
+  async probarPush(){ const r=await call("probarPush"); if(!r.ok){ toast(r.msg||"No se pudo enviar","!"); return; } toast("Enviada: revisa tu teléfono"); },
   editPet(){ abrirEditPet(); }, tienda(){ abrirTienda(); },
   eq(d){ abrirEq(d.id); }, filtro(d){ filtro=d.f; render(); },
   async medicina(){ const r=await call("comprarMedicina"); if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("¡Se está recuperando!","✚"); },
