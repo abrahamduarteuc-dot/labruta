@@ -1975,7 +1975,7 @@ function vEvid5(u){
     ${hist.length?`<div class="eyebrow" style="margin:18px 0 8px">${u.admin?"Últimas evaluaciones del equipo":"Tus últimas evaluaciones"}</div>
     <div class="j5hist">${hist.map(e=>`<button class="j5h" data-act="j5ver" data-id="${e.id}" data-v="${e.ver}">
       <span class="vd">${e.rev==="OBSERVADA"?"!":e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
-      <span class="tx"><b>${e.tipo==="ADIC"?"5S adicional":`${e.s}S ${esc((S5[e.s-1]||{}).n||"")}`} · ${esc(e.zn)}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
+      <span class="tx"><b>${e.tipo==="ADIC"?"5S adicional":`${e.s}S ${esc((S5[e.s-1]||{}).n||"")}`}${e.zn?" · "+esc(e.zn):""}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
 }
 function misZonas5s(uid){ const out=[]; planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp===uid) out.push({p,z}); })); return out; }
 function vAdic5(u){
@@ -2000,7 +2000,7 @@ function pintaEvid5(){
     <ol class="j5guia">${info.g.map(x=>`<li>${x}</li>`).join("")}</ol>
     <div class="j5fotos">
       ${["antes","despues"].map(k=>`<label class="j5foto ${J5[k]?"lleno":""}">
-        <input type="file" accept="image/*" capture="environment" data-foto="${k}" hidden>
+        <input type="file" accept="image/*" data-foto="${k}" hidden>
         ${J5[k]?`<img src="${J5[k].mini}" alt="Foto ${k==="antes"?"antes":"después"}">`:`<span>${ic("camera",28)}</span>`}
         <b>${k==="antes"?"Antes":"Después"}</b><small>${J5[k]?"Toca para cambiar":"Toca para sacar o elegir foto"}</small></label>`).join("")}
     </div>
@@ -2038,14 +2038,13 @@ function veredicto5(r){
 let J5A=null;   // estado de la hoja de evidencia "5S adicional" abierta
 function abrirAdic5(){
   const u=yo(); const zs=misZonas5s(u.id); if(!zs.length) return;
-  J5A={zonas:zs,zonaSel:zs.length===1?zs[0].z.id:"",nota:"",antes:null,despues:null,enviando:false};
+  J5A={zonas:zs,zonaSel:"",nota:"",antes:null,despues:null,enviando:false};
   pintaAdic5();
 }
 function pintaAdic5(){
   const zs=J5A.zonas;
-  const picker=zs.length>1?`<div class="fieldrow"><label class="fl" for="adicZona">¿En cuál de tus zonas?</label>
-      <select class="inp" id="adicZona"><option value="">Elige una zona</option>${zs.map(({p,z})=>`<option value="${z.id}" ${J5A.zonaSel===z.id?"selected":""}>${esc(z.n)} · ${esc(p.nombre)}</option>`).join("")}</select></div>`
-    :`<p class="j5tip"><em>${esc((zs[0]||{}).z.n||"")}</em></p>`;
+  const picker=`<div class="fieldrow"><label class="fl" for="adicZona">¿En cuál de tus zonas? (opcional)</label>
+      <select class="inp" id="adicZona"><option value="">Sin zona específica</option>${zs.map(({p,z})=>`<option value="${z.id}" ${J5A.zonaSel===z.id?"selected":""}>${esc(z.n)} · ${esc(p.nombre)}</option>`).join("")}</select></div>`;
   openSheet(`${phead("5S adicional")}<div class="pbody">
     <p class="j5tip">¿Hiciste orden o limpieza que no sigue un paso puntual del checklist? Sube el antes y el después igual: el juez mira el esfuerzo y decide cuánto vale.</p>
     ${picker}
@@ -2053,15 +2052,15 @@ function pintaAdic5(){
     <textarea class="inp" id="adicNota" rows="2" maxlength="300" placeholder="Ej: ordené el estante de reactivos vencidos">${esc(J5A.nota||"")}</textarea>
     <div class="j5fotos">
       ${["antes","despues"].map(k=>`<label class="j5foto ${J5A[k]?"lleno":""}">
-        <input type="file" accept="image/*" capture="environment" data-afoto="${k}" hidden>
+        <input type="file" accept="image/*" data-afoto="${k}" hidden>
         ${J5A[k]?`<img src="${J5A[k].mini}" alt="Foto ${k==="antes"?"antes":"después"}">`:`<span>${ic("camera",28)}</span>`}
         <b>${k==="antes"?"Antes":"Después"}</b><small>${J5A[k]?"Toca para cambiar":"Toca para sacar o elegir foto"}</small></label>`).join("")}
     </div>
-    <div class="saverow"><button class="btn" data-act="j5adicEnviar" ${J5A.antes&&J5A.despues&&J5A.zonaSel&&(J5A.nota||"").trim()?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
+    <div class="saverow"><button class="btn" data-act="j5adicEnviar" ${J5A.antes&&J5A.despues&&(J5A.nota||"").trim()?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
     <p class="j5nota">Las fotos quedan guardadas como respaldo para el auditor.</p></div>`);
 }
 document.addEventListener("input",ev=>{
-  if(ev.target.id==="adicNota"&&J5A){ J5A.nota=ev.target.value; const b=$('[data-act="j5adicEnviar"]'); if(b) b.disabled=!(J5A.antes&&J5A.despues&&J5A.zonaSel&&J5A.nota.trim()); }
+  if(ev.target.id==="adicNota"&&J5A){ J5A.nota=ev.target.value; const b=$('[data-act="j5adicEnviar"]'); if(b) b.disabled=!(J5A.antes&&J5A.despues&&J5A.nota.trim()); }
 });
 document.addEventListener("change",async ev=>{
   const sel=ev.target.closest("#adicZona");
@@ -2073,7 +2072,7 @@ document.addEventListener("change",async ev=>{
 function veredictoAdic(r){
   const ok=r.ver==="APROBADO", NIVEL_TXT={BAJO:"Esfuerzo chico",MEDIO:"Buen esfuerzo",ALTO:"Esfuerzo destacado"};
   openSheet(`${phead(ok?"¡Aprobado!":"Aún no")}<div class="pbody"><div class="j5res" data-v="${r.ver}">
-    <div class="big">${ok?"✓":"✗"}</div><b>5S adicional · ${esc(r.zn)}</b>
+    <div class="big">${ok?"✓":"✗"}</div><b>5S adicional${r.zn?" · "+esc(r.zn):""}</b>
     ${ok?`<p class="j5tip" style="margin-top:4px"><b>${esc(NIVEL_TXT[r.nivel]||r.nivel||"")}</b></p>`:""}
     <p><b>Motivo:</b> ${esc(r.motivo)}</p><p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>
     ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · úsalas para comprarle comida a tu mascota</p>`:""}
@@ -2082,7 +2081,7 @@ function veredictoAdic(r){
 }
 async function verEvid5(id){
   const e=evid5().find(x=>x.id===id); if(!e) return;
-  openSheet(`${phead((e.tipo==="ADIC"?"5S adicional":e.s+"S "+esc((S5[e.s-1]||{}).n||""))+" · "+esc(e.zn))}<div class="pbody">
+  openSheet(`${phead((e.tipo==="ADIC"?"5S adicional":e.s+"S "+esc((S5[e.s-1]||{}).n||""))+(e.zn?" · "+esc(e.zn):""))}<div class="pbody">
     <div class="j5fotos" id="j5mini"><div class="j5foto"><span>…</span><b>Antes</b></div><div class="j5foto"><span>…</span><b>Después</b></div></div>
     <div class="j5res" data-v="${e.ver}" style="margin-top:12px"><b>${e.ver} · ${fmt(e.fecha)} · ${esc((U(e.uid)||{}).nombre||"")}</b>
     <div class="pts">${"★".repeat(e.puntaje||0)}${"☆".repeat(5-(e.puntaje||0))}</div>
@@ -2119,7 +2118,7 @@ function pintaEstrellaFugaz(){
     <p class="j5tip">Chequeo sorpresa: sube una foto de cómo está tu zona justo ahora. Si se ve ordenada y limpia, el juez te da ${efCfg().monedas} monedas al tiro.</p>
     ${picker}
     <div class="j5fotos"><label class="j5foto ${EF.foto?"lleno":""}" style="max-width:220px">
-      <input type="file" accept="image/*" capture="environment" data-ef-foto hidden>
+      <input type="file" accept="image/*" data-ef-foto hidden>
       ${EF.foto?`<img src="${EF.foto.mini}" alt="Foto de tu zona">`:`<span>${ic("camera",28)}</span>`}
       <b>Tu zona ahora</b><small>${EF.foto?"Toca para cambiar":"Toca para sacar la foto"}</small></label></div>
     <div class="saverow"><button class="btn" data-act="efEnviar" ${EF.foto&&EF.zonaId?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div></div>`);
@@ -2154,10 +2153,10 @@ const JACT={
   async j5adicEnviar(d,btn){
     if(!J5A||J5A.enviando) return;
     J5A.nota=($("#adicNota")||{}).value||J5A.nota||"";
-    if(!J5A.zonaSel||!J5A.nota.trim()||!J5A.antes||!J5A.despues) return;
+    if(!J5A.nota.trim()||!J5A.antes||!J5A.despues) return;
     J5A.enviando=true; btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando tus fotos…`;
     const zsel=J5A.zonas.find(x=>x.z.id===J5A.zonaSel);
-    const r=await call("juez5sAdicional",{planoId:zsel.p.id,zonaId:zsel.z.id,nota:J5A.nota,
+    const r=await call("juez5sAdicional",{planoId:zsel?zsel.p.id:"",zonaId:zsel?zsel.z.id:"",nota:J5A.nota,
       antes:J5A.antes.full,despues:J5A.despues.full,miniAntes:J5A.antes.mini,miniDespues:J5A.despues.mini});
     J5A.enviando=false;
     if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
@@ -2854,22 +2853,24 @@ const LOCAL={
     else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+z.n+": la zona no mantuvo el estándar"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
   juez5sAdicional(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
-    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
-    if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable.");
+    const sinZona=!p.planoId&&!p.zonaId;
+    const pl=sinZona?null:planosDB().find(x=>x.id===p.planoId), z=sinZona?null:pl&&pl.zonas.find(x=>x.id===p.zonaId);
+    if(!sinZona){ if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable."); }
     if(!String(p.nota||"").trim()) return err("SIN_NOTA","Cuéntale al juez qué hiciste.");
     if(p.antes===p.despues) return err("IGUALES","La foto del antes y la del después son la misma.");
     const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="e"+t;
     const niveles=["BAJO","MEDIO","ALTO"], nivel=niveles[Math.floor(Math.random()*3)], cf=adicCfg();
     const tierKey=nivel==="BAJO"?"bajo":nivel==="ALTO"?"alto":"medio", puntaje=nivel==="BAJO"?2:nivel==="ALTO"?5:3;
     const monedas=ok?cf[tierKey].monedas:0, estrellas=ok?cf[tierKey].estrellas:0;
-    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,zn:z.n,s:0,com:p.nota||"",tipo:"ADIC",nivel:ok?nivel:"",
+    const zn=z?z.n:"";
+    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl?pl.id:"",zona:z?z.id:"",zn,s:0,com:p.nota||"",tipo:"ADIC",nivel:ok?nivel:"",
       ver:ok?"APROBADO":"RECHAZADO",puntaje:ok?puntaje:2,
       motivo:ok?"Se nota el esfuerzo: la zona quedó visiblemente más ordenada.":"No se aprecia diferencia suficiente entre las dos fotos.",
       orient:ok?"Sigue así y mantén el estándar logrado.":"Retira lo que no se usa y saca la foto desde el mismo ángulo.",
       monedas,estrellas};
     (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
     u.ultimaActividad=t;
-    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S adicional "+z.n+" aprobado por el juez"});
+    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S adicional "+(zn?zn+" ":"")+"aprobado por el juez"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
   revisiones5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     return okd({lista:evid5().filter(e=>esRevisorActual(e,u.id)).map(e=>({id:e.id,zn:e.zn,s:e.s,apelacion:e.rev==="APELACION",
