@@ -278,11 +278,14 @@ td.num{font-family:var(--f-mono);text-align:right}
 .pen.me{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),var(--shadow)}
 .stage{background:radial-gradient(120% 90% at 50% 100%,var(--sb),transparent 78%),var(--sb);border-radius:13px;padding:8px 14px 0;display:grid;place-items:center;overflow:hidden;position:relative}
 .stage .pet{max-width:150px}
-.bebes-row{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;gap:1px;z-index:1;pointer-events:none}
-.bebes-row .bebe-ico{display:block;width:30px}
-.bebes-row .bebe-ico .pet{max-width:100%}
-.bigstage .bebes-row{bottom:14px}
-.bigstage .bebes-row .bebe-ico{width:44px}
+.petwrap{position:relative}
+.bebes-row{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;gap:2px;z-index:1;pointer-events:none;transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.bebes-row .bebe-ico{display:block;width:34px;animation:bebeBounce 1.9s ease-in-out infinite}
+.bebes-row .bebe-ico .pet{max-width:100%;display:block}
+.bigstage .petwrap .bebes-row{left:auto;right:6px;bottom:10px;transform:none;flex-direction:row-reverse;flex-wrap:wrap-reverse;justify-content:flex-start;align-content:flex-end;max-width:54%;pointer-events:auto;cursor:pointer}
+.bigstage .petwrap .bebes-row .bebe-ico{width:50px}
+.bigstage .petwrap.zoom .bebes-row{transform:scale(1.65);transform-origin:bottom right}
+@keyframes bebeBounce{0%,100%{transform:translateY(0) scale(1,1)}45%{transform:translateY(-4px) scale(1.06,.94)}65%{transform:translateY(0) scale(.96,1.05)}}
 .pen .pn{display:block;font-family:var(--f-disp);font-weight:800;font-size:19px;letter-spacing:-.025em;margin:10px 4px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pen .own{display:block;font-size:13.5px;color:var(--fg-dim);margin:2px 4px 0;line-height:1.3}
 .pen .own b{color:var(--fg);font-weight:700;overflow-wrap:break-word}
@@ -1240,7 +1243,7 @@ let PB=0;
 function bebesHTML(u){
   const list=bebes(u); if(!list.length) return "";
   const vis=bebeUsando(u);
-  return `<span class="bebes-row">${list.map(b=>`<span class="bebe-ico">${petSVG(b.sp,b.col,"contenta",vis,"bb"+(++PB))}</span>`).join("")}</span>`;
+  return `<span class="bebes-row" data-act="zoomBebes" role="button" aria-label="Ver a los bebés más de cerca">${list.map((b,ix)=>`<span class="bebe-ico" style="animation-delay:${(ix*.35).toFixed(2)}s">${petSVG(b.sp,b.col,"contenta",vis,"bb"+(++PB))}</span>`).join("")}</span>`;
 }
 
 const C={ac:"var(--accent)",ad:"var(--accent-d)",br:"var(--brass)",ln:"var(--line)",fg:"var(--fg-dim)",sf:"var(--surface)"};
@@ -3128,7 +3131,7 @@ function vMi(u){
   const B=(act,c,col,t,sub,bdg)=>`<button class="hubbtn" data-act="${act}" style="--c:${col}"><span class="ic">${ic(c,27)}</span><h3>${t}</h3><span class="sb">${sub}</span>${bdg||""}</button>`;
   return `${bannerEmerg()}${vNotif()}<div class="me-top" data-st="${i.est}">
     <div>
-      <div class="bigstage"><div class="bubble">“${esc(frase(u,i.est))}”</div><div style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}${bebesHTML(u)}</div>
+      <div class="bigstage"><div class="bubble">“${esc(frase(u,i.est))}”</div><div class="petwrap" style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}${bebesHTML(u)}</div>
         <div class="hpbar" role="img" aria-label="Energía ${pct} por ciento"><div class="hpbar-track"><div class="hpbar-fill" style="width:${pct}%"></div></div></div></div>
     </div>
     <div class="me-info">
@@ -3573,7 +3576,7 @@ async function pinEnviar(){ if(!PIN||PIN.busy||PIN.buf.length<4) return;
 /* ----- ficha de otra mascota (solo lectura) ----- */
 function abrirFicha(uid){ const u=U(uid), i=info(u);
   openSheet(`${phead(esc(nomMascota(u)))}<div class="pbody" data-st="${i.est}">
-    <div class=”bigstage” style=”margin-bottom:12px”><div class=”bubble”>”${esc(frase(u,i.est))}”</div><div style=”width:100%;display:grid;place-items:center”>${petOf(u,{info:i})}${bebesHTML(u)}</div></div>
+    <div class="bigstage" style="margin-bottom:12px"><div class="bubble">“${esc(frase(u,i.est))}”</div><div class="petwrap" style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}${bebesHTML(u)}</div></div>
     <div class="namerow" style="margin-bottom:10px">${stPill(i.est)}<span class="sub">${ESPECIES[u.especie].n} de ${esc(u.nombre)} · ${esc(u.cargo)}</span></div>
     <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>estrellas este mes</span></div></div>
       <div class="tl"><div><b>${cumplimiento(u.id)} %</b><span>equipos al día</span></div></div></div></div>`);
@@ -3744,6 +3747,7 @@ const ACT={
   activarNotif(d,t){ pedirPush(t); },
   async probarPush(){ const r=await call("probarPush"); if(!r.ok){ toast(r.msg||"No se pudo enviar","!"); return; } toast("Enviada: revisa tu teléfono"); },
   editPet(){ abrirEditPet(); }, tienda(){ abrirTienda(); },
+  zoomBebes(d,t){ (t.closest(".petwrap")||t).classList.toggle("zoom"); },
   eq(d){ abrirEq(d.id); }, filtro(d){ filtro=d.f; render(); },
   async medicina(){ const r=await call("comprarMedicina"); if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("¡Se está recuperando!","✚"); },
   async comida(){ const r=await call("comprarComida"); if(!r.ok){ toast(r.msg,"!"); return; } render(); toast("¡Buen provecho!","🍖"); },
