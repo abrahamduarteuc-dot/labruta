@@ -276,8 +276,13 @@ td.num{font-family:var(--f-mono);text-align:right}
   padding:9px 9px 12px;box-shadow:var(--shadow);transition:.16s;min-width:0}
 .pen:hover{transform:translateY(-3px);border-color:var(--sc)}
 .pen.me{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),var(--shadow)}
-.stage{background:radial-gradient(120% 90% at 50% 100%,var(--sb),transparent 78%),var(--sb);border-radius:13px;padding:8px 14px 0;display:grid;place-items:center;overflow:hidden}
+.stage{background:radial-gradient(120% 90% at 50% 100%,var(--sb),transparent 78%),var(--sb);border-radius:13px;padding:8px 14px 0;display:grid;place-items:center;overflow:hidden;position:relative}
 .stage .pet{max-width:150px}
+.bebes-row{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;gap:1px;z-index:1;pointer-events:none}
+.bebes-row .bebe-ico{display:block;width:30px}
+.bebes-row .bebe-ico .pet{max-width:100%}
+.bigstage .bebes-row{bottom:14px}
+.bigstage .bebes-row .bebe-ico{width:44px}
 .pen .pn{display:block;font-family:var(--f-disp);font-weight:800;font-size:19px;letter-spacing:-.025em;margin:10px 4px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pen .own{display:block;font-size:13.5px;color:var(--fg-dim);margin:2px 4px 0;line-height:1.3}
 .pen .own b{color:var(--fg);font-weight:700;overflow-wrap:break-word}
@@ -916,7 +921,8 @@ const ACCESORIOS={
  bufanda_navidena:{n:"Bufanda navideña",p:40,slot:"cuello"},
  luces_navidad:{n:"Luces de Navidad",p:65,slot:"cuerpo"},
  moto:{n:"Moto (fondo)",p:350,slot:"fondo"},
- auto:{n:"Auto (fondo)",p:600,slot:"fondo"}
+ auto:{n:"Auto (fondo)",p:600,slot:"fondo"},
+ ropa_bebe:{n:"Pechera para tus bebés",p:25,slot:"bebe"}
 };
 
 function petSVG(sp,col,est,usando,uid){
@@ -1196,6 +1202,10 @@ function petSVG(sp,col,est,usando,uid){
     const scy=hy+hh+1;
     over+=`<path d="M${hx0+4} ${scy-6}Q60 ${scy+6} ${hx1-4} ${scy-6}L${hx1-4} ${scy+1}Q60 ${scy+13} ${hx0+4} ${scy+1}Z" fill="#C2312F"/><path d="M${hx0+8} ${scy-4}Q60 ${scy+6} ${hx1-8} ${scy-4}" fill="none" stroke="#fff" stroke-width="2.2" stroke-dasharray="4 4"/><path d="M${60+6} ${scy+7}L${60+10} ${scy+24}L${60+2} ${scy+22}Z" fill="#C2312F"/><path d="M${60+5} ${scy+12}h6M${60+4} ${scy+17}h6" stroke="#fff" stroke-width="1.6"/>`;
   }
+  if(usando.includes("ropa_bebe")){
+    const by2=hy+hh+2;
+    over+=`<path d="M${60-11} ${by2-2}Q60 ${by2+5} ${60+11} ${by2-2}L${60+9} ${by2+16}Q60 ${by2+22} ${60-9} ${by2+16}Z" fill="#F7D04A" stroke="#D9A91E" stroke-width="1.4" stroke-linejoin="round"/><circle cx="60" cy="${by2+8}" r="2.6" fill="#fff"/><circle cx="${60-7}" cy="${by2+12}" r="2" fill="#fff"/><circle cx="${60+7}" cy="${by2+12}" r="2" fill="#fff"/>`;
+  }
   if(est==="radiante"){
     over+=`<g fill="#F4B400"><path class="spk" d="M16 34l2.2 5.4 5.4 2.2-5.4 2.2L16 49.2l-2.2-5.4-5.4-2.2 5.4-2.2z"/><path class="spk s2" d="M104 24l1.8 4.4 4.4 1.8-4.4 1.8-1.8 4.4-1.8-4.4-4.4-1.8 4.4-1.8z"/><path class="spk s3" d="M100 62l1.5 3.6 3.6 1.5-3.6 1.5-1.5 3.6-1.5-3.6-3.6-1.5 3.6-1.5z"/></g>`;
   }
@@ -1203,6 +1213,34 @@ function petSVG(sp,col,est,usando,uid){
   const shadow=`<ellipse cx="60" cy="${by+bh+3}" rx="${34+f*4}" ry="4.2" fill="#000" opacity=".13"/>`;
   const filtro = est==="flaca" ? "filter:saturate(.72)" : est==="enferma" ? "filter:saturate(.55) hue-rotate(14deg)" : "";
   return `<svg class="pet s-${est}" viewBox="0 0 120 130" role="img" aria-label="${ESPECIES[sp].n}, ${EST_NOM[est]}" style="${filtro}">${bgScene}${shadow}<g class="pg">${back}${body}${head}${faceS}${over}</g></svg>`;
+}
+
+/* ====================== BEBÉS ======================
+   Cada 30 estrellas totales (de toda la vida de la mascota) nace un bebé,
+   hasta un máximo de 4. Es puramente cosmético: no cambia premios ni cálculos.
+   Mismo animal que la mamá, pero cada uno con un color distinto entre sí y
+   distinto al de la madre. Se dibujan con el mismo motor de SVG, solo que
+   más chicos. La ropa (opcional) se compra una vez en la tienda y se le
+   pone a todos los bebés por igual. */
+function numBebes(u){ return Math.max(0,Math.min(4,Math.floor((u.estrellasTotal||0)/30))); }
+function colorBebe(u,i){
+  const base=String(u.color||ESPECIES[u.especie]?.c||"#888888").toLowerCase();
+  let h=7; (String(u.id)+"-bebe-"+i).split("").forEach(c=>h=(h*31+c.charCodeAt(0))>>>0);
+  const usados=new Set();
+  for(let j=0;j<i;j++) usados.add(colorBebe(u,j));
+  for(let t=0;t<COLORES.length;t++){
+    const col=COLORES[(h+t)%COLORES.length];
+    if(col.toLowerCase()!==base&&!usados.has(col)) return col;
+  }
+  return COLORES[h%COLORES.length];
+}
+function bebes(u){ const n=numBebes(u), out=[]; for(let i=0;i<n;i++) out.push({sp:u.especie,col:colorBebe(u,i)}); return out; }
+const bebeUsando=u=>usandoActivo(u).includes("ropa_bebe")?["ropa_bebe"]:[];
+let PB=0;
+function bebesHTML(u){
+  const list=bebes(u); if(!list.length) return "";
+  const vis=bebeUsando(u);
+  return `<span class="bebes-row">${list.map(b=>`<span class="bebe-ico">${petSVG(b.sp,b.col,"contenta",vis,"bb"+(++PB))}</span>`).join("")}</span>`;
 }
 
 const C={ac:"var(--accent)",ad:"var(--accent-d)",br:"var(--brass)",ln:"var(--line)",fg:"var(--fg-dim)",sf:"var(--surface)"};
@@ -3037,7 +3075,7 @@ function vCorral(){
   return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main"><div class="efbox">${vEstrellaFugaz()}</div><div class="revbox">${vRev()}</div>${vMetaEquipo()}
   <div class="pens">${us.map(({u,i})=>`
     <button class="pen ${yoU&&yoU.id===u.id?"me":""}" data-act="pen" data-id="${u.id}" data-st="${i.est}" aria-label="${esc(nomMascota(u))}, mascota de ${esc(u.nombre)}">
-      <span class="stage">${petOf(u,{info:i})}</span>
+      <span class="stage">${petOf(u,{info:i})}${bebesHTML(u)}</span>
       <span class="hpbar" role="img" aria-label="Energía ${Math.round(i.e)} por ciento"><span class="hpbar-track"><span class="hpbar-fill" style="width:${Math.round(i.e)}%"></span></span></span>
       <span class="pn">${esc(nomMascota(u))}</span>
       <span class="own">Propietario: <b>${esc(u.nombre)}</b></span>
@@ -3090,7 +3128,7 @@ function vMi(u){
   const B=(act,c,col,t,sub,bdg)=>`<button class="hubbtn" data-act="${act}" style="--c:${col}"><span class="ic">${ic(c,27)}</span><h3>${t}</h3><span class="sb">${sub}</span>${bdg||""}</button>`;
   return `${bannerEmerg()}${vNotif()}<div class="me-top" data-st="${i.est}">
     <div>
-      <div class="bigstage"><div class="bubble">“${esc(frase(u,i.est))}”</div><div style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}</div>
+      <div class="bigstage"><div class="bubble">“${esc(frase(u,i.est))}”</div><div style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}${bebesHTML(u)}</div>
         <div class="hpbar" role="img" aria-label="Energía ${pct} por ciento"><div class="hpbar-track"><div class="hpbar-fill" style="width:${pct}%"></div></div></div></div>
     </div>
     <div class="me-info">
@@ -3535,7 +3573,7 @@ async function pinEnviar(){ if(!PIN||PIN.busy||PIN.buf.length<4) return;
 /* ----- ficha de otra mascota (solo lectura) ----- */
 function abrirFicha(uid){ const u=U(uid), i=info(u);
   openSheet(`${phead(esc(nomMascota(u)))}<div class="pbody" data-st="${i.est}">
-    <div class="bigstage" style="margin-bottom:12px"><div class="bubble">“${esc(frase(u,i.est))}”</div><div style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}</div></div>
+    <div class=”bigstage” style=”margin-bottom:12px”><div class=”bubble”>”${esc(frase(u,i.est))}”</div><div style=”width:100%;display:grid;place-items:center”>${petOf(u,{info:i})}${bebesHTML(u)}</div></div>
     <div class="namerow" style="margin-bottom:10px">${stPill(i.est)}<span class="sub">${ESPECIES[u.especie].n} de ${esc(u.nombre)} · ${esc(u.cargo)}</span></div>
     <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>estrellas este mes</span></div></div>
       <div class="tl"><div><b>${cumplimiento(u.id)} %</b><span>equipos al día</span></div></div></div></div>`);
