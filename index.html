@@ -858,6 +858,7 @@ td.num{font-family:var(--f-mono);text-align:right}
 .rzpend .preview textarea{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;
   font-family:inherit;background:var(--surface-2);color:var(--fg);resize:vertical;min-height:46px}
 .rzmap{cursor:pointer}
+.rzchk{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--m-rz);color:#fff;font-size:10px;font-weight:800;flex:none}
 
 </style>
 
@@ -2559,6 +2560,8 @@ function cierraPortada(){ const a=$("#portada"); if(a) a.remove(); ST.intro=true
 const hallazgosDB=()=>(DB&&DB.hallazgos)||[];
 const rzCount=(pid,zid)=>hallazgosDB().filter(h=>h.planoId===pid&&h.zonaId===zid).length;
 const rzMision=()=>(DB.config&&DB.config.RINCONES)||{hoy:false,monedas:0};
+const RZ_MIN=2;   // fotos mínimas para que una zona se marque como completa (✓)
+const rzEstado=(pid,zid)=>{ const n=rzCount(pid,zid); return n>=RZ_MIN?"completa":n>0?"parcial":"vacia"; };
 let rzPlano="", rzSel=null, rzPend=[];
 
 function vRincones(u){
@@ -2566,27 +2569,27 @@ function vRincones(u){
   if(u.admin){
     if(!L.some(p=>p.id===rzPlano)) rzPlano=((L[0])||{}).id||"";
     const pl=L.find(p=>p.id===rzPlano);
-    const totalZ=L.reduce((s,p)=>s+p.zonas.length,0), conFotos=L.reduce((s,p)=>s+p.zonas.filter(z=>rzCount(p.id,z.id)>0).length,0);
+    const totalZ=L.reduce((s,p)=>s+p.zonas.length,0), conFotos=L.reduce((s,p)=>s+p.zonas.filter(z=>rzEstado(p.id,z.id)==="completa").length,0);
     return `<div class="pagehead"><div><h2>Rincones Ocultos</h2><p>Gavetas, mesones y rincones que no se ven en el plano, pero pertenecen a sus mismas zonas</p></div></div>
     ${mis.hoy?`<div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p><b>Misión activa hoy.</b> El equipo gana ${mis.monedas} monedas por cada foto que suba en su propia zona.</p></div>`:""}
     <div class="stats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <div class="stat"><b>${L.length}</b><span>Planos</span></div>
       <div class="stat"><b>${totalZ}</b><span>Zonas</span></div>
-      <div class="stat"><b>${conFotos}</b><span>Con registro</span></div>
+      <div class="stat"><b>${conFotos}</b><span>Completas</span></div>
       <div class="stat"><b>${hallazgosDB().length}</b><span>Fotos</span></div>
     </div>
     ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="rzPlanoTab" data-id="${p.id}" aria-pressed="${p.id===rzPlano}">${esc(p.nombre)}</button>`).join("")}</div>
     <div class="zcard"><div class="zcanvas">${rzMapa(pl)}</div></div>
     <div class="legend" style="display:flex;gap:14px;font-size:11.5px;color:var(--fg-mute);margin-top:8px">
-      <span>● Con fotos</span><span>○ Sin registrar</span></div>`
+      <span>✓ Completa (${RZ_MIN}+ fotos)</span><span>● En progreso</span><span>○ Sin registrar</span></div>`
     :`<div class="empty">Aún no hay planos de zonas. Créalos en Ajustes → Zonas 5S.</div>`}`;
   }
   const mias=[]; L.forEach(p=>p.zonas.forEach(z=>{ if(z.resp===u.id) mias.push({p,z}); }));
   return `<div class="pagehead"><div><h2>Rincones Ocultos</h2><p>Misión de hoy: sube fotos de gavetas y rincones de tu zona y gana monedas extra</p></div></div>
-    <div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p>Cada foto que subas en una zona tuya suma <b>+${mis.monedas} monedas</b>. Solo cuenta hoy.</p></div>
-    ${mias.length?`<div class="j5grid">${mias.map(({p,z})=>{ const n=rzCount(p.id,z.id);
-      return `<div class="j5zona"><div class="j5zh"><span class="sw" style="background:${col5(u.id)}"></span><b>${esc(z.n)}</b><span class="pl">${esc(p.nombre)}</span></div>
-      <p style="margin:0;font-size:12.5px;color:var(--fg-mute)">${n?`${n} foto${n===1?"":"s"} registrada${n===1?"":"s"}`:"Sin fotos todavía"}</p>
+    <div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p>Cada foto que subas en una zona tuya suma <b>+${mis.monedas} monedas</b>. Sube al menos ${RZ_MIN} por zona para dejarla completa. Solo cuenta hoy.</p></div>
+    ${mias.length?`<div class="j5grid">${mias.map(({p,z})=>{ const n=rzCount(p.id,z.id), est=rzEstado(p.id,z.id);
+      return `<div class="j5zona"><div class="j5zh"><span class="sw" style="background:${col5(u.id)}"></span><b>${esc(z.n)}</b>${est==="completa"?`<span class="rzchk" title="Zona completa">✓</span>`:""}<span class="pl">${esc(p.nombre)}</span></div>
+      <p style="margin:0;font-size:12.5px;color:var(--fg-mute)">${est==="completa"?`${n} fotos · completa`:est==="parcial"?`${n} de ${RZ_MIN} fotos · falta ${RZ_MIN-n}`:`Sin fotos todavía · sube al menos ${RZ_MIN}`}</p>
       <button class="btn sm" data-act="rzAbrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir foto</button></div>`; }).join("")}</div>`
     :`<div class="empty">No tienes zonas 5S asignadas todavía. El administrador las reparte en Ajustes → Zonas 5S.</div>`}`;
 }
@@ -2596,14 +2599,16 @@ function rzMapa(pl){
   let h=`<svg class="rzmap" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano ${esc(pl.nombre)}"><defs><pattern id="rzg" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#rzg)"/>`;
   if(pl.contorno) h+=`<polygon class="z-cont" points="${zPts(pl.contorno)}"/>`;
   pl.zonas.forEach(z=>{
-    const n=rzCount(pl.id,z.id), llena=n>0, c=zCentro(z), fa=llena?`fill="var(--m-rz)" stroke="var(--m-rz)"`:"";
+    const n=rzCount(pl.id,z.id), est=rzEstado(pl.id,z.id), c=zCentro(z);
+    const fa=est==="completa"?`fill="var(--m-rz)" stroke="var(--m-rz)"`:est==="parcial"?`fill="var(--m-rz)" fill-opacity=".35" stroke="var(--m-rz)"`:"";
     let sh;
-    if(z.tipo==="rect") sh=`<rect class="z-sh ${llena?"":"vacia"}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${fa}/>`;
-    else if(z.tipo==="circ") sh=`<circle class="z-sh ${llena?"":"vacia"}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${fa}/>`;
-    else sh=`<polygon class="z-sh ${llena?"":"vacia"}" points="${zPts(z.pts)}" ${fa}/>`;
+    if(z.tipo==="rect") sh=`<rect class="z-sh ${est==="vacia"?"vacia":""}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${fa}/>`;
+    else if(z.tipo==="circ") sh=`<circle class="z-sh ${est==="vacia"?"vacia":""}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${fa}/>`;
+    else sh=`<polygon class="z-sh ${est==="vacia"?"vacia":""}" points="${zPts(z.pts)}" ${fa}/>`;
+    const txt=est==="vacia"?"":"#fff", sub=est==="completa"?`✓ ${n} foto${n===1?"":"s"}`:est==="parcial"?`${n}/${RZ_MIN} fotos`:"";
     h+=`<g class="z-g" data-act="rzAbrir" data-p="${pl.id}" data-z="${z.id}"><title>${esc(z.n)}${n?` · ${n} foto${n===1?"":"s"}`:""}</title>${sh}
-      <text class="z-lb" x="${c.x}" y="${c.y-6}" fill="${llena?"#fff":""}">${esc(z.n)}</text>
-      ${n?`<text class="z-lb sub" x="${c.x}" y="${c.y+9}" fill="#fff">${n} foto${n===1?"":"s"}</text>`:""}</g>`;
+      <text class="z-lb" x="${c.x}" y="${c.y-6}" fill="${txt}">${esc(z.n)}</text>
+      ${sub?`<text class="z-lb sub" x="${c.x}" y="${c.y+9}" fill="#fff">${sub}</text>`:""}</g>`;
   });
   return h+"</svg>";
 }
