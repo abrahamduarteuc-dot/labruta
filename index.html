@@ -19,7 +19,7 @@
   --accent:#0B6B74; --accent-d:#064B52; --accent-soft:#D9ECEE;
   --brass:#A8761F; --brass-soft:#F5E8D0;
   --ok:#17704A; --ok-soft:#D7EEE2; --warn:#A6681A; --warn-soft:#F8E9D1; --bad:#A93A31; --bad-soft:#F8DEDB;
-  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0;
+  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0; --m-rz:#B2460C;
   --shadow:0 1px 2px rgba(19,33,42,.06), 0 8px 24px -12px rgba(19,33,42,.22);
   --r:14px;
   --f-disp:'Archivo','Helvetica Neue',Arial,sans-serif;
@@ -32,7 +32,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }}
@@ -42,7 +42,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }
@@ -840,6 +840,24 @@ td.num{font-family:var(--f-mono);text-align:right}
 @keyframes ptin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes ptbob{50%{transform:translateY(-5px)}}
 @media(prefers-reduced-motion:reduce){.pt-card,.pt-pet{animation:none}}
+/* ====================== RINCONES OCULTOS ====================== */
+.rzgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:12px 0}
+.rzph{position:relative;border-radius:10px;overflow:hidden;background:var(--surface-2);aspect-ratio:1}
+.rzph img{width:100%;height:100%;object-fit:cover;display:block}
+.rzph .rzcap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.72),transparent);
+  color:#fff;font-size:10px;padding:10px 6px 5px;line-height:1.25}
+.rzph .rzby{position:absolute;top:4px;left:4px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 6px;border-radius:999px}
+.rzph .rzdel{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);
+  color:#fff;border:none;font-size:12px;line-height:1;cursor:pointer}
+.rzadd{display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed var(--line);border-radius:12px;
+  padding:13px;font-size:13.5px;font-weight:600;color:var(--m-rz);cursor:pointer}
+.rzadd svg{width:18px;height:18px}
+.rzpend{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.rzpend .preview{display:flex;gap:10px;align-items:flex-start}
+.rzpend .preview img{width:66px;height:66px;object-fit:cover;border-radius:10px;flex:none}
+.rzpend .preview textarea{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;
+  font-family:inherit;background:var(--surface-2);color:var(--fg);resize:vertical;min-height:46px}
+.rzmap{cursor:pointer}
 
 </style>
 
@@ -2532,6 +2550,124 @@ function pintaPortada(){
 }
 function cierraPortada(){ const a=$("#portada"); if(a) a.remove(); ST.intro=true; persist(); }
 
+/* ====================== RINCONES OCULTOS ======================
+   Fotos de gavetas y rincones que no se ven en el plano, pero pertenecen
+   a sus mismas zonas. Vive dentro de Ajustes (solo administrador) y,
+   mientras la misión del día está activa, también en el inicio de todos
+   (cada uno solo ve y sube fotos de SUS zonas, y gana monedas por eso).
+   No toca premios ni cálculos del resto del juego. */
+const hallazgosDB=()=>(DB&&DB.hallazgos)||[];
+const rzCount=(pid,zid)=>hallazgosDB().filter(h=>h.planoId===pid&&h.zonaId===zid).length;
+const rzMision=()=>(DB.config&&DB.config.RINCONES)||{hoy:false,monedas:0};
+let rzPlano="", rzSel=null, rzPend=[];
+
+function vRincones(u){
+  const L=planosDB(), mis=rzMision();
+  if(u.admin){
+    if(!L.some(p=>p.id===rzPlano)) rzPlano=((L[0])||{}).id||"";
+    const pl=L.find(p=>p.id===rzPlano);
+    const totalZ=L.reduce((s,p)=>s+p.zonas.length,0), conFotos=L.reduce((s,p)=>s+p.zonas.filter(z=>rzCount(p.id,z.id)>0).length,0);
+    return `<div class="pagehead"><div><h2>Rincones Ocultos</h2><p>Gavetas, mesones y rincones que no se ven en el plano, pero pertenecen a sus mismas zonas</p></div></div>
+    ${mis.hoy?`<div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p><b>Misión activa hoy.</b> El equipo gana ${mis.monedas} monedas por cada foto que suba en su propia zona.</p></div>`:""}
+    <div class="stats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="stat"><b>${L.length}</b><span>Planos</span></div>
+      <div class="stat"><b>${totalZ}</b><span>Zonas</span></div>
+      <div class="stat"><b>${conFotos}</b><span>Con registro</span></div>
+      <div class="stat"><b>${hallazgosDB().length}</b><span>Fotos</span></div>
+    </div>
+    ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="rzPlanoTab" data-id="${p.id}" aria-pressed="${p.id===rzPlano}">${esc(p.nombre)}</button>`).join("")}</div>
+    <div class="zcard"><div class="zcanvas">${rzMapa(pl)}</div></div>
+    <div class="legend" style="display:flex;gap:14px;font-size:11.5px;color:var(--fg-mute);margin-top:8px">
+      <span>● Con fotos</span><span>○ Sin registrar</span></div>`
+    :`<div class="empty">Aún no hay planos de zonas. Créalos en Ajustes → Zonas 5S.</div>`}`;
+  }
+  const mias=[]; L.forEach(p=>p.zonas.forEach(z=>{ if(z.resp===u.id) mias.push({p,z}); }));
+  return `<div class="pagehead"><div><h2>Rincones Ocultos</h2><p>Misión de hoy: sube fotos de gavetas y rincones de tu zona y gana monedas extra</p></div></div>
+    <div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p>Cada foto que subas en una zona tuya suma <b>+${mis.monedas} monedas</b>. Solo cuenta hoy.</p></div>
+    ${mias.length?`<div class="j5grid">${mias.map(({p,z})=>{ const n=rzCount(p.id,z.id);
+      return `<div class="j5zona"><div class="j5zh"><span class="sw" style="background:${col5(u.id)}"></span><b>${esc(z.n)}</b><span class="pl">${esc(p.nombre)}</span></div>
+      <p style="margin:0;font-size:12.5px;color:var(--fg-mute)">${n?`${n} foto${n===1?"":"s"} registrada${n===1?"":"s"}`:"Sin fotos todavía"}</p>
+      <button class="btn sm" data-act="rzAbrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir foto</button></div>`; }).join("")}</div>`
+    :`<div class="empty">No tienes zonas 5S asignadas todavía. El administrador las reparte en Ajustes → Zonas 5S.</div>`}`;
+}
+
+function rzMapa(pl){
+  if(!pl) return `<div class="empty">Sin planos.</div>`;
+  let h=`<svg class="rzmap" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano ${esc(pl.nombre)}"><defs><pattern id="rzg" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#rzg)"/>`;
+  if(pl.contorno) h+=`<polygon class="z-cont" points="${zPts(pl.contorno)}"/>`;
+  pl.zonas.forEach(z=>{
+    const n=rzCount(pl.id,z.id), llena=n>0, c=zCentro(z), fa=llena?`fill="var(--m-rz)" stroke="var(--m-rz)"`:"";
+    let sh;
+    if(z.tipo==="rect") sh=`<rect class="z-sh ${llena?"":"vacia"}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${fa}/>`;
+    else if(z.tipo==="circ") sh=`<circle class="z-sh ${llena?"":"vacia"}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${fa}/>`;
+    else sh=`<polygon class="z-sh ${llena?"":"vacia"}" points="${zPts(z.pts)}" ${fa}/>`;
+    h+=`<g class="z-g" data-act="rzAbrir" data-p="${pl.id}" data-z="${z.id}"><title>${esc(z.n)}${n?` · ${n} foto${n===1?"":"s"}`:""}</title>${sh}
+      <text class="z-lb" x="${c.x}" y="${c.y-6}" fill="${llena?"#fff":""}">${esc(z.n)}</text>
+      ${n?`<text class="z-lb sub" x="${c.x}" y="${c.y+9}" fill="#fff">${n} foto${n===1?"":"s"}</text>`:""}</g>`;
+  });
+  return h+"</svg>";
+}
+
+function abrirRincon(planoId,zonaId){
+  const pl=planosDB().find(p=>p.id===planoId), z=pl&&pl.zonas.find(x=>x.id===zonaId); if(!z) return;
+  rzSel={pl,z}; rzPend=[];
+  pintaRincon();
+}
+function pintaRincon(){
+  const {pl,z}=rzSel, u=yo();
+  const items=hallazgosDB().filter(h=>h.planoId===pl.id&&h.zonaId===z.id).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const puedeBorrar=h=>u&&(u.admin||h.usuarioId===u.id);
+  openSheet(`${phead(esc(z.n))}<div class="pbody">
+    <p style="margin:0 0 10px;font-size:12.5px;color:var(--fg-mute)">${esc(pl.nombre)}</p>
+    <div class="rzgal" id="rzGal">${items.length?items.map(h=>{ const autor=U(h.usuarioId);
+      return `<div class="rzph"><img src="${h.mini}" alt="${esc(h.caption||z.n)}">
+        ${autor?`<span class="rzby">${esc(primer(autor.nombre))}</span>`:""}
+        ${h.caption?`<span class="rzcap">${esc(h.caption)}</span>`:""}
+        ${puedeBorrar(h)?`<button class="rzdel" data-act="rzBorrar" data-id="${h.id}" aria-label="Eliminar foto">✕</button>`:""}</div>`; }).join("")
+      :`<p style="font-size:13px;color:var(--fg-mute);grid-column:1/-1">Sin fotos todavía.</p>`}</div>
+    <label class="rzadd"><input type="file" accept="image/*" multiple data-rfoto hidden>${ic("camera",18)} Agregar foto</label>
+    <div id="rzPendWrap">${rzPendHTML()}</div></div>`);
+}
+function rzPendHTML(){
+  if(!rzPend.length) return "";
+  return `<div class="rzpend">${rzPend.map((p,i)=>`<div class="preview"><img src="${p.mini}"><textarea data-i="${i}" placeholder="¿Qué se ve en la foto? (ej: gaveta inferior sin rotular)">${esc(p.caption)}</textarea></div>`).join("")}
+    <div class="saverow"><button class="btn" data-act="rzGuardar">${ic("chk",16)} Guardar ${rzPend.length>1?"fotos":"foto"}</button><button class="btn ghost" data-act="rzCancelarPend">Cancelar</button></div></div>`;
+}
+document.addEventListener("change",async ev=>{
+  const inp=ev.target.closest("[data-rfoto]"); if(!inp||!rzSel||!inp.files||!inp.files.length) return;
+  const files=Array.from(inp.files).filter(f=>f.type.startsWith("image/"));
+  for(const f of files){ try{ rzPend.push(Object.assign({caption:""},await prepFoto(f))); }catch(e){ toast(e.message,"!"); } }
+  inp.value=""; $("#rzPendWrap").innerHTML=rzPendHTML();
+});
+
+const HACT={
+  "go-rincones"(){ go("rincones"); },
+  rzPlanoTab(d){ rzPlano=d.id; render(); },
+  rzAbrir(d){ abrirRincon(d.p,d.z); },
+  rzCancelarPend(){ rzPend=[]; $("#rzPendWrap").innerHTML=""; },
+  async rzGuardar(){
+    if(!rzSel||!rzPend.length) return;
+    const {pl,z}=rzSel;
+    const btn=document.querySelector('[data-act="rzGuardar"]'); if(btn){ btn.disabled=true; btn.textContent="Guardando…"; }
+    document.querySelectorAll("#rzPendWrap textarea").forEach(t=>{ rzPend[+t.dataset.i].caption=t.value; });
+    let ok=0, monedas=0, err_=null;
+    for(const p of rzPend){
+      const r=await call("subirHallazgo",{planoId:pl.id,planoNombre:pl.nombre,zonaId:z.id,zonaNombre:z.n,caption:p.caption,foto:p.full,mini:p.mini});
+      if(r.ok){ ok++; monedas+=r.monedas||0; } else err_=r.msg;
+    }
+    rzPend=[];
+    if(ok){ toast(monedas>0?`${ok===1?"Foto guardada":ok+" fotos guardadas"} · +${monedas} monedas`:(ok===1?"Foto guardada":`${ok} fotos guardadas`),"★");
+      render(); if(rzSel) pintaRincon(); }
+    else toast(err_||"No se pudo guardar. Intenta de nuevo.","!");
+  },
+  async rzBorrar(d,t){
+    t.disabled=true;
+    const r=await call("eliminarHallazgo",{id:d.id});
+    if(!r.ok){ toast(r.msg,"!"); t.disabled=false; return; }
+    toast("Foto eliminada"); render(); if(rzSel) pintaRincon();
+  }
+};
+
 "use strict";
 /* ============================================================
    CFG — al publicar, pega aquí la URL de la aplicación web del
@@ -2741,8 +2877,8 @@ function seedDemo(){
     P("de","Danitza Espinoza","Asistente Técnico","I+D","gato","#D39A5A",0,false,{mascota:"Pigmento"}),
     P("fc","Francisco Contreras","Asistente Técnico","I+D","capibara","#B68A58",0,false,{mascota:"Don Capi"})
   ];
-  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}}},usuarios:us,
-    equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],
+  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}},RINCONES:{hoy:false,monedas:5}},usuarios:us,
+    equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],hallazgos:[],
     planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
 }
 function aplicaEvento(u,ev){
@@ -2813,6 +2949,24 @@ const LOCAL={
     else if(p.accion==="usar"){ if(!u.accesorios.includes(p.item)) return err("NO_TIENES","Aún no lo compras.");
       u.usando=u.usando.filter(x=>ACCESORIOS[x].slot!==a.slot).concat(p.item); }
     else if(p.accion==="quitar"){ u.usando=u.usando.filter(x=>x!==p.item); }
+    return okd(); },
+  subirHallazgo(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    if(!/^data:image\//.test(p.foto||"")) return err("FOTO","Falta la foto.");
+    if(!p.planoId||!p.zonaId) return err("SIN_ZONA","Falta indicar plano y zona.");
+    const t=Date.now(), id="H"+t+Math.random().toString(36).slice(2,6);
+    (DB.hallazgos=DB.hallazgos||[]).push({id,ts:t,usuarioId:u.id,planoId:p.planoId,planoNombre:p.planoNombre||"",
+      zonaId:p.zonaId,zonaNombre:p.zonaNombre||"",caption:String(p.caption||"").slice(0,300),mini:p.mini||""});
+    let monedas=0; const mis=rzMision();
+    if(mis.hoy){
+      const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
+      if(z&&z.resp&&z.resp===u.id){ monedas=mis.monedas||5;
+        DB.mov.push({id:"m"+t+Math.floor(Math.random()*100),ts:t,uid:u.id,estrellas:0,monedas,comida:0,motivo:"Rincones: hallazgo en tu zona"}); }
+    }
+    return okd({id,monedas}); },
+  eliminarHallazgo(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const h=(DB.hallazgos||[]).find(x=>x.id===p.id); if(!h) return okd();
+    if(h.usuarioId!==u.id&&!u.admin) return err("NO_ES_TUYA","Solo quien subió la foto (o un administrador) puede borrarla.");
+    DB.hallazgos=(DB.hallazgos||[]).filter(x=>x.id!==p.id);
     return okd(); },
   guardarParticipante(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     let u=p.id?U(p.id):null;
@@ -3031,7 +3185,7 @@ function proximoCambio(u,i){
 
 /* ====================== NAVEGACIÓN ====================== */
 let vista="corral", filtro="mias", ajTab="personas", gearBack=null;   // gearBack: cómo se entró a Ajustes desde el engranaje del inicio
-const PADRE={mi:"corral",eime:"mi",s5:"mi",rank:"mi",ajustes:"mi"};
+const PADRE={mi:"corral",eime:"mi",s5:"mi",rank:"mi",ajustes:"mi",rincones:"mi"};
 function go(v){ vista=v; render(); $("main").scrollTop=0; }
 function toast(m,i){ i=i||"✓"; const t=$("#toast"); t.innerHTML=`<span>${i}</span><span>${esc(m)}</span>`; t.classList.add("show");
   clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2800); }
@@ -3060,7 +3214,7 @@ function render(){
   renderTop();
   const u=yo(), V=$("#view");
   V.innerHTML = vista==="corral"?vCorral() : vista==="obs"?vObservador() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
-    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vCorral();
+    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vista==="rincones"?vRincones(u) : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
   if(vista==="ajustes"&&ajTab==="premios") pInitPremios();
   if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
@@ -3156,6 +3310,7 @@ function vMi(u){
     ${B("go-s5","cinco","var(--m-s5)","Gestión 5S",`${misZonas(u.id)} zona${misZonas(u.id)===1?"":"s"} a tu cargo`,emerg("s5").st==="on"?`<span class="bdg pill warn">Activa</span>`:`<span class="bdg pill mute">En espera</span>`)}
     ${B("go-rank","rank","var(--m-rank)","Ranking del mes","Estrellas del equipo")}
     ${B("tienda","bag","var(--m-exp)","Tienda",`${(u.accesorios||[]).length} de ${Object.keys(ACCESORIOS).length} accesorios`)}
+    ${rzMision().hoy?B("go-rincones","camera","var(--m-rz)","Rincones Ocultos",`Misión de hoy: +${rzMision().monedas} monedas por foto en tu zona`,`<span class="bdg pill warn">Hoy</span>`):""}
   </div>
   ${pend.length?`<div class="nextup"><h4>Lo primero que te toca</h4>${pend.slice(0,3).map(e=>{const st=estado(e);
      return `<button class="nrow" data-act="eq" data-id="${e.id}"><span class="mini">${viz(e.tipo)}</span>
@@ -3231,7 +3386,7 @@ function vS5(){
 
 /* ---------- AJUSTES (administrador) ---------- */
 function vAjustes(){
-  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos EIME"],["zonas","Zonas 5S"],["premios","Premios"],["export","Auditor"]];
+  const T=[["personas","Personas"],["pausas","Pausas"],["equipos","Equipos EIME"],["zonas","Zonas 5S"],["rincones","Rincones"],["premios","Premios"],["export","Auditor"]];
   let cuerpo="";
   if(ajTab==="personas"){
     cuerpo=`<div class="toolrow"><button class="btn sm" data-act="perAdd">${ic("plus",16)} Agregar persona</button></div>`+
@@ -3248,6 +3403,8 @@ function vAjustes(){
     cuerpo=vEquiposAdmin();
   }else if(ajTab==="zonas"){
     cuerpo=vZonas();
+  }else if(ajTab==="rincones"){
+    cuerpo=vRincones(yo());
   }else if(ajTab==="premios"){
     cuerpo=vPremiosAdmin();
   }else{
@@ -3812,7 +3969,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
