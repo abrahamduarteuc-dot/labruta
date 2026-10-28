@@ -928,7 +928,7 @@ const ACCESORIOS={
  ropa_bebe:{n:"Pechera para tus bebés",p:25,slot:"bebe"}
 };
 
-function petSVG(sp,col,est,usando,uid){
+function petSVG(sp,col,est,usando,uid,esBebe){
   if(!ESPECIES[sp]) sp="perro";
   col=col||ESPECIES[sp].c; est=FAT[est]!==undefined?est:"contenta"; usando=usando||[]; uid=uid||"p";
   const f=FAT[est], INK="#1D2530";
@@ -1205,7 +1205,7 @@ function petSVG(sp,col,est,usando,uid){
     const scy=hy+hh+1;
     over+=`<path d="M${hx0+4} ${scy-6}Q60 ${scy+6} ${hx1-4} ${scy-6}L${hx1-4} ${scy+1}Q60 ${scy+13} ${hx0+4} ${scy+1}Z" fill="#C2312F"/><path d="M${hx0+8} ${scy-4}Q60 ${scy+6} ${hx1-8} ${scy-4}" fill="none" stroke="#fff" stroke-width="2.2" stroke-dasharray="4 4"/><path d="M${60+6} ${scy+7}L${60+10} ${scy+24}L${60+2} ${scy+22}Z" fill="#C2312F"/><path d="M${60+5} ${scy+12}h6M${60+4} ${scy+17}h6" stroke="#fff" stroke-width="1.6"/>`;
   }
-  if(usando.includes("ropa_bebe")){
+  if(esBebe&&usando.includes("ropa_bebe")){
     const by2=hy+hh+2;
     over+=`<path d="M${60-11} ${by2-2}Q60 ${by2+5} ${60+11} ${by2-2}L${60+9} ${by2+16}Q60 ${by2+22} ${60-9} ${by2+16}Z" fill="#F7D04A" stroke="#D9A91E" stroke-width="1.4" stroke-linejoin="round"/><circle cx="60" cy="${by2+8}" r="2.6" fill="#fff"/><circle cx="${60-7}" cy="${by2+12}" r="2" fill="#fff"/><circle cx="${60+7}" cy="${by2+12}" r="2" fill="#fff"/>`;
   }
@@ -1243,7 +1243,7 @@ let PB=0;
 function bebesHTML(u){
   const list=bebes(u); if(!list.length) return "";
   const vis=bebeUsando(u);
-  return `<span class="bebes-row" data-act="zoomBebes" role="button" aria-label="Ver a los bebés más de cerca">${list.map((b,ix)=>`<span class="bebe-ico" style="animation-delay:${(ix*.35).toFixed(2)}s">${petSVG(b.sp,b.col,"contenta",vis,"bb"+(++PB))}</span>`).join("")}</span>`;
+  return `<span class="bebes-row" data-act="zoomBebes" role="button" aria-label="Ver a los bebés más de cerca">${list.map((b,ix)=>`<span class="bebe-ico" style="animation-delay:${(ix*.35).toFixed(2)}s">${petSVG(b.sp,b.col,"contenta",vis,"bb"+(++PB),true)}</span>`).join("")}</span>`;
 }
 
 const C={ac:"var(--accent)",ad:"var(--accent-d)",br:"var(--brass)",ln:"var(--line)",fg:"var(--fg-dim)",sf:"var(--surface)"};
