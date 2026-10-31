@@ -19,7 +19,7 @@
   --accent:#0B6B74; --accent-d:#064B52; --accent-soft:#D9ECEE;
   --brass:#A8761F; --brass-soft:#F5E8D0;
   --ok:#17704A; --ok-soft:#D7EEE2; --warn:#A6681A; --warn-soft:#F8E9D1; --bad:#A93A31; --bad-soft:#F8DEDB;
-  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0; --m-rz:#B2460C;
+  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0; --m-rz:#B2460C; --m-ds:#946200;
   --shadow:0 1px 2px rgba(19,33,42,.06), 0 8px 24px -12px rgba(19,33,42,.22);
   --r:14px;
   --f-disp:'Archivo','Helvetica Neue',Arial,sans-serif;
@@ -32,7 +32,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }}
@@ -42,7 +42,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }
@@ -859,6 +859,115 @@ td.num{font-family:var(--f-mono);text-align:right}
   font-family:inherit;background:var(--surface-2);color:var(--fg);resize:vertical;min-height:46px}
 .rzmap{cursor:pointer}
 .rzchk{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--m-rz);color:#fff;font-size:10px;font-weight:800;flex:none}
+.rzload{position:absolute;inset:0;background:linear-gradient(90deg,var(--surface-2),var(--line),var(--surface-2));background-size:200% 100%;animation:rzsh 1.2s linear infinite}
+@keyframes rzsh{from{background-position:200% 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.rzload{animation:none}}
+/* ====================== DESAFÍO DEL MIÉRCOLES ====================== */
+.dsbox:empty{display:none}
+.dscard{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--m-ds);border-left-width:5px;border-radius:14px;padding:12px 14px;margin:0 0 14px}
+.dscard.ok{border-color:var(--line);border-left-color:var(--m-ds)}
+.dscard .dsi{font-size:24px;flex:none;color:var(--m-ds);font-weight:800}
+.dscard>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+.dscard>div span{font-size:12.5px;color:var(--fg-dim)}
+.dscard .btn{flex:none}
+@media (max-width:520px){.dscard{flex-wrap:wrap}.dscard .btn{width:100%}}
+.dspares{display:flex;flex-direction:column;gap:14px;margin:12px 0}
+.dspar{display:flex;flex-direction:column;gap:6px}
+.dsn{font-size:12.5px;font-weight:700}
+.dsn span{font-weight:400;color:var(--fg-mute)}
+.dsres{display:flex;flex-direction:column;gap:10px;margin:12px 0;text-align:left}
+.dsrp{background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.dschips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.dsch{font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--fg-mute)}
+.dsch.req.si{border-color:var(--ok,#2E7D32);color:var(--ok,#2E7D32);font-weight:700}
+.dsch.req.no{border-color:var(--bad,#C62828);color:var(--bad,#C62828);font-weight:700}
+.dsch.si:not(.req){color:var(--fg-dim)}
+.dsfalta{margin:6px 0 0;font-size:12.5px;color:var(--fg-dim)}
+.dsadm{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--m-ds);border-radius:14px;padding:14px;margin:0 0 14px;display:flex;flex-direction:column;gap:8px}
+.dsadm h3{margin:0;font-size:16px}
+.dsgr{margin:0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:3px}
+/* ====================== INTRO ANIMADA: EL CORRAL EN FIESTA ====================== */
+.cine{position:fixed;inset:0;z-index:400;background:radial-gradient(120% 80% at 50% 0%,var(--accent-soft),var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;overflow:hidden;cursor:pointer;
+  padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));transition:opacity .35s ease}
+.cine.s-out{opacity:0;pointer-events:none}
+.cn-cap{height:64px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--f-disp);font-weight:800;font-size:clamp(20px,5.6vw,27px);color:var(--fg);text-wrap:balance;position:relative;width:100%}
+.cn-cap span{position:absolute;opacity:0;transform:translateY(8px) scale(.96)}
+.cn-cap span.on{animation:cnpop .38s cubic-bezier(.2,.9,.3,1.3) forwards}
+.cn-cap .warn{color:var(--bad)}
+.cn-cap .ok{color:var(--ok)}
+.cn-title{position:absolute;inset:0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;opacity:0;transform:translateY(-10px);pointer-events:none}
+.cn-title .lg{width:44px;height:44px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.2))}.cn-title .lg svg{width:100%;height:100%}
+.cn-title b{font-family:var(--f-disp);font-size:clamp(26px,7.4vw,34px);letter-spacing:-.01em}
+.cine.s-title .cn-title{animation:cnpop .5s cubic-bezier(.2,.9,.3,1.3) forwards}
+.cine.s-title .cn-cap span{opacity:0!important;animation:none}
+.cn-scene{position:relative;width:min(94vw,480px);height:min(56vh,400px);border-radius:22px;overflow:hidden;background:linear-gradient(var(--surface-2),var(--surface));box-shadow:var(--shadow);border:1px solid var(--line-soft)}
+.cn-fence{position:absolute;left:0;right:0;bottom:36%;height:46%;background:repeating-linear-gradient(90deg,var(--surface-2) 0 15px,var(--line) 15px 17px);border-top:5px solid var(--line);opacity:.9}
+.cn-ground{position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(var(--brass-soft),var(--surface-2));border-top:2px solid var(--line)}
+.cn-ground::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 22px,rgba(168,118,31,.16) 22px 24px);opacity:.7}
+.cn-gate{position:absolute;left:39%;width:22%;bottom:38%;height:46%;background:linear-gradient(#FFE9A8,#FFD470);border-radius:8px 8px 0 0;box-shadow:inset 0 0 22px rgba(255,255,255,.7);opacity:0;transition:opacity .2s}
+.cn-door{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#9A7350 0 12px,#7E5C3C 12px 14px);border-radius:8px 8px 0 0;transform-origin:left center;border:2px solid #5C4129;transition:transform .5s cubic-bezier(.3,.8,.3,1)}
+.cn-gate::after{content:"";position:absolute;inset:0;border-radius:8px 8px 0 0;pointer-events:none}
+.cn-who{position:absolute;left:50%;bottom:0;width:58%;transform:translate(-50%,40%);opacity:0;transition:transform .45s cubic-bezier(.2,.9,.3,1.2) .15s,opacity .2s .15s}
+.cn-who svg{width:100%;display:block}
+.cine.s-freeze .cn-gate,.cine.s-clean .cn-gate,.cine.s-title .cn-gate{opacity:1}
+.cine.s-freeze .cn-door,.cine.s-clean .cn-door,.cine.s-title .cn-door{transform:perspective(500px) rotateY(-78deg)}
+.cine.s-freeze .cn-who,.cine.s-clean .cn-who,.cine.s-title .cn-who{opacity:.92;transform:translate(-50%,0)}
+.cn-pet{position:absolute;bottom:11%;width:28%;z-index:3}
+.cn-pet .pi{display:block;transform-origin:50% 90%}
+.cn-pet svg{width:100%;height:auto;display:block;overflow:visible}
+.cn-pet.p1{left:-2%}.cn-pet.p2{left:20%}.cn-pet.p3{left:41%}.cn-pet.p4{left:60%}
+.cine.s-chaos .p1 .pi{animation:cnfl .17s ease-in-out infinite alternate}
+.cine.s-chaos .p2 .pi{animation:cnfr .17s ease-in-out infinite alternate}
+.cine.s-chaos .p3 .pi{animation:cnhop .42s ease-in-out infinite}
+.cine.s-chaos .p4 .pi{animation:cnsway .5s ease-in-out infinite alternate}
+.cine.s-freeze .pi{animation:cnshiv .09s linear infinite alternate}
+.cine.s-clean .pi,.cine.s-title .pi{animation:cntidy .5s ease-in-out infinite}
+.cine.s-clean .p2 .pi{animation-delay:.12s}.cine.s-clean .p3 .pi{animation-delay:.24s}.cine.s-clean .p4 .pi{animation-delay:.36s}
+.cn-bang{position:absolute;top:-4%;left:50%;margin-left:-13px;width:26px;height:26px;border-radius:50%;background:var(--bad);color:#fff;font-weight:900;font-size:17px;display:none;place-items:center;font-family:var(--f-disp);z-index:5}
+.cine.s-freeze .cn-bang{display:grid;animation:cnpop .25s cubic-bezier(.2,.9,.3,1.5) both}
+.cn-hat{position:absolute;top:2%;left:50%;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:26px solid #E0518B;transform:translateX(-4px) rotate(14deg);z-index:4;transition:transform .5s ease-in,opacity .5s .1s}
+.cn-hat::after{content:"";position:absolute;left:-4px;top:-31px;width:8px;height:8px;border-radius:50%;background:#FFD23F}
+.cine.s-freeze .cn-hat,.cine.s-clean .cn-hat,.cine.s-title .cn-hat{transform:translate(18px,150px) rotate(140deg);opacity:0}
+.cn-broom{position:absolute;bottom:2%;right:-18%;width:46%;transform-origin:70% 6%;opacity:0;z-index:4;transform:rotate(14deg)}
+.cn-broom svg{width:100%;display:block}
+.cine.s-clean .cn-broom,.cine.s-title .cn-broom{opacity:1;animation:cnsweep .45s ease-in-out infinite alternate}
+.cn-fight{position:absolute;left:15%;bottom:28%;width:20%;aspect-ratio:1;z-index:6;pointer-events:none}
+.cn-fight i{position:absolute;border-radius:50%;background:var(--surface);border:2px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.cn-fight i:nth-child(1){inset:8% 20% 30% 0}.cn-fight i:nth-child(2){inset:0 0 40% 36%}.cn-fight i:nth-child(3){inset:34% 10% 0 22%}
+.cn-fight b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-10deg);background:#FFD23F;color:#7A1F13;font-family:var(--f-disp);font-weight:900;font-size:15px;padding:5px 9px;clip-path:polygon(50% 0,62% 18%,86% 8%,80% 32%,100% 42%,82% 58%,92% 84%,64% 76%,50% 100%,38% 76%,10% 86%,20% 58%,0 42%,18% 32%,12% 8%,38% 18%);width:78px;height:62px;display:grid;place-items:center;text-align:center;white-space:nowrap;padding:0}
+.cine.s-chaos .cn-fight{animation:cnpuff .24s ease-in-out infinite alternate}
+.cine:not(.s-chaos) .cn-fight{display:none}
+.cn-it{position:absolute;width:11%;aspect-ratio:1;z-index:2;transition:left .75s cubic-bezier(.5,0,.8,.6),bottom .75s cubic-bezier(.5,0,.8,.6),opacity .2s .65s}
+.cn-it .ii{display:block;width:100%;height:100%}.cn-it svg{width:100%;height:100%;display:block}
+.cine.s-chaos .cn-it .ii{animation:cntoss .9s ease-in-out infinite}
+.cine.s-clean .cn-it,.cine.s-title .cn-it{left:86%!important;bottom:11%!important;opacity:0}
+.cine.s-clean .cn-it .ii,.cine.s-title .cn-it .ii{animation:cnarc .75s ease-out both}
+.cn-spill{position:absolute;left:34%;bottom:9%;width:20%;height:6%;border-radius:50%;background:#6FCF7E;opacity:.75;z-index:1;transition:opacity .6s .5s,transform .6s .5s}
+.cine.s-clean .cn-spill,.cine.s-title .cn-spill{opacity:0;transform:scaleX(.2)}
+.cn-bin{position:absolute;right:2%;bottom:7%;width:11%;z-index:2}.cn-bin svg{width:100%;display:block}
+.cine.s-clean .cn-bin{animation:cnbin .3s ease-in-out .2s 5 alternate}
+.cn-conf{position:absolute;inset:0;overflow:hidden;z-index:5;pointer-events:none}
+.cn-conf i{position:absolute;top:-8%;width:7px;height:11px;border-radius:2px;animation:cnconf 1.6s linear infinite}
+.cine:not(.s-chaos) .cn-conf{opacity:0;transition:opacity .25s}
+.cn-spark{position:absolute;z-index:6;width:20px;height:20px;opacity:0}
+.cn-spark svg{width:100%;height:100%;display:block}
+.cine.s-title .cn-spark{animation:cnspark 1s ease-in-out infinite}
+.cn-hint{font-size:12px;color:var(--fg-mute);font-weight:600;letter-spacing:.04em;height:16px}
+@keyframes cnpop{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes cnfl{from{transform:translateX(-3px) rotate(-5deg)}to{transform:translateX(14px) rotate(9deg)}}
+@keyframes cnfr{from{transform:translateX(3px) rotate(5deg)}to{transform:translateX(-14px) rotate(-9deg)}}
+@keyframes cnhop{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(8deg)}}
+@keyframes cnsway{from{transform:rotate(-9deg) translateX(-6px)}to{transform:rotate(9deg) translateX(8px)}}
+@keyframes cnshiv{from{transform:translateX(-1.5px)}to{transform:translateX(1.5px)}}
+@keyframes cntidy{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes cnsweep{from{transform:rotate(14deg)}to{transform:rotate(-26deg)}}
+@keyframes cnpuff{from{transform:scale(.9) rotate(-6deg)}to{transform:scale(1.12) rotate(8deg)}}
+@keyframes cntoss{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-70px) rotate(200deg)}}
+@keyframes cnarc{0%{transform:translateY(0) scale(1)}45%{transform:translateY(-60px) scale(1.05)}100%{transform:translateY(0) scale(.35)}}
+@keyframes cnbin{to{transform:scale(1.07,.94)}}
+@keyframes cnconf{to{transform:translateY(380px) rotate(540deg)}}
+@keyframes cnspark{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+@media(prefers-reduced-motion:reduce){.cine{display:none}}
 
 </style>
 
@@ -2035,7 +2144,7 @@ function vEvid5(u){
     ${hist.length?`<div class="eyebrow" style="margin:18px 0 8px">${u.admin?"Últimas evaluaciones del equipo":"Tus últimas evaluaciones"}</div>
     <div class="j5hist">${hist.map(e=>`<button class="j5h" data-act="j5ver" data-id="${e.id}" data-v="${e.ver}">
       <span class="vd">${e.rev==="OBSERVADA"?"!":e.ver==="APROBADO"?"✓":e.ver==="RECHAZADO"?"✗":"!"}</span>
-      <span class="tx"><b>${e.tipo==="ADIC"?"5S adicional":`${e.s}S ${esc((S5[e.s-1]||{}).n||"")}`}${e.zn?" · "+esc(e.zn):""}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
+      <span class="tx"><b>${e.tipo==="DESAFIO"?"Desafío del miércoles":e.tipo==="ADIC"?"5S adicional":`${e.s}S ${esc((S5[e.s-1]||{}).n||"")}`}${e.zn?" · "+esc(e.zn):""}</b><span>${fmt(e.fecha)}${u.admin?" · "+esc((U(e.uid)||{}).nombre||""):""} · ${esc(e.motivo).slice(0,90)}</span></span></button>`).join("")}</div>`:""}</div>`;
 }
 function misZonas5s(uid){ const out=[]; planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp===uid) out.push({p,z}); })); return out; }
 function vAdic5(u){
@@ -2141,7 +2250,7 @@ function veredictoAdic(r){
 }
 async function verEvid5(id){
   const e=evid5().find(x=>x.id===id); if(!e) return;
-  openSheet(`${phead((e.tipo==="ADIC"?"5S adicional":e.s+"S "+esc((S5[e.s-1]||{}).n||""))+(e.zn?" · "+esc(e.zn):""))}<div class="pbody">
+  openSheet(`${phead((e.tipo==="DESAFIO"?"Desafío del miércoles":e.tipo==="ADIC"?"5S adicional":e.s+"S "+esc((S5[e.s-1]||{}).n||""))+(e.zn?" · "+esc(e.zn):""))}<div class="pbody">
     <div class="j5fotos" id="j5mini"><div class="j5foto"><span>…</span><b>Antes</b></div><div class="j5foto"><span>…</span><b>Después</b></div></div>
     <div class="j5res" data-v="${e.ver}" style="margin-top:12px"><b>${e.ver} · ${fmt(e.fecha)} · ${esc((U(e.uid)||{}).nombre||"")}</b>
     <div class="pts">${"★".repeat(e.puntaje||0)}${"☆".repeat(5-(e.puntaje||0))}</div>
@@ -2563,6 +2672,18 @@ const rzMision=()=>(DB.config&&DB.config.RINCONES)||{hoy:false,monedas:0};
 const RZ_MIN=2;   // fotos mínimas para que una zona se marque como completa (✓)
 const rzEstado=(pid,zid)=>{ const n=rzCount(pid,zid); return n>=RZ_MIN?"completa":n>0?"parcial":"vacia"; };
 let rzPlano="", rzSel=null, rzPend=[];
+/* Las miniaturas ya no vienen en el paquete general (para que la app no se ponga lenta con
+   cientos de fotos): se piden al abrir una zona y quedan guardadas aquí mientras la app esté abierta. */
+const RZF={}, RZCARGA={};
+const miniDe=h=>h.mini||RZF[h.id]||"";
+const fotosZona=(pid,zid)=>hallazgosDB().filter(h=>h.planoId===pid&&h.zonaId===zid).sort((a,b)=>(b.ts||0)-(a.ts||0));
+async function rzCargarZona(pid,zid,listo){
+  const k=pid+"|"+zid; if(RZCARGA[k]) return; RZCARGA[k]=1;
+  const r=await call("hallazgosZona",{planoId:pid,zonaId:zid});
+  RZCARGA[k]=0;
+  if(r.ok&&r.minis) Object.assign(RZF,r.minis);
+  if(listo) listo(r.ok);
+}
 
 function vRincones(u){
   const L=planosDB(), mis=rzMision();
@@ -2572,6 +2693,7 @@ function vRincones(u){
     const totalZ=L.reduce((s,p)=>s+p.zonas.length,0), conFotos=L.reduce((s,p)=>s+p.zonas.filter(z=>rzEstado(p.id,z.id)==="completa").length,0);
     return `<div class="pagehead"><div><h2>Rincones Ocultos</h2><p>Gavetas, mesones y rincones que no se ven en el plano, pero pertenecen a sus mismas zonas</p></div></div>
     ${mis.hoy?`<div class="s5st" data-s="on" style="border-left-color:var(--m-rz)"><p><b>Misión activa hoy.</b> El equipo gana ${mis.monedas} monedas por cada foto que suba en su propia zona.</p></div>`:""}
+    ${vDesafioAdmin()}
     <div class="stats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <div class="stat"><b>${L.length}</b><span>Planos</span></div>
       <div class="stat"><b>${totalZ}</b><span>Zonas</span></div>
@@ -2620,18 +2742,24 @@ function abrirRincon(planoId,zonaId){
 }
 function pintaRincon(){
   const {pl,z}=rzSel, u=yo();
-  const items=hallazgosDB().filter(h=>h.planoId===pl.id&&h.zonaId===z.id).sort((a,b)=>(b.ts||0)-(a.ts||0));
-  const puedeBorrar=h=>u&&(u.admin||h.usuarioId===u.id);
+  const items=fotosZona(pl.id,z.id);
   openSheet(`${phead(esc(z.n))}<div class="pbody">
     <p style="margin:0 0 10px;font-size:12.5px;color:var(--fg-mute)">${esc(pl.nombre)}</p>
-    <div class="rzgal" id="rzGal">${items.length?items.map(h=>{ const autor=U(h.usuarioId);
-      return `<div class="rzph"><img src="${h.mini}" alt="${esc(h.caption||z.n)}">
-        ${autor?`<span class="rzby">${esc(primer(autor.nombre))}</span>`:""}
-        ${h.caption?`<span class="rzcap">${esc(h.caption)}</span>`:""}
-        ${puedeBorrar(h)?`<button class="rzdel" data-act="rzBorrar" data-id="${h.id}" aria-label="Eliminar foto">✕</button>`:""}</div>`; }).join("")
-      :`<p style="font-size:13px;color:var(--fg-mute);grid-column:1/-1">Sin fotos todavía.</p>`}</div>
+    <div class="rzgal" id="rzGal">${rzGalHTML(items,z)}</div>
+    ${u&&u.admin&&items.length>=RZ_MIN?`<button class="btn ghost sm" data-act="dsProbar" data-p="${pl.id}" data-z="${z.id}" style="margin-bottom:10px">${ic("chk",16)} Probar desafío con esta zona</button>`:""}
     <label class="rzadd"><input type="file" accept="image/*" multiple data-rfoto hidden>${ic("camera",18)} Agregar foto</label>
     <div id="rzPendWrap">${rzPendHTML()}</div></div>`);
+  if(items.some(h=>!miniDe(h))) rzCargarZona(pl.id,z.id,()=>{
+    const g=$("#rzGal"); if(g&&rzSel&&rzSel.pl.id===pl.id&&rzSel.z.id===z.id) g.innerHTML=rzGalHTML(fotosZona(pl.id,z.id),z); });
+}
+function rzGalHTML(items,z){
+  const u=yo(), puedeBorrar=h=>u&&(u.admin||h.usuarioId===u.id);
+  if(!items.length) return `<p style="font-size:13px;color:var(--fg-mute);grid-column:1/-1">Sin fotos todavía.</p>`;
+  return items.map(h=>{ const autor=U(h.usuarioId), m=miniDe(h);
+    return `<div class="rzph">${m?`<img src="${m}" alt="${esc(h.caption||z.n)}">`:`<span class="rzload" aria-label="Cargando foto"></span>`}
+      ${autor?`<span class="rzby">${esc(primer(autor.nombre))}</span>`:""}
+      ${h.caption?`<span class="rzcap">${esc(h.caption)}</span>`:""}
+      ${puedeBorrar(h)?`<button class="rzdel" data-act="rzBorrar" data-id="${h.id}" aria-label="Eliminar foto">✕</button>`:""}</div>`; }).join("");
 }
 function rzPendHTML(){
   if(!rzPend.length) return "";
@@ -2658,7 +2786,7 @@ const HACT={
     let ok=0, monedas=0, err_=null;
     for(const p of rzPend){
       const r=await call("subirHallazgo",{planoId:pl.id,planoNombre:pl.nombre,zonaId:z.id,zonaNombre:z.n,caption:p.caption,foto:p.full,mini:p.mini});
-      if(r.ok){ ok++; monedas+=r.monedas||0; } else err_=r.msg;
+      if(r.ok){ ok++; monedas+=r.monedas||0; if(r.id) RZF[r.id]=p.mini; } else err_=r.msg;
     }
     rzPend=[];
     if(ok){ toast(monedas>0?`${ok===1?"Foto guardada":ok+" fotos guardadas"} · +${monedas} monedas`:(ok===1?"Foto guardada":`${ok} fotos guardadas`),"★");
@@ -2672,6 +2800,227 @@ const HACT={
     toast("Foto eliminada"); render(); if(rzSel) pintaRincon();
   }
 };
+
+/* ====================== DESAFÍO DEL MIÉRCOLES ======================
+   Bono grande por dejar una zona de Rincones Ocultos al menos en 3S.
+   El servidor decide todo (grupos A/B, a quién le toca, qué zona y qué fotos son el "antes");
+   la app solo lo muestra, recoge un "después" por cada foto y enseña el veredicto.
+   No toca el 5S guiado, el 5S adicional ni la estrella fugaz. */
+const DS_S=["1S Clasificar","2S Ordenar","3S Limpiar","4S Estandarizar"];
+const dsCfg=()=>(DB&&DB.config&&DB.config.DESAFIO)||{activo:false};
+// El desafío de esta persona esta semana (o null)
+function dsMio(u){
+  const c=dsCfg(); if(!u||!c.activo||!c.abierta) return null;
+  const as=(c.asign||{})[u.id]; if(!as) return null;
+  const est=(c.estado||{})[u.id]||{intentos:0,aprobado:false,ultimo:null};
+  const hay=new Set(hallazgosDB().map(h=>h.id));
+  return {as,antes:(as.antes||[]).filter(x=>hay.has(x.id)),est,quedan:Math.max(0,(c.intentos||3)-(est.intentos||0))};
+}
+// Lunes o martes de una semana en que juega su grupo: aviso de que el miércoles le toca
+function dsAviso(u){
+  const c=dsCfg(); if(!u||!c.activo||c.abierta||!c.semana) return false;
+  return hoyS()<c.semana&&(c.grupos||{})[u.id]===c.grupo;
+}
+
+function vDesafio(u){
+  const c=dsCfg(), m=dsMio(u);
+  if(!m){
+    if(!dsAviso(u)) return "";
+    return `<div class="dscard"><span class="dsi">🏆</span><div><b>El miércoles tienes desafío</b>
+      <span>Te toca dejar una zona tuya al menos en ${c.sMin||3}S. Premio: +${c.monedas} monedas y +${c.estrellas} ★.</span></div></div>`;
+  }
+  const {as,est,quedan}=m;
+  if(est.aprobado) return `<div class="dscard ok"><span class="dsi">✓</span><div><b>Desafío cumplido · ${esc(as.zonaNombre)}</b>
+    <span>Ganaste +${c.monedas} monedas y +${c.estrellas} ★ esta semana.</span></div></div>`;
+  if(!quedan) return `<div class="dscard"><span class="dsi">🏆</span><div><b>Desafío · ${esc(as.zonaNombre)}</b>
+    <span>Usaste tus ${c.intentos} intentos de esta semana. La próxima vez le toca a tu grupo en dos semanas.</span></div>
+    ${est.ultimo?`<button class="btn sm ghost" data-act="dsUltimo">Ver resultado</button>`:""}</div>`;
+  return `<div class="dscard"><span class="dsi">🏆</span><div><b>Desafío del miércoles · ${esc(as.zonaNombre)}</b>
+    <span>Déjala al menos en ${c.sMin}S y gana +${c.monedas} monedas y +${c.estrellas} ★. Vence el viernes ${fmt(c.vence)}. ${quedan===1?"Te queda 1 intento":`Te quedan ${quedan} intentos`}.</span></div>
+    <button class="btn sm" data-act="dsAbrir">Ver desafío</button></div>`;
+}
+
+/* ---------- hoja de subida: un "después" por cada foto del "antes" ---------- */
+let DS=null;
+function abrirDesafio(prueba,planoId,zonaId){
+  const c=dsCfg(); let as, antes;
+  if(prueba){
+    const pl=planosDB().find(p=>p.id===planoId), z=pl&&pl.zonas.find(x=>x.id===zonaId); if(!z) return;
+    const fotos=fotosZona(pl.id,z.id).slice().sort((a,b)=>(a.ts||0)-(b.ts||0)).slice(-(c.fotos||3));
+    as={planoId:pl.id,planoNombre:pl.nombre,zonaId:z.id,zonaNombre:z.n}; antes=fotos.map(h=>({id:h.id,caption:h.caption||""}));
+  } else {
+    const m=dsMio(yo()); if(!m) return; as=m.as; antes=m.antes;
+  }
+  DS={prueba:!!prueba,as,antes,desp:{},enviando:false};
+  pintaDesafio();
+  if(antes.some(x=>!RZF[x.id]&&!(hallazgosDB().find(h=>h.id===x.id)||{}).mini))
+    rzCargarZona(as.planoId,as.zonaId,()=>{ if(DS&&DS.as.zonaId===as.zonaId) pintaDesafio(); });
+}
+function pintaDesafio(){
+  const c=dsCfg(), {as,antes,prueba}=DS, listo=antes.length&&antes.every(x=>DS.desp[x.id]);
+  const m=prueba?null:dsMio(yo());
+  openSheet(`${phead("Desafío · "+esc(as.zonaNombre))}<div class="pbody">
+    ${prueba?`<p class="s5st" data-s="prog" style="margin:0 0 10px"><b>Modo prueba.</b> El juez evalúa igual, pero no se guarda ni se paga nada.</p>`:""}
+    <p class="j5tip">Para ganar, <b>cada foto</b> del después debe cumplir <b>${DS_S.slice(0,c.sMin||3).join(", ")}</b>, y el problema anotado tiene que quedar resuelto. Saca cada después <b>desde el mismo ángulo</b> que su antes.</p>
+    <div class="dspares">${antes.map((x,i)=>{ const h=hallazgosDB().find(y=>y.id===x.id)||{}, mi=RZF[x.id]||h.mini||"", d=DS.desp[x.id];
+      return `<div class="dspar"><div class="dsn">Foto ${i+1}${x.caption?` · <span>${esc(x.caption)}</span>`:""}</div>
+        <div class="j5fotos" style="margin:0">
+          <div class="j5foto lleno">${mi?`<img src="${mi}" alt="Antes ${i+1}">`:`<span class="rzload"></span>`}<b>Antes</b></div>
+          <label class="j5foto ${d?"lleno":""}"><input type="file" accept="image/*" data-dfoto="${x.id}" hidden>
+            ${d?`<img src="${d.mini}" alt="Después ${i+1}">`:`<span>${ic("camera",28)}</span>`}
+            <b>Después</b><small>${d?"Toca para cambiar":"Toca para sacar o elegir foto"}</small></label>
+        </div></div>`; }).join("")}</div>
+    <div class="saverow"><button class="btn" data-act="dsEnviar" ${listo?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
+    <p class="j5nota">${prueba?"Prueba del administrador.":m?`${m.quedan===1?"Te queda 1 intento":`Te quedan ${m.quedan} intentos`} esta semana. Si el juez no entiende la respuesta, no se gasta el intento.`:""}</p></div>`);
+}
+document.addEventListener("change",async ev=>{
+  const inp=ev.target.closest("[data-dfoto]"); if(!inp||!DS||!inp.files||!inp.files[0]) return;
+  try{ DS.desp[inp.dataset.dfoto]=await prepFoto(inp.files[0]); pintaDesafio(); }
+  catch(e){ toast(e.message,"!"); }
+});
+
+/* ---------- veredicto: qué S cumple cada foto y qué falta ---------- */
+function veredictoDesafio(r,soloVer){
+  const ok=r.ver==="APROBADO", c=dsCfg(), sMin=r.sMin||c.sMin||3;
+  const m=r.prueba?null:dsMio(yo()), quedan=m?m.quedan:0;
+  openSheet(`${phead(ok?"¡Desafío ganado!":"Aún no")}<div class="pbody"><div class="j5res" data-v="${r.ver}">
+    <div class="big">${ok?"🏆":"✗"}</div><b>Desafío · ${esc(r.zn||"")}</b>
+    <p class="j5tip" style="margin-top:4px">La zona llegó a <b>${r.sAlc||0}S</b> (se pide ${sMin}S en todas las fotos).</p>
+    <div class="dsres">${(r.pares||[]).map((q,i)=>`<div class="dsrp"><b>Foto ${i+1}</b>
+      <div class="dschips">${q.mismo?DS_S.map((n,k)=>`<span class="dsch ${q.s[k]?"si":"no"} ${k<sMin?"req":""}">${q.s[k]?"✓":"✗"} ${n}</span>`).join(""):`<span class="dsch no req">✗ No es el mismo lugar o ángulo</span>`}
+        <span class="dsch ${q.resuelto?"si":"no"} req">${q.resuelto?"✓":"✗"} Hallazgo resuelto</span></div>
+      ${q.falta?`<p class="dsfalta">Falta: ${esc(q.falta)}</p>`:""}</div>`).join("")}</div>
+    ${r.motivo?`<p><b>Motivo:</b> ${esc(r.motivo)}</p>`:""}${r.orientacion?`<p><b>Para mejorar:</b> ${esc(r.orientacion)}</p>`:""}
+    ${ok&&r.monedas?`<p class="prem">+${r.monedas} monedas · +${r.estrellas} ★ · las fotos del después quedaron como el estado nuevo de la zona en Rincones</p>`:""}
+    ${r.prueba?`<p class="j5nota">Modo prueba: no se guardó ni se pagó nada.</p>`:""}
+    ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide la IA.</p>`:""}
+  </div><div class="saverow">${!ok&&!r.prueba&&!soloVer&&quedan>0?`<button class="btn" data-act="dsAbrir">Volver a intentar (${quedan===1?"queda 1":`quedan ${quedan}`})</button>`:""}
+    <button class="btn ${!ok&&!r.prueba&&!soloVer&&quedan>0?"ghost":""}" data-close>Listo</button></div></div>`);
+}
+
+/* ---------- panel del administrador (Ajustes > Rincones) ---------- */
+function vDesafioAdmin(){
+  const c=dsCfg(); if(c.error) return `<div class="alert warn"><p>No pude leer el desafío: ${esc(c.error)}</p></div>`;
+  const G=c.grupos||{}, nom=id=>esc(primer((U(id)||{}).nombre||id));
+  const lista=k=>Object.keys(G).filter(id=>G[id]===k).map(nom).join(", ")||"nadie";
+  const A=c.asign||{}, E=c.estado||{};
+  const filas=Object.keys(A).map(id=>{ const e=E[id]||{intentos:0}, a=A[id];
+    return `<li><b>${nom(id)}</b> · ${esc(a.zonaNombre)} <span style="color:var(--fg-mute)">(${esc(a.planoNombre||"")})</span> — ${e.aprobado?"✓ ganado":`${e.intentos||0} de ${c.intentos} intentos`}</li>`; }).join("");
+  return `<section class="dsadm"><h3>🏆 Desafío del miércoles</h3>
+    <p class="j5tip" style="margin:0">${c.activo?`<b>Encendido.</b> `:`<b>Apagado.</b> `}Le toca a un grupo por semana, de miércoles a viernes: deja una de sus zonas de Rincones al menos en ${c.sMin||3}S. El juez revisa cada foto. Empieza el ${fmt(c.inicio||"2026-11-04")}.</p>
+    ${c.semana?`<p class="j5tip" style="margin:6px 0 0">Esta semana (${fmt(c.semana)} al ${fmt(c.vence)}) juega el <b>grupo ${c.grupo}</b>.</p>`:""}
+    <ul class="dsgr"><li><b>Grupo A:</b> ${lista("A")}</li><li><b>Grupo B:</b> ${lista("B")}</li></ul>
+    ${filas?`<ul class="dsgr">${filas}</ul>`:c.activo&&c.abierta?`<p class="j5nota">Nadie del grupo de turno tiene una zona con 2 o más fotos en Rincones.</p>`:""}
+    <div class="fieldrow two"><div><label class="fl" for="dsMon">Bono · monedas</label><input class="inp" id="dsMon" type="number" min="1" max="300" value="${c.monedas||50}"></div>
+      <div><label class="fl" for="dsEst">Bono · estrellas</label><input class="inp" id="dsEst" type="number" min="0" max="20" value="${c.estrellas??5}"></div></div>
+    <div class="saverow"><button class="btn ${c.activo?"ghost":""}" data-act="dsGuardar" data-on="${c.activo?"0":"1"}">${c.activo?"Apagar desafío":"Encender desafío"}</button>
+      <button class="btn ghost" data-act="dsGuardar">Guardar bono</button></div>
+    <p class="j5nota">Para probarlo sin pagar nada: abre una zona del plano de abajo que tenga 2 o más fotos y toca «Probar desafío con esta zona».</p></section>`;
+}
+
+/* Solo para la vista previa sin planilla: imita lo que calcula el servidor (grupos, semana y asignación). */
+function dsDemo(){
+  const c=DB.config&&DB.config.DESAFIO; if(!c) return;
+  const hoy=hoyS(), dow=parse(hoy).getDay(), mie=addDays(hoy,3-dow);
+  let ini=c.inicio||"2026-11-04"; while(parse(ini).getDay()!==3) ini=addDays(ini,1);
+  const n=Math.round((parse(mie)-parse(ini))/864e5)/7;
+  const conZona=new Set(); planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp) conZona.add(z.resp); }));
+  const ids=DB.usuarios.filter(u=>u.activo!==false&&!u.admin&&!u.observador&&conZona.has(u.id)).map(u=>u.id).sort();
+  const g={}, k={A:0,B:0};
+  ids.forEach(id=>{ const v=(c.grupos||{})[id]; if(v==="A"||v==="B"){ g[id]=v; k[v]++; } });
+  ids.forEach(id=>{ if(!g[id]){ const v=k.A<=k.B?"A":"B"; g[id]=v; k[v]++; } });
+  c.grupos=g;
+  if(n<0){ c.semana=""; c.abierta=false; c.grupo=""; return; }
+  c.semana=mie; c.vence=addDays(mie,2); c.abierta=dow>=3&&dow<=5; c.grupo=n%2===0?"A":"B";
+  if(!c.activo||!c.abierta||c._sem===mie) return;
+  c._sem=mie; c.asign={}; c.estado={};
+  Object.keys(g).filter(id=>g[id]===c.grupo).forEach(uid=>{ const cand=[];
+    planosDB().forEach(pl=>pl.zonas.forEach(z=>{ if(z.resp!==uid) return;
+      const f=(DB.hallazgos||[]).filter(h=>h.planoId===pl.id&&h.zonaId===z.id).sort((a,b)=>a.ts-b.ts);
+      if(f.length>=2) cand.push({pl,z,f,ult:f[f.length-1].ts}); }));
+    cand.sort((a,b)=>a.ult-b.ult); const x=cand[0]; if(!x) return;
+    c.asign[uid]={planoId:x.pl.id,planoNombre:x.pl.nombre,zonaId:x.z.id,zonaNombre:x.z.n,
+      antes:x.f.slice(-(c.fotos||3)).map(h=>({id:h.id,caption:h.caption||""}))}; });
+}
+
+const DACT={
+  dsAbrir(){ abrirDesafio(false); },
+  dsIr(){ go("s5"); abrirDesafio(false); },
+  dsProbar(d){ abrirDesafio(true,d.p,d.z); },
+  dsUltimo(){ const m=dsMio(yo()); if(m&&m.est.ultimo) veredictoDesafio(Object.assign({zn:m.as.zonaNombre,sMin:dsCfg().sMin},m.est.ultimo),true); },
+  async dsEnviar(d,btn){
+    if(!DS||DS.enviando) return;
+    const {as,antes,prueba}=DS; if(!antes.every(x=>DS.desp[x.id])) return;
+    DS.enviando=true; btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando ${antes.length} pares de fotos…`;
+    const r=await call("juezDesafio",{prueba,planoId:as.planoId,zonaId:as.zonaId,
+      despues:antes.map(x=>({id:x.id,foto:DS.desp[x.id].full,mini:DS.desp[x.id].mini}))});
+    if(!DS) return; DS.enviando=false;
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
+    DS=null; render(); veredictoDesafio(r.resultado);
+  },
+  async dsGuardar(d,btn){
+    const p={monedas:Number(($("#dsMon")||{}).value),estrellas:Number(($("#dsEst")||{}).value)};
+    if(d.on!==undefined) p.activo=d.on==="1";
+    btn.disabled=true; const r=await call("guardarDesafio",p); btn.disabled=false;
+    if(!r.ok){ toast(r.msg,"!"); return; }
+    toast(d.on===undefined?"Bono guardado":p.activo?"Desafío encendido":"Desafío apagado"); render();
+  }
+};
+
+/* ====================== INTRO ANIMADA: EL CORRAL EN FIESTA ====================== */
+/* 4,6 s: las mascotas arman un desorden, llega alguien, se callan y ordenan todo. Toque para saltar. Sin imágenes ni video: solo dibujo y CSS. */
+let CNU=0, CNT=[];
+const CN_ITEMS=[
+  ["papel",8,9,0],["flask",20,6,.1],["caja",33,12,.2],["banana",46,5,.3],["taza",58,10,.15],["calcetin",70,6,.25],["papel",26,15,.35],["flask",63,4,.05]
+];
+function cnItemSVG(k){
+  const S={
+   papel:`<circle cx="16" cy="16" r="11" fill="#E9E4D8" stroke="#9A907B" stroke-width="2"/><path d="M9 14l6 3 4-6M12 22l4-5 5 3" stroke="#9A907B" stroke-width="1.6" fill="none" stroke-linecap="round"/>`,
+   flask:`<path d="M13 4h6v8l7 14a2 2 0 0 1-2 3H8a2 2 0 0 1-2-3l7-14z" fill="#BFE6EE" stroke="#3B7F8C" stroke-width="2" stroke-linejoin="round"/><path d="M9 21h14l3.5 6.5a1 1 0 0 1-1 1.5H7a1 1 0 0 1-1-1.5z" fill="#6FCF7E"/>`,
+   caja:`<path d="M4 10l12-6 12 6v14l-12 6-12-6z" fill="#D2A16A" stroke="#8C5E2E" stroke-width="2" stroke-linejoin="round"/><path d="M4 10l12 6 12-6M16 16v14" stroke="#8C5E2E" stroke-width="2" fill="none"/>`,
+   banana:`<path d="M5 9c2 11 10 17 22 14-1 3-4 5-9 5C9 28 3 20 5 9z" fill="#FFD23F" stroke="#B88A12" stroke-width="2" stroke-linejoin="round"/>`,
+   taza:`<path d="M7 8h16l-2 19H9z" fill="#E0518B" stroke="#8E2556" stroke-width="2" stroke-linejoin="round"/><path d="M23 12h3a3 3 0 0 1 0 8h-3" stroke="#8E2556" stroke-width="2" fill="none"/>`,
+   calcetin:`<path d="M10 4h11v13l6 6c2 2 0 6-3 6-2 0-3-1-5-3l-9-8z" fill="#8E74C6" stroke="#4F3C85" stroke-width="2" stroke-linejoin="round"/><path d="M10 9h11" stroke="#fff" stroke-width="3"/>`
+  };
+  return `<svg viewBox="0 0 32 32" aria-hidden="true">${S[k]}</svg>`;
+}
+function cnPet(k,est){ return petSVG(k,null,est,[],"cn"+(++CNU)); }
+function cineJuega(){
+  if($("#cine")) return;
+  // en pruebas automáticas (navegador sin cabeza) no se muestra, salvo que se pida con ?cine
+  if(navigator.webdriver&&!/[?&]cine/.test(location.search)) return;
+  try{ if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches) return; }catch(e){}
+  const pets=[["perro","p1"],["gato","p2"],["conejo","p3"],["oso","p4"]];
+  const conf=["#E0518B","#FFD23F","#4FB37B","#45A0E0","#8E74C6"].flatMap((c,i)=>[0,1,2].map(j=>`<i style="left:${(i*19+j*6+4)%96}%;background:${c};animation-delay:${((i*3+j)*.13).toFixed(2)}s"></i>`)).join("");
+  const sparks=[[12,30],[30,22],[52,34],[70,26],[84,40],[40,12]].map(([l,b],i)=>`<span class="cn-spark" style="left:${l}%;bottom:${b}%;animation-delay:${(i*.15).toFixed(2)}s"><svg viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#FFD23F" stroke="#E0A800" stroke-width=".8"/></svg></span>`).join("");
+  const html=`<div class="cine s-chaos" id="cine" aria-hidden="true">
+    <div class="cn-cap"><div class="cn-title"><span class="lg">${LOGO}</span><b>Corral Lab</b></div><span class="c0 warn">Mientras nadie mira…</span><span class="c1 warn">¡Llegó alguien!</span><span class="c2 ok">Orden express</span></div>
+    <div class="cn-scene">
+      <div class="cn-fence"></div><div class="cn-ground"></div>
+      <div class="cn-gate"><div class="cn-who"><svg viewBox="0 0 100 120"><circle cx="50" cy="30" r="20" fill="#2B3A44"/><path d="M12 120c0-34 16-54 38-54s38 20 38 54z" fill="#2B3A44"/></svg></div><div class="cn-door"></div></div>
+      <div class="cn-spill"></div>
+      ${CN_ITEMS.map(([k,l,b,d],i)=>`<div class="cn-it" data-l="${l}" data-b="${b}" style="left:${l}%;bottom:${b}%;transition-delay:${(.05+i*.09).toFixed(2)}s,${(.05+i*.09).toFixed(2)}s,${(.65+i*.09).toFixed(2)}s"><span class="ii" style="animation-delay:${d}s">${cnItemSVG(k)}</span></div>`).join("")}
+      <div class="cn-bin"><svg viewBox="0 0 40 50"><rect x="6" y="10" width="28" height="38" rx="4" fill="#6D858D" stroke="#3E525A" stroke-width="2"/><rect x="3" y="5" width="34" height="7" rx="3" fill="#8DA2AA" stroke="#3E525A" stroke-width="2"/><path d="M14 18v24M20 18v24M26 18v24" stroke="#3E525A" stroke-width="2" stroke-linecap="round"/></svg></div>
+      ${pets.map(([k,c],i)=>`<div class="cn-pet ${c}"><span class="cn-bang">!</span>${c==="p3"?`<span class="cn-hat"></span>`:""}${c==="p1"?`<span class="cn-broom"><svg viewBox="0 0 40 90"><rect x="18" y="0" width="5" height="62" rx="2" fill="#9A7350"/><path d="M8 60h26l5 28H3z" fill="#E6C25A" stroke="#A8761F" stroke-width="2" stroke-linejoin="round"/><path d="M12 68l-2 18M20 68v20M28 68l2 18" stroke="#A8761F" stroke-width="1.6"/></svg></span>`:""}<span class="pi">${cnPet(k,"radiante")}</span></div>`).join("")}
+      <div class="cn-fight"><i></i><i></i><i></i><b>¡PAF!</b></div>
+      <div class="cn-conf">${conf}</div>
+      ${sparks}
+    </div>
+    <div class="cn-hint">Toca para saltar</div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend",html);
+  const el=$("#cine"), cap=n=>{ el.querySelectorAll(".cn-cap span").forEach((s,i)=>s.classList.toggle("on",i===n)); };
+  const fase=(c)=>{ el.classList.remove("s-chaos","s-freeze","s-clean","s-title"); el.classList.add(c); };
+  const cara=est=>{ pets.forEach(([k,c])=>{ const p=el.querySelector("."+c+" .pi"); if(p) p.innerHTML=cnPet(k,est); }); };
+  const at=(ms,f)=>CNT.push(setTimeout(f,ms));
+  const fin=(rapido)=>{ CNT.forEach(clearTimeout); CNT=[]; el.classList.add("s-out"); setTimeout(()=>{ el.remove(); },rapido?300:420); };
+  el.addEventListener("click",()=>fin(true));
+  cap(0);
+  at(1750,()=>{ fase("s-freeze"); cara("normal"); cap(1); });
+  at(2450,()=>{ fase("s-clean"); cara("contenta"); cap(2); });
+  at(3650,()=>{ fase("s-title"); cara("radiante"); });
+  at(4650,()=>fin(false));
+}
 
 "use strict";
 /* ============================================================
@@ -2882,7 +3231,7 @@ function seedDemo(){
     P("de","Danitza Espinoza","Asistente Técnico","I+D","gato","#D39A5A",0,false,{mascota:"Pigmento"}),
     P("fc","Francisco Contreras","Asistente Técnico","I+D","capibara","#B68A58",0,false,{mascota:"Don Capi"})
   ];
-  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}},RINCONES:{hoy:false,monedas:5}},usuarios:us,
+  return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}},RINCONES:{hoy:false,monedas:5},DESAFIO:{activo:false,monedas:50,estrellas:5,sMin:3,intentos:3,fotos:3,inicio:"2026-11-04",grupos:{},asign:{},estado:{}}},usuarios:us,
     equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],hallazgos:[],
     planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
 }
@@ -2973,6 +3322,53 @@ const LOCAL={
     if(h.usuarioId!==u.id&&!u.admin) return err("NO_ES_TUYA","Solo quien subió la foto (o un administrador) puede borrarla.");
     DB.hallazgos=(DB.hallazgos||[]).filter(x=>x.id!==p.id);
     return okd(); },
+  guardarDesafio(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
+    const c=DB.config.DESAFIO=Object.assign({monedas:50,estrellas:5,sMin:3,intentos:3,fotos:3,inicio:"2026-11-04",grupos:{},asign:{},estado:{}},DB.config.DESAFIO||{});
+    if(p.activo!==undefined) c.activo=!!p.activo;
+    const m=Math.round(Number(p.monedas)); if(m>=1&&m<=300) c.monedas=m;
+    const e=Math.round(Number(p.estrellas)); if(e>=0&&e<=20) c.estrellas=e;
+    dsDemo(); return okd(); },
+  juezDesafio(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const c=DB.config.DESAFIO||{}; let as;
+    if(p.prueba){ if(!u.admin) return err("SIN_PERMISO","Solo el administrador puede probar el desafío.");
+      const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId); if(!z) return err("SIN_ZONA","Zona no encontrada.");
+      const f=(DB.hallazgos||[]).filter(h=>h.planoId===pl.id&&h.zonaId===z.id).sort((a,b)=>a.ts-b.ts).slice(-(c.fotos||3));
+      as={planoId:pl.id,planoNombre:pl.nombre,zonaId:z.id,zonaNombre:z.n,antes:f.map(h=>({id:h.id,caption:h.caption||""}))};
+    } else {
+      if(!c.activo) return err("APAGADO","El desafío no está activo.");
+      if(!c.abierta) return err("FUERA","El desafío se hace de miércoles a viernes.");
+      as=(c.asign||{})[u.id]; if(!as) return err("SIN_DESAFIO","Esta semana no tienes desafío.");
+      const e=(c.estado||{})[u.id]||{intentos:0};
+      if(e.aprobado) return err("YA","Ya ganaste el desafío de esta semana.");
+      if(e.intentos>=(c.intentos||3)) return err("LIMITE",`Usaste tus ${c.intentos||3} intentos de esta semana.`);
+    }
+    const antes=(as.antes||[]).filter(x=>(DB.hallazgos||[]).some(h=>h.id===x.id));
+    if(!antes.length||(p.prueba&&antes.length<2)) return err("POCAS_FOTOS","Esta zona necesita al menos 2 fotos en Rincones.");
+    const desp={}; (p.despues||[]).forEach(d=>{ if(d&&d.id) desp[d.id]=d; });
+    for(let i=0;i<antes.length;i++) if(!desp[antes[i].id]||!/^data:image\//.test(desp[antes[i].id].foto||"")) return err("FOTOS",`Falta el después de la foto ${i+1} (son ${antes.length}).`);
+    const ok=Math.random()<(window.__juezOk??0.6), sMin=c.sMin||3;
+    const pares=antes.map((x,i)=>({mismo:true,s:ok?[true,true,true,i===0]:[true,i!==antes.length-1,false,false],resuelto:ok,
+      falta:ok?"":"Quedan frascos sin rotular y polvo sobre el mesón."}));
+    const sAlc=Math.min(...pares.map(q=>{ let n=0; while(n<4&&q.s[n]) n++; return q.mismo?n:0; }));
+    const r={zn:as.zonaNombre,ver:ok?"APROBADO":"RECHAZADO",sAlc,sMin,pares,prueba:!!p.prueba,demo:true,
+      motivo:ok?"Los rincones quedaron despejados, ordenados y limpios.":"Todavía se ven objetos fuera de lugar y superficies sin limpiar.",
+      orientacion:ok?"Rotula lo que quedó agrupado para sostener el orden.":"Limpia el mesón y rotula los frascos antes de sacar el después.",
+      monedas:ok?c.monedas:0,estrellas:ok?c.estrellas:0};
+    if(p.prueba) return {ok:true,resultado:r};
+    const E=c.estado=c.estado||{}, e=E[u.id]=E[u.id]||{intentos:0,aprobado:false,ultimo:null};
+    e.intentos++; e.ultimo={ts:Date.now(),ver:r.ver,sAlc,pares,motivo:r.motivo,orientacion:r.orientacion};
+    if(ok){ e.aprobado=true; const t=Date.now(), id="e"+t;
+      (DB.evid5s=DB.evid5s||[]).push({id,ts:t,fecha:hoyS(),uid:u.id,plano:as.planoId,zona:as.zonaId,zn:as.zonaNombre,s:0,com:"Desafío del miércoles",
+        tipo:"DESAFIO",nivel:sAlc+"S",ver:"APROBADO",puntaje:Math.min(5,sAlc+1),motivo:r.motivo,orient:r.orientacion,monedas:c.monedas,estrellas:c.estrellas});
+      (DB.fotos5=DB.fotos5||{})[id]={antes:((DB.hallazgos||[]).find(h=>h.id===antes[0].id)||{}).mini||"",despues:desp[antes[0].id].mini||""};
+      antes.forEach((x,k)=>DB.hallazgos.push({id:"H"+t+k,ts:t+k,usuarioId:u.id,planoId:as.planoId,planoNombre:as.planoNombre||"",zonaId:as.zonaId,
+        zonaNombre:as.zonaNombre,caption:"Después del desafío"+(x.caption?": "+x.caption:""),mini:desp[x.id].mini||""}));
+      u.ultimaActividad=t;
+      aplicaEvento(u,{comida:0,monedas:c.monedas,estrellas:c.estrellas,motivo:"Desafío del miércoles: "+as.zonaNombre+" en "+sAlc+"S"}); }
+    return okd({resultado:r}); },
+  hallazgosZona(p){ if(!authL(p)) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const minis={}; (DB.hallazgos||[]).filter(h=>h.planoId===p.planoId&&h.zonaId===p.zonaId).forEach(h=>{ minis[h.id]=h.mini||""; });
+    return {ok:true,minis}; },
   guardarParticipante(p){ if(!adminL(p)) return err("SIN_PERMISO","Solo el administrador.");
     let u=p.id?U(p.id):null;
     if(!u){ const base=(primer(p.nombre).slice(0,2)+Math.random().toString(36).slice(2,4)).toLowerCase();
@@ -3234,7 +3630,7 @@ function vCorral(){
   const sub = ok===N&&N>0 ? "Todas contentas. Así se ve un laboratorio al día."
     : `${ok} de ${N} contentas o mejor. La meta es que lleguen todas.`;
   const L=["radiante","contenta","normal","flaca","enferma"];
-  return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main"><div class="efbox">${vEstrellaFugaz()}</div><div class="revbox">${vRev()}</div>${vMetaEquipo()}
+  return `<div class="corral-lay"><aside class="cl-ruta">${vRuta()}</aside><div class="cl-main"><div class="efbox">${vEstrellaFugaz()}</div><div class="dsbox">${vDesafio(yo())}</div><div class="revbox">${vRev()}</div>${vMetaEquipo()}
   <div class="pens">${us.map(({u,i})=>`
     <button class="pen ${yoU&&yoU.id===u.id?"me":""}" data-act="pen" data-id="${u.id}" data-st="${i.est}" aria-label="${esc(nomMascota(u))}, mascota de ${esc(u.nombre)}">
       <span class="stage">${petOf(u,{info:i})}${bebesHTML(u)}</span>
@@ -3316,6 +3712,7 @@ function vMi(u){
     ${B("go-rank","rank","var(--m-rank)","Ranking del mes","Estrellas del equipo")}
     ${B("tienda","bag","var(--m-exp)","Tienda",`${(u.accesorios||[]).length} de ${Object.keys(ACCESORIOS).length} accesorios`)}
     ${rzMision().hoy?B("go-rincones","camera","var(--m-rz)","Rincones Ocultos",`Misión de hoy: +${rzMision().monedas} monedas por foto en tu zona`,`<span class="bdg pill warn">Hoy</span>`):""}
+    ${(()=>{ const m=dsMio(u); return m&&!m.est.aprobado&&m.quedan?B("dsIr","chk","var(--m-ds)","Desafío del miércoles",`${esc(m.as.zonaNombre)} · +${dsCfg().monedas} monedas y +${dsCfg().estrellas} ★`,`<span class="bdg pill warn">Vence vie</span>`):""; })()}
   </div>
   ${pend.length?`<div class="nextup"><h4>Lo primero que te toca</h4>${pend.slice(0,3).map(e=>{const st=estado(e);
      return `<button class="nrow" data-act="eq" data-id="${e.id}"><span class="mini">${viz(e.tipo)}</span>
@@ -3379,7 +3776,7 @@ function vS5(){
   if(!L.some(p=>p.id===s5Plano)) s5Plano=((mias[0]||L[0])||{}).id||"";
   const pl=L.find(p=>p.id===s5Plano), zs=pl?pl.zonas.filter(z=>z.resp===u.id):[];
   const estado=e.st==="on"?`<b>5S activa.</b> ${emergTexto("s5")}.`:e.st==="prog"?`<b>5S programada.</b> ${emergTexto("s5")}.`:`<b>Sube tus fotos cuando quieras.</b> El administrador marca los períodos obligatorios.`;
-  return `<div class="pagehead"><div><h2>Gestión 5S</h2><p>Tu zona del laboratorio, marcada en el plano</p></div></div><div class="efbox">${vEstrellaFugaz()}</div><div class="revbox">${vRev()}</div>
+  return `<div class="pagehead"><div><h2>Gestión 5S</h2><p>Tu zona del laboratorio, marcada en el plano</p></div></div><div class="efbox">${vEstrellaFugaz()}</div><div class="dsbox">${vDesafio(u)}</div><div class="revbox">${vRev()}</div>
   <div class="s5st" data-s="${e.st}"><p>${estado}</p></div>
   <div class="s5lay"><div class="s5map">
   ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="s5plano" data-id="${p.id}" aria-pressed="${p.id===s5Plano}">${esc(p.nombre)}${p.zonas.some(z=>z.resp===u.id)?" ●":""}</button>`).join("")}</div>
@@ -3974,7 +4371,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]||DACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
@@ -3996,7 +4393,7 @@ $("#themeBtn").onclick=()=>{ const a=ST.tema||(matchMedia("(prefers-color-scheme
 function aplicaTema(){ if(ST.tema) document.documentElement.setAttribute("data-theme",ST.tema); else document.documentElement.removeAttribute("data-theme"); }
 
 async function boot(){
-  load(); aplicaTema();
+  load(); aplicaTema(); cineJuega();
   if(!ONLINE){ if(!DB||!DB.mov) DB=seedDemo(); if(!DB.planos5s) DB.planos5s=JSON.parse(JSON.stringify(PLANOS_SEED)); recalc(); }
   if(DB&&ST.sesion&&!U(ST.sesion.id)) ST.sesion=null;
   if(DB) render(); else $("#view").innerHTML=`<div class="loadbox"><span class="ring"></span><p>Despertando al corral…</p></div>`;
