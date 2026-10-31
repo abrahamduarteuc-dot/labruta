@@ -1016,10 +1016,28 @@ const ESPECIES={
  mono:{n:"Mono",c:"#8B5E3C"},
  oso:{n:"Oso",c:"#7A5236"},
  pulpo:{n:"Pulpo",c:"#D9667A"},
- cocodrilo:{n:"Cocodrilo",c:"#5FA37A"}
+ cocodrilo:{n:"Cocodrilo",c:"#5FA37A"},
+ burro:{n:"Burro",c:"#9A9AA3"},
+ camello:{n:"Camello",c:"#C9A15F"},
+ arana:{n:"Araña",c:"#5B4B6B"},
+ hipopotamo:{n:"Hipopótamo",c:"#8F86A8"},
+ cobra:{n:"Cobra",c:"#9BB04A"},
+ oveja:{n:"Oveja",c:"#F1EBDD"},
+ cordero:{n:"Corderito",c:"#F6EFE2"},
+ ardilla:{n:"Ardilla",c:"#C2793A"},
+ nutria:{n:"Nutria",c:"#8A5E3C"},
+ panda:{n:"Panda",c:"#F4F1EA"},
+ erizo:{n:"Erizo",c:"#8D6B4B"},
+ tortuga:{n:"Tortuga",c:"#8DBA5F"},
+ rana:{n:"Rana",c:"#6DBE58"},
+ pollito:{n:"Pollito",c:"#F7D74E"},
+ koala:{n:"Koala",c:"#9AA3AE"},
+ ciervo:{n:"Ciervo",c:"#B9794A"},
+ alpaca:{n:"Alpaca",c:"#EFE2CB"},
+ ballena:{n:"Ballena",c:"#5C8FC4"}
 };
-/* Los animales que se pueden elegir. Tiburón, capibara, búho y pingüino quedan solo para quien ya los tenía. */
-const ESP_KEYS=["perro","gato","conejo","caballo","vaca","mono","oso","zorro","pulpo","cocodrilo"];
+/* Los animales que se pueden elegir. Tiburón, capibara y búho quedan solo para quien ya los tenía. */
+const ESP_KEYS=["perro","gato","conejo","caballo","vaca","mono","oso","zorro","pulpo","cocodrilo","burro","camello","arana","hipopotamo","cobra","oveja","cordero","ardilla","nutria","panda","erizo","tortuga","rana","pollito","koala","ciervo","alpaca","ballena","pinguino"];
 const COLORES=["#6C9AC2","#B68A58","#D39A5A","#E6D8CC","#E27B33","#8E74C6","#33485C","#5FA37A","#C9638A","#7B8794"];
 const FAT={radiante:1,contenta:.7,normal:.42,flaca:.08,enferma:0};
 const EST_NOM={radiante:"Radiante",contenta:"Contenta",normal:"Normal",flaca:"Flaca y triste",enferma:"Enferma"};
@@ -1091,6 +1109,24 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   if(sp==="oso"){G.ey=hy;G.edx=14;G.er=4;G.ny=hy+9;G.my=hy+17;}
   if(sp==="pulpo"){G.ey=hy+2;G.edx=13;G.er=5;G.ny=null;G.my=hy+16;}
   if(sp==="cocodrilo"){G.ey=top+9;G.edx=15;G.er=3.8;G.ny=hy+4;G.my=hy+17;}
+  if(sp==="burro"){G.ey=hy-3;G.edx=14;G.er=4;G.ny=hy+12;G.my=hy+20;}
+  if(sp==="camello"){G.ey=hy-2;G.edx=13;G.er=4;G.ny=hy+11;G.my=hy+19;}
+  if(sp==="arana"){G.ey=hy+3;G.edx=11;G.er=5.4;G.ny=null;G.my=hy+17;}
+  if(sp==="hipopotamo"){G.ey=top+10;G.edx=16;G.er=3.8;G.ny=hy+9;G.my=hy+20;}
+  if(sp==="cobra"){G.ey=hy;G.edx=11;G.er=4.2;G.ny=null;G.my=hy+16;}
+  if(sp==="oveja"){G.ey=hy;G.edx=12;G.er=4;G.ny=hy+11;G.my=hy+18;}
+  if(sp==="cordero"){G.ey=hy+1;G.edx=13;G.er=4.6;G.ny=hy+11;G.my=hy+18;}
+  if(sp==="ardilla"){G.ey=hy;G.edx=13;G.er=4.4;G.ny=hy+10;G.my=hy+17;}
+  if(sp==="nutria"){G.ey=hy-1;G.edx=13;G.er=4;G.ny=hy+9;G.my=hy+18;}
+  if(sp==="panda"){G.ey=hy+1;G.edx=14;G.er=4;G.ny=hy+10;G.my=hy+18;}
+  if(sp==="erizo"){G.ey=hy+1;G.edx=12;G.er=4.2;G.ny=hy+11;G.my=hy+18;}
+  if(sp==="tortuga"){G.ey=hy;G.edx=13;G.er=4.4;G.ny=null;G.my=hy+15;}
+  if(sp==="rana"){G.ey=top+7;G.edx=16;G.er=4.8;G.ny=null;G.my=hy+14;}
+  if(sp==="pollito"){G.ey=hy;G.edx=13;G.er=4.4;G.ny=null;G.my=null;}
+  if(sp==="koala"){G.ey=hy-1;G.edx=14;G.er=4;G.ny=hy+9;G.my=hy+19;}
+  if(sp==="ciervo"){G.ey=hy;G.edx=13;G.er=4.2;G.ny=hy+12;G.my=hy+19;}
+  if(sp==="alpaca"){G.ey=hy;G.edx=12;G.er=4.2;G.ny=hy+12;G.my=hy+19;}
+  if(sp==="ballena"){G.ey=hy+1;G.edx=17;G.er=4.2;G.ny=null;G.my=hy+14;}
   const L=60-G.edx, R=60+G.edx, ey=G.ey;
 
   let back="", body="", head="", faceS="", over="";
@@ -1115,6 +1151,40 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   if(sp==="cocodrilo"){
     back+=`<path d="M${60+bw-3} ${by-4}Q${60+bw+26} ${by+3} ${60+bw+25} ${by+17}Q${60+bw+10} ${by+11} ${60+bw-3} ${by+9}Z" fill="${md}"/>`;
   }
+  if(sp==="arana"){
+    const pata=(s,i)=>{ const y=by-9+i*7, x0=60+s*bw*.55, xe=60+s*(bw+17+(i%2)*3), ye=by+bh+6-(3-i)*2;
+      return `<path d="M${x0} ${y}Q${60+s*(bw+9)} ${y-16-i*2} ${xe} ${ye}" fill="none" stroke="${dk}" stroke-width="3.6" stroke-linecap="round"/>`; };
+    for(let i=0;i<4;i++) back+=pata(-1,i)+pata(1,i);
+  }
+  if(sp==="camello"){
+    back+=`<ellipse cx="${60-10}" cy="${top-3}" rx="13" ry="18" fill="${dk}"/><ellipse cx="${60+10}" cy="${top-3}" rx="13" ry="18" fill="${dk}"/><path d="M${60-10} ${top-15}q-3 4 0 8M${60+10} ${top-15}q3 4 0 8" stroke="${col}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/>`;
+  }
+  if(sp==="cobra"){
+    back+=`<path d="M${60+bw-4} ${by+bh-3}Q${60+bw+22} ${by+bh+1} ${60+bw+17} ${by-8}Q${60+bw+13} ${by-20} ${60+bw+25} ${by-24}" fill="none" stroke="${md}" stroke-width="9" stroke-linecap="round"/>`;
+    back+=`<ellipse cx="60" cy="${hy+8}" rx="${hw+11}" ry="${hh+8}" fill="${dk}"/><ellipse cx="60" cy="${hy+10}" rx="${hw+5}" ry="${hh+3}" fill="${md}"/>`;
+  }
+  if(sp==="ardilla"){
+    back+=`<g transform="rotate(${10-6*f} ${60+bw} ${by+6})"><ellipse cx="${60+bw+10}" cy="${by-10}" rx="${12+3*f}" ry="${26+2*f}" fill="${col}"/><ellipse cx="${60+bw+11}" cy="${by-10}" rx="${5+1.5*f}" ry="${19+2*f}" fill="${lt}" opacity=".55"/></g>`;
+  }
+  if(sp==="nutria"){
+    back+=`<ellipse cx="${60+bw+9}" cy="${by+bh-3}" rx="15" ry="5.2" fill="${dk}" transform="rotate(-12 ${60+bw+9} ${by+bh-3})"/>`;
+  }
+  if(sp==="erizo"){
+    const spk=(cx,cy,rx,ry,a0,a1,n,d)=>{let p="";for(let i=0;i<=n;i++){const a=(a0+(a1-a0)*i/n)*Math.PI/180,rr=i%2?1:1+d;p+=`${i?"L":"M"}${(cx+Math.cos(a)*rx*rr).toFixed(1)} ${(cy+Math.sin(a)*ry*rr).toFixed(1)}`;}return p+"Z";};
+    back+=`<path d="${spk(60,by,bw+1,bh+1,150,390,20,.2)}" fill="${dk}" stroke="${dk}" stroke-width="1.5" stroke-linejoin="round"/><path d="${spk(60,hy,hw+1,hh+1,165,375,24,.17)}" fill="${dk}" stroke="${dk}" stroke-width="1.5" stroke-linejoin="round"/>`;
+  }
+  if(sp==="tortuga"){
+    const shc=mixc(col,"#1F3D12",.5), shl=mixc(shc,"#000",.28);
+    back+=`<ellipse cx="60" cy="${by-4}" rx="${bw+15}" ry="${bh+10}" fill="${shc}" stroke="${shl}" stroke-width="2"/><path d="M${60-bw-12} ${by-3}q${bw+12} -10 ${2*bw+24} 0M${60-bw*.5} ${by-bh-9}l-4 ${bh+8}M${60+bw*.5} ${by-bh-9}l4 ${bh+8}M${60-bw*.5} ${by+4}l-6 ${bh*.5}M${60+bw*.5} ${by+4}l6 ${bh*.5}" fill="none" stroke="${shl}" stroke-width="2" stroke-linecap="round"/>`;
+  }
+  if(sp==="ballena"){
+    back+=`<g transform="translate(${60+bw-3} ${by+bh-5})"><path d="M0 0Q15 -2 14 -17" fill="none" stroke="${md}" stroke-width="7" stroke-linecap="round"/><ellipse cx="7" cy="-23" rx="8" ry="3.6" fill="${md}" transform="rotate(-38 7 -23)"/><ellipse cx="21" cy="-23" rx="8" ry="3.6" fill="${md}" transform="rotate(38 21 -23)"/></g>`;
+  }
+  if(sp==="oveja"||sp==="cordero"){
+    const wc=mixc(col,"#000",.16);
+    const puff=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke="${wc}" stroke-width="1.5"/>`;
+    back+=[[60-hw*.72,by-2,12],[60+hw*.72,by-2,12],[60-bw*.7,by+8,11],[60+bw*.7,by+8,11],[60,by+bh-4,12]].map(a=>puff(...a)).join("");
+  }
   /* accesorio de cuerpo: capa de vampiro (sobresale a los lados, como una cola) */
   if(usando.includes("capa_vampiro")){
     back+=`<path d="M${60-bw+2} ${by-bh+6}Q${60-bw-18} ${by+bh+8} ${60-bw*.25} ${by+bh+16}Q${60-bw+8} ${by+4} ${60-bw+2} ${by-bh+6}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1.2" stroke-linejoin="round"/>
@@ -1129,12 +1199,17 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   const belly = sp==="pinguino" ? "#F5F8FA" : lt;
   const bodyCol = sp==="pinguino" ? dk : md;
   body+=`<ellipse cx="60" cy="${by+bh-2}" rx="${bw*.45+8}" ry="5.4" fill="${dk}" transform="translate(${-bw*.0} 0)"/>`;
-  body+=`<ellipse cx="${60-bw*.45}" cy="${by+bh-1}" rx="10" ry="5.4" fill="${sp==="pinguino"?"#E9962B":sp==="pulpo"?md:dk}"/><ellipse cx="${60+bw*.45}" cy="${by+bh-1}" rx="10" ry="5.4" fill="${sp==="pinguino"?"#E9962B":sp==="pulpo"?md:dk}"/>`;
+  const feetCol = sp==="pinguino"||sp==="pollito" ? "#E9962B" : sp==="pulpo" ? md : sp==="panda" ? "#2E2E36" : sp==="oveja"||sp==="cordero" ? "#6E6670" : dk;
+  const armCol = sp==="panda" ? "#2E2E36" : md;
+  if(sp!=="cobra"&&sp!=="arana"&&sp!=="ballena") body+=`<ellipse cx="${60-bw*.45}" cy="${by+bh-1}" rx="10" ry="5.4" fill="${feetCol}"/><ellipse cx="${60+bw*.45}" cy="${by+bh-1}" rx="10" ry="5.4" fill="${feetCol}"/>`;
   body+=`<ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}" fill="${bodyCol}"/>`;
   body+=`<ellipse cx="60" cy="${by+3}" rx="${bw*.66}" ry="${bh*.74}" fill="${belly}"/>`;
-  if(sp!=="pinguino" && sp!=="buho"){
-    body+=`<ellipse cx="${60-bw+1}" cy="${by-1}" rx="6" ry="${10+1.5*f}" fill="${md}" transform="rotate(14 ${60-bw} ${by})"/><ellipse cx="${60+bw-1}" cy="${by-1}" rx="6" ry="${10+1.5*f}" fill="${md}" transform="rotate(-14 ${60+bw} ${by})"/>`;
+  if(sp!=="pinguino" && sp!=="buho" && sp!=="cobra" && sp!=="arana"){
+    body+=`<ellipse cx="${60-bw+1}" cy="${by-1}" rx="6" ry="${10+1.5*f}" fill="${armCol}" transform="rotate(14 ${60-bw} ${by})"/><ellipse cx="${60+bw-1}" cy="${by-1}" rx="6" ry="${10+1.5*f}" fill="${armCol}" transform="rotate(-14 ${60+bw} ${by})"/>`;
   }
+  if(sp==="ciervo") body+=[[-.78,-6],[.8,-3],[-.66,9],[.62,11],[-.2,-12],[.25,-13]].map(a=>`<circle cx="${60+bw*a[0]}" cy="${by+a[1]}" r="2.3" fill="${lt}"/>`).join("");
+  if(sp==="cobra") body+=[-9,0,9].map(dy=>`<path d="M${60-bw*.62} ${by+dy}q${bw*.62} 7 ${bw*1.24} 0" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>`).join("");
+  if(sp==="arana") body+=`<path d="M60 ${by-bh*.55}l-6 7 6 9 6-9z" fill="#D9667A" opacity=".85"/>`;
   if(sp==="buho"){
     body+=`<path d="M${60-8} ${by-2}q4 4 8 0q4 4 8 0M${60-8} ${by+7}q4 4 8 0q4 4 8 0" fill="none" stroke="${dk}" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>`;
   }
@@ -1201,6 +1276,57 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   if(sp==="oso"){
     back+=`<circle cx="${hx0+7}" cy="${top+4}" r="10" fill="${col}"/><circle cx="${hx0+7}" cy="${top+5}" r="5.2" fill="${lt}"/><circle cx="${hx1-7}" cy="${top+4}" r="10" fill="${col}"/><circle cx="${hx1-7}" cy="${top+5}" r="5.2" fill="${lt}"/>`;
   }
+  if(sp==="burro"){
+    const oreja=(s)=>`<g transform="rotate(${s*20} ${60+s*(hw-12)} ${top+8})"><ellipse cx="${60+s*(hw-8)}" cy="${top-6}" rx="9" ry="17" fill="${col}"/><ellipse cx="${60+s*(hw-8)}" cy="${top-16}" rx="7" ry="7" fill="${dk}"/><ellipse cx="${60+s*(hw-8)}" cy="${top-3}" rx="4.4" ry="10" fill="${lt}"/></g>`;
+    back+=oreja(-1)+oreja(1);
+  }
+  if(sp==="camello"){
+    back+=`<ellipse cx="${hx0+2}" cy="${top+11}" rx="5.5" ry="4.5" fill="${col}"/><ellipse cx="${hx1-2}" cy="${top+11}" rx="5.5" ry="4.5" fill="${col}"/>`;
+  }
+  if(sp==="hipopotamo"){
+    back+=`<ellipse cx="${hx0+7}" cy="${top+4}" rx="7.5" ry="6.5" fill="${dk}"/><ellipse cx="${hx0+7}" cy="${top+5}" rx="3.6" ry="3" fill="#E9B4C2"/><ellipse cx="${hx1-7}" cy="${top+4}" rx="7.5" ry="6.5" fill="${dk}"/><ellipse cx="${hx1-7}" cy="${top+5}" rx="3.6" ry="3" fill="#E9B4C2"/>`;
+  }
+  if(sp==="oveja"){
+    const wc=mixc(col,"#000",.16), fc="#6E6670";
+    back+=[[60,top+1,12.5],[60-14,top+4,11],[60+14,top+4,11],[hx0+2,hy-1,10.5],[hx1-2,hy-1,10.5],[hx0+3,hy+12,9],[hx1-3,hy+12,9]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="${col}" stroke="${wc}" stroke-width="1.5"/>`).join("");
+    back+=`<ellipse cx="${hx0-2}" cy="${hy-3}" rx="10.5" ry="5" fill="${fc}" transform="rotate(24 ${hx0+4} ${hy-3})"/><ellipse cx="${hx1+2}" cy="${hy-3}" rx="10.5" ry="5" fill="${fc}" transform="rotate(-24 ${hx1-4} ${hy-3})"/>`;
+  }
+  if(sp==="cordero"){
+    const fc="#F0CDBC", wc=mixc(col,"#000",.16);
+    back+=`<ellipse cx="${hx0-3}" cy="${hy-2}" rx="12" ry="6.2" fill="${fc}" stroke="#D8AE98" stroke-width="1.2" transform="rotate(34 ${hx0+4} ${hy-5})"/><ellipse cx="${hx1+3}" cy="${hy-2}" rx="12" ry="6.2" fill="${fc}" stroke="#D8AE98" stroke-width="1.2" transform="rotate(-34 ${hx1-4} ${hy-5})"/>`;
+    back+=[[60,top+1,9],[60-10,top+4,7.5],[60+10,top+4,7.5]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="${col}" stroke="${wc}" stroke-width="1.4"/>`).join("");
+  }
+  if(sp==="ardilla"){
+    back+=`<path d="M${hx0+3} ${top+9}L${hx0+5} ${top-9}L${hx0+19} ${top+3}Z" fill="${col}"/><path d="M${hx1-3} ${top+9}L${hx1-5} ${top-9}L${hx1-19} ${top+3}Z" fill="${col}"/><path d="M${hx0+5} ${top-9}l-2 -6l6 4z M${hx1-5} ${top-9}l2 -6l-6 4z" fill="${dk}" stroke="${dk}" stroke-width="1.4" stroke-linejoin="round"/><path d="M${hx0+8} ${top+3}L${hx0+8} ${top-3}L${hx0+14} ${top+2}Z" fill="#F2B7A0"/><path d="M${hx1-8} ${top+3}L${hx1-8} ${top-3}L${hx1-14} ${top+2}Z" fill="#F2B7A0"/>`;
+  }
+  if(sp==="nutria"){
+    back+=`<circle cx="${hx0+8}" cy="${top+5}" r="6" fill="${dk}"/><circle cx="${hx1-8}" cy="${top+5}" r="6" fill="${dk}"/><circle cx="${hx0+8}" cy="${top+6}" r="2.8" fill="${md}"/><circle cx="${hx1-8}" cy="${top+6}" r="2.8" fill="${md}"/>`;
+  }
+  if(sp==="panda"){
+    back+=`<circle cx="${hx0+6}" cy="${top+5}" r="10" fill="#2E2E36"/><circle cx="${hx1-6}" cy="${top+5}" r="10" fill="#2E2E36"/>`;
+  }
+  if(sp==="rana"){
+    back+=`<circle cx="${L}" cy="${ey}" r="11.5" fill="${col}"/><circle cx="${R}" cy="${ey}" r="11.5" fill="${col}"/>`;
+  }
+  if(sp==="ballena"){
+    back+=`<g fill="none" stroke="#9AD3F2" stroke-width="3.4" stroke-linecap="round"><path d="M60 ${top+2}V${top-12}"/><path d="M60 ${top-12}q-2 -7 -10 -8M60 ${top-12}q2 -7 10 -8"/></g><circle cx="${60-13}" cy="${top-17}" r="2.4" fill="#9AD3F2"/><circle cx="${60+13}" cy="${top-17}" r="2.4" fill="#9AD3F2"/>`;
+  }
+  if(sp==="pollito"){
+    back+=`<path d="M60 ${top+3}q-3 -12 -10 -14q0 9 4 14z" fill="${col}"/><path d="M60 ${top+3}q-1 -15 2 -18q6 7 3 18z" fill="${col}"/><path d="M60 ${top+3}q7 -10 14 -8q-3 6 -9 10z" fill="${col}"/>`;
+  }
+  if(sp==="koala"){
+    back+=`<circle cx="${hx0+3}" cy="${top+9}" r="13" fill="${col}"/><circle cx="${hx0+3}" cy="${top+10}" r="7.4" fill="${lt}"/><circle cx="${hx1-3}" cy="${top+9}" r="13" fill="${col}"/><circle cx="${hx1-3}" cy="${top+10}" r="7.4" fill="${lt}"/>`;
+  }
+  if(sp==="ciervo"){
+    const ant=s=>`<path d="M${60+s*11} ${top+4}Q${60+s*14} ${top-10} ${60+s*20} ${top-19}M${60+s*14} ${top-8}L${60+s*7} ${top-16}M${60+s*17} ${top-14}L${60+s*25} ${top-15}" fill="none" stroke="#7A4E26" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    back+=ant(-1)+ant(1);
+    back+=`<ellipse cx="${hx0-4}" cy="${top+10}" rx="11.5" ry="6" fill="${col}" transform="rotate(-30 ${hx0+3} ${top+10})"/><ellipse cx="${hx1+4}" cy="${top+10}" rx="11.5" ry="6" fill="${col}" transform="rotate(30 ${hx1-3} ${top+10})"/><ellipse cx="${hx0-4}" cy="${top+10}" rx="7" ry="3.2" fill="#F2B7C4" transform="rotate(-30 ${hx0+3} ${top+10})"/><ellipse cx="${hx1+4}" cy="${top+10}" rx="7" ry="3.2" fill="#F2B7C4" transform="rotate(30 ${hx1-3} ${top+10})"/>`;
+  }
+  if(sp==="alpaca"){
+    const wc=mixc(col,"#000",.14);
+    back+=`<ellipse cx="${60-14}" cy="${top-5}" rx="5.6" ry="13" fill="${col}" transform="rotate(-10 ${60-14} ${top+4})"/><ellipse cx="${60+14}" cy="${top-5}" rx="5.6" ry="13" fill="${col}" transform="rotate(10 ${60+14} ${top+4})"/><ellipse cx="${60-14}" cy="${top-3}" rx="2.6" ry="8" fill="#F2B7C4" transform="rotate(-10 ${60-14} ${top+4})"/><ellipse cx="${60+14}" cy="${top-3}" rx="2.6" ry="8" fill="#F2B7C4" transform="rotate(10 ${60+14} ${top+4})"/>`;
+    back+=[[hx0+3,hy+8,9],[hx1-3,hy+8,9],[hx0+1,hy-3,8],[hx1-1,hy-3,8]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="${col}" stroke="${wc}" stroke-width="1.3"/>`).join("");
+  }
   if(sp==="pulpo"){
     back+=`<ellipse cx="60" cy="${top+1}" rx="${hw-5}" ry="${hh*.78}" fill="${col}"/>`;
   }
@@ -1227,15 +1353,40 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   if(sp==="oso") patch=`<ellipse cx="60" cy="${hy+hh*.56}" rx="${hw*.46}" ry="${hh*.44}" fill="${lt}"/>`;
   if(sp==="pulpo") patch=`<circle cx="${60-14}" cy="${top+7}" r="3.4" fill="${dk}" opacity=".4"/><circle cx="${60+12}" cy="${top+5}" r="4.2" fill="${dk}" opacity=".4"/><circle cx="60" cy="${top+13}" r="2.6" fill="${dk}" opacity=".4"/>`;
   if(sp==="cocodrilo") patch=`<ellipse cx="60" cy="${hy+hh*.55}" rx="${hw*.82}" ry="${hh*.62}" fill="${lt}"/>`;
+  if(sp==="burro") patch=`<path d="M${60-8} ${top} Q60 ${top+11} ${60+8} ${top}Z" fill="${dk}"/><ellipse cx="60" cy="${hy+hh*.62}" rx="${hw*.64}" ry="${hh*.54}" fill="${mixc(col,"#fff",.72)}"/>`;
+  if(sp==="camello") patch=`<ellipse cx="60" cy="${hy+hh*.6}" rx="${hw*.62}" ry="${hh*.52}" fill="${lt}"/><path d="M60 ${hy+hh*.3}v${hh*.5}" stroke="${dk}" stroke-width="1.6" stroke-linecap="round" opacity=".5"/>`;
+  if(sp==="arana") patch=`<circle cx="${60-9}" cy="${top+8}" r="2.6" fill="#1D2530"/><circle cx="${60+9}" cy="${top+8}" r="2.6" fill="#1D2530"/><circle cx="${60-3}" cy="${top+5}" r="2" fill="#1D2530"/><circle cx="${60+3}" cy="${top+5}" r="2" fill="#1D2530"/><ellipse cx="60" cy="${hy+hh*.62}" rx="${hw*.5}" ry="${hh*.4}" fill="${lt}" opacity=".55"/>`;
+  if(sp==="hipopotamo") patch=`<ellipse cx="60" cy="${hy+hh*.55}" rx="${hw*.92}" ry="${hh*.66}" fill="${mixc(col,"#F2B6C4",.55)}"/>`;
+  if(sp==="cobra") patch=`<path d="M${60-hw*.7} ${hy+4}Q60 ${hy-hh*.2} ${60+hw*.7} ${hy+4}L${60+hw*.55} ${hy+hh}L${60-hw*.55} ${hy+hh}Z" fill="#F0DE8A" opacity=".85"/><path d="M${60-12} ${top+3}l4 7M60 ${top+1}v8M${60+12} ${top+3}l-4 7" stroke="${dk}" stroke-width="2.2" stroke-linecap="round" opacity=".55"/>`;
+  if(sp==="oveja") patch=`<ellipse cx="60" cy="${hy+hh*.2}" rx="${hw*.68}" ry="${hh*.82}" fill="#6E6670"/><circle cx="${L}" cy="${ey}" r="7.4" fill="#E7E0EC"/><circle cx="${R}" cy="${ey}" r="7.4" fill="#E7E0EC"/>`;
+  if(sp==="cordero") patch=`<ellipse cx="60" cy="${hy+hh*.22}" rx="${hw*.76}" ry="${hh*.9}" fill="#F0CDBC"/>`;
+  if(sp==="ardilla") patch=`<ellipse cx="60" cy="${hy+hh*.62}" rx="${hw*.66}" ry="${hh*.46}" fill="${lt}"/><path d="M60 ${top} v7" stroke="${dk}" stroke-width="2.2" stroke-linecap="round" opacity=".5"/>`;
+  if(sp==="nutria") patch=`<ellipse cx="60" cy="${hy+hh*.52}" rx="${hw*.76}" ry="${hh*.62}" fill="${mixc(col,"#F4E4CE",.7)}"/>`;
+  if(sp==="panda") patch=`<ellipse cx="${L-1}" cy="${ey+1}" rx="7.4" ry="9.8" fill="#2E2E36" transform="rotate(24 ${L} ${ey})"/><ellipse cx="${R+1}" cy="${ey+1}" rx="7.4" ry="9.8" fill="#2E2E36" transform="rotate(-24 ${R} ${ey})"/>`;
+  if(sp==="erizo") patch=`<ellipse cx="60" cy="${hy+hh*.3}" rx="${hw*.8}" ry="${hh*.86}" fill="#F3DFC4"/>`;
+  if(sp==="tortuga") patch=`<ellipse cx="60" cy="${hy+hh*.66}" rx="${hw*.56}" ry="${hh*.4}" fill="${lt}" opacity=".7"/>`;
+  if(sp==="rana") patch=`<ellipse cx="60" cy="${hy+hh*.55}" rx="${hw*.82}" ry="${hh*.6}" fill="${lt}"/>`;
+  if(sp==="koala") patch=`<ellipse cx="60" cy="${hy+hh*.58}" rx="${hw*.52}" ry="${hh*.5}" fill="${lt}"/>`;
+  if(sp==="ciervo") patch=`<ellipse cx="60" cy="${hy+hh*.62}" rx="${hw*.58}" ry="${hh*.48}" fill="${lt}"/><circle cx="${60-17}" cy="${top+7}" r="2.2" fill="${lt}"/><circle cx="${60+17}" cy="${top+7}" r="2.2" fill="${lt}"/><circle cx="60" cy="${top+4}" r="2" fill="${lt}"/>`;
+  if(sp==="alpaca") patch=`<ellipse cx="60" cy="${hy+hh*.62}" rx="${hw*.58}" ry="${hh*.48}" fill="${mixc(col,"#fff",.55)}"/>`;
+  if(sp==="ballena") patch=`<ellipse cx="60" cy="${hy+hh*.66}" rx="${hw*.84}" ry="${hh*.5}" fill="${mixc(col,"#fff",.78)}"/>`;
   head+=`<g clip-path="url(#${hid})">${patch}</g>`;
+  if(sp==="alpaca"){
+    const wc=mixc(col,"#000",.14);
+    head+=[[60,top+1,12],[60-12,top+4,9.5],[60+12,top+4,9.5],[60-22,top+9,7],[60+22,top+9,7]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="${col}" stroke="${wc}" stroke-width="1.3"/>`).join("");
+    head+=[[60,top+3,10.5],[60-12,top+6,8],[60+12,top+6,8]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="${a[2]}" fill="${col}"/>`).join("");
+  }
 
   /* ---- cara ---- */
   if(sp==="buho"){
     faceS+=`<circle cx="${L}" cy="${ey}" r="11.5" fill="#F6F1FB" stroke="${dk}" stroke-width="1.6"/><circle cx="${R}" cy="${ey}" r="11.5" fill="#F6F1FB" stroke="${dk}" stroke-width="1.6"/>`;
   }
-  const pr=G.er;
+  if(sp==="rana"){
+    faceS+=`<circle cx="${L}" cy="${ey}" r="8.8" fill="#fff" stroke="${dk}" stroke-width="1.5"/><circle cx="${R}" cy="${ey}" r="8.8" fill="#fff" stroke="${dk}" stroke-width="1.5"/>`;
+  }
+  const pr=G.er, EYEC=sp==="panda"?"#fff":INK;
   if(est==="radiante"){
-    faceS+=`<path d="M${L-5.2} ${ey+1.6}Q${L} ${ey-5.4} ${L+5.2} ${ey+1.6}M${R-5.2} ${ey+1.6}Q${R} ${ey-5.4} ${R+5.2} ${ey+1.6}" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`;
+    faceS+=`<path d="M${L-5.2} ${ey+1.6}Q${L} ${ey-5.4} ${L+5.2} ${ey+1.6}M${R-5.2} ${ey+1.6}Q${R} ${ey-5.4} ${R+5.2} ${ey+1.6}" fill="none" stroke="${EYEC}" stroke-width="3" stroke-linecap="round"/>`;
   }else{
     faceS+=`<circle cx="${L}" cy="${ey}" r="${pr}" fill="${INK}"/><circle cx="${R}" cy="${ey}" r="${pr}" fill="${INK}"/>`;
     faceS+=`<circle cx="${L+1.5}" cy="${ey-1.6}" r="${pr*.34}" fill="#fff"/><circle cx="${R+1.5}" cy="${ey-1.6}" r="${pr*.34}" fill="#fff"/>`;
@@ -1255,9 +1406,14 @@ function petSVG(sp,col,est,usando,uid,esBebe){
 
   /* nariz / pico */
   if(G.ny!=null){
-    let nc = sp==="gato"||sp==="conejo" ? "#E79BAA" : "#241A18";
+    let nc = sp==="gato"||sp==="conejo"||sp==="oveja"||sp==="cordero" ? "#E79BAA" : "#241A18";
     if(sp==="capibara") faceS+=`<ellipse cx="60" cy="${G.ny}" rx="8" ry="5" fill="#3A2A20"/>`;
     else if(sp==="caballo"||sp==="vaca") faceS+=`<ellipse cx="${60-6}" cy="${G.ny}" rx="2.3" ry="3.3" fill="#3A2A20"/><ellipse cx="${60+6}" cy="${G.ny}" rx="2.3" ry="3.3" fill="#3A2A20"/>`;
+    else if(sp==="nutria") faceS+=`<ellipse cx="60" cy="${G.ny}" rx="5.2" ry="3.5" fill="#2A1D17"/><ellipse cx="58.5" cy="${G.ny-1.2}" rx="1.6" ry=".9" fill="#fff" opacity=".55"/>`;
+    else if(sp==="koala") faceS+=`<ellipse cx="60" cy="${G.ny}" rx="5.6" ry="7.6" fill="#241A18"/><ellipse cx="58" cy="${G.ny-2.4}" rx="1.7" ry="2.3" fill="#fff" opacity=".4"/>`;
+    else if(sp==="panda"||sp==="erizo"||sp==="ciervo") faceS+=`<ellipse cx="60" cy="${G.ny}" rx="4.6" ry="3.3" fill="#1F1816"/><ellipse cx="58.6" cy="${G.ny-1.1}" rx="1.4" ry=".8" fill="#fff" opacity=".55"/>`;
+    else if(sp==="burro"||sp==="camello"||sp==="alpaca") faceS+=`<ellipse cx="${60-6}" cy="${G.ny}" rx="2.1" ry="3" fill="#3A2A20"/><ellipse cx="${60+6}" cy="${G.ny}" rx="2.1" ry="3" fill="#3A2A20"/>`;
+    else if(sp==="hipopotamo") faceS+=`<ellipse cx="${60-9}" cy="${G.ny}" rx="3.4" ry="2.6" fill="#5A4560"/><ellipse cx="${60+9}" cy="${G.ny}" rx="3.4" ry="2.6" fill="#5A4560"/>`;
     else if(sp==="cocodrilo") faceS+=`<ellipse cx="${60-7}" cy="${G.ny}" rx="2.2" ry="2.8" fill="#24402F"/><ellipse cx="${60+7}" cy="${G.ny}" rx="2.2" ry="2.8" fill="#24402F"/>`;
     else if(sp==="mono") faceS+=`<ellipse cx="${60-2.8}" cy="${G.ny}" rx="1.3" ry="1.9" fill="#3A2A20"/><ellipse cx="${60+2.8}" cy="${G.ny}" rx="1.3" ry="1.9" fill="#3A2A20"/>`;
     else if(sp==="oso") faceS+=`<ellipse cx="60" cy="${G.ny}" rx="5.6" ry="3.9" fill="#2A1D17"/>`;
@@ -1265,6 +1421,7 @@ function petSVG(sp,col,est,usando,uid,esBebe){
     else faceS+=`<path d="M${60-4.2} ${G.ny-2.4}h8.4l-4.2 5.2z" fill="${nc}"/>`;
   }
   if(sp==="buho") faceS+=`<path d="M60 ${hy+4}l-5.4 7.4 5.4 6.2 5.4-6.2z" fill="#E9962B"/>`;
+  if(sp==="pollito") faceS+=`<path d="M${60-6.4} ${hy+6}Q60 ${hy+2} ${60+6.4} ${hy+6}Q60 ${hy+14} ${60-6.4} ${hy+6}z" fill="#E9962B"/>`;
   if(sp==="pinguino") faceS+=`<path d="M${60-8} ${hy+5}Q60 ${hy+1} ${60+8} ${hy+5}Q60 ${hy+16} ${60-8} ${hy+5}z" fill="#E9962B"/>`;
 
   /* boca */
@@ -1289,13 +1446,18 @@ function petSVG(sp,col,est,usando,uid,esBebe){
       else if(est==="normal") faceS+=`<path d="M${mx-5} ${my}h10" ${mk}/>`;
       else if(est==="flaca") faceS+=`<path d="M${mx-6.5} ${my+3}Q${mx} ${my-3.5} ${mx+6.5} ${my+3}" ${mk}/>`;
       else faceS+=`<path d="M${mx-7} ${my+1}q3.5 -3 7 0t7 0" ${mk}/>`;
-      if(sp==="conejo"&&(est==="radiante"||est==="contenta")) faceS+=`<rect x="${mx-3.6}" y="${my+2}" width="3.4" height="5" rx="1" fill="#fff" stroke="${INK}" stroke-width="1"/><rect x="${mx+.2}" y="${my+2}" width="3.4" height="5" rx="1" fill="#fff" stroke="${INK}" stroke-width="1"/>`;
+      if((sp==="conejo"||sp==="ardilla")&&(est==="radiante"||est==="contenta")) faceS+=`<rect x="${mx-3.6}" y="${my+2}" width="3.4" height="5" rx="1" fill="#fff" stroke="${INK}" stroke-width="1"/><rect x="${mx+.2}" y="${my+2}" width="3.4" height="5" rx="1" fill="#fff" stroke="${INK}" stroke-width="1"/>`;
     }
+    if(sp==="arana"&&(est==="radiante"||est==="contenta")) faceS+=`<path d="M${mx-6} ${my+3}l-1.4 5.2 3.2-3.4M${mx+6} ${my+3}l1.4 5.2-3.2-3.4" fill="#fff" stroke="${INK}" stroke-width="1" stroke-linejoin="round"/>`;
+    if(sp==="hipopotamo"&&(est==="radiante"||est==="contenta")) faceS+=`<path d="M${mx-13} ${my+1}v5h4v-4M${mx+13} ${my+1}v5h-4v-4" fill="#fff" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>`;
+    if(sp==="burro"&&(est==="radiante"||est==="contenta")) faceS+=`<rect x="${mx-3.4}" y="${my+2}" width="6.8" height="4.4" rx="1.2" fill="#fff" stroke="${INK}" stroke-width="1"/>`;
+    if(sp==="cobra"&&(est==="radiante"||est==="contenta")) faceS+=`<path d="M${mx} ${my+3}v6l-3 4M${mx} ${my+9}l3 4" fill="none" stroke="#D7263D" stroke-width="2" stroke-linecap="round"/>`;
     if(sp==="cocodrilo"&&(est==="radiante"||est==="contenta")) faceS+=`<path d="M${mx-12} ${my+1}l2.4 4.4 2.4-4.4M${mx+7.2} ${my+1}l2.4 4.4 2.4-4.4" fill="#fff" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>`;
-    if(sp==="gato"||sp==="conejo"){
+    if(sp==="gato"||sp==="conejo"||sp==="nutria"){
       faceS+=`<path d="M${L-4} ${my-2}h-15M${L-4} ${my+3}l-14 4M${R+4} ${my-2}h15M${R+4} ${my+3}l14 4" stroke="${dk}" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>`;
     }
   }
+  if(sp==="camello"&&est!=="radiante") faceS+=`<path d="M${L-5} ${ey-5}l-3 -3M${L-1} ${ey-6.5}l-1 -4M${R+5} ${ey-5}l3 -3M${R+1} ${ey-6.5}l1 -4" stroke="${INK}" stroke-width="1.6" stroke-linecap="round"/>`;
   /* termómetro y gota de sudor */
   if(est==="enferma"){
     const ty=(my??hy+18);
