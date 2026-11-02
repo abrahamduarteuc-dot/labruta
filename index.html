@@ -725,6 +725,19 @@ td.num{font-family:var(--f-mono);text-align:right}
 .adicard .ai{font-size:24px}
 .adicard>div{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13.5px}
 .adicard>div span{font-size:12px;color:var(--fg-dim)}
+
+/* subzonas (gavetas y rincones que no se ven en el plano) */
+.j5subs{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:10px}
+.j5sub{display:flex;flex-direction:column;gap:7px;padding:10px 10px 10px 12px;border-radius:10px;background:var(--surface-2);border-left:3px solid var(--line)}
+.j5subh{display:flex;align-items:center;gap:8px;min-width:0}
+.j5subn{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.j5subn::before{content:"↳ ";color:var(--fg-mute);font-weight:400}
+.j5subm{margin-left:auto;border:0;background:transparent;color:var(--fg-mute);font-size:18px;line-height:1;padding:2px 8px;border-radius:6px;cursor:pointer}
+.j5subm:hover{background:var(--surface)}
+.j5ss.sm .j5s{font-size:11px;padding:3px 0}
+.j5sub .btn.sm{padding-block:7px;font-size:13px}
+.j5subadd{align-self:flex-start;border:1px dashed var(--line);background:transparent;color:var(--accent);font-weight:700;font-size:13px;padding:8px 12px;border-radius:10px;cursor:pointer}
+.j5subadd:hover{border-color:var(--accent)}
 /* ---- Carretera ---- */
 .alert.ok{background:var(--bg-contenta);border-color:transparent;color:var(--st-contenta)}
 .corral-lay{display:flex;flex-direction:column;gap:16px}
@@ -2277,9 +2290,15 @@ const S5=[
    g:["Repite el chequeo cada semana","Mantén el estado ideal sin que nadie lo pida","Corrige al tiro lo que se desordena","Comparte una mejora con el equipo"]}
 ];
 const evid5=()=>(DB&&DB.evid5s)||[];
-// Nivel de una zona = cuántas S seguidas tiene aprobadas
-function nivelZona(zid){ const ok=new Set(evid5().filter(e=>e.zona===zid&&e.ver==="APROBADO").map(e=>e.s));
+// Nivel de una zona (o de una de sus subzonas) = cuántas S seguidas tiene aprobadas.
+// La zona y cada subzona llevan su propia escalera: la evidencia de una gaveta no sube el nivel de la zona.
+function nivelZona(zid,sid){ sid=sid||""; const ok=new Set(evid5().filter(e=>e.zona===zid&&(e.sub||"")===sid&&e.ver==="APROBADO"&&e.s>0).map(e=>e.s));
   let n=0; while(ok.has(n+1)) n++; return n; }
+/* Subzonas: gavetas, repisas y rincones que no se ven en el plano. Las agrega el propio responsable. */
+const subzonasDB=()=>(DB&&DB.subzonas5s)||[];
+const subzonasDe=(pid,zid)=>subzonasDB().filter(s=>s.plano===pid&&s.zona===zid).sort((a,b)=>(a.ts||0)-(b.ts||0));
+const SUB_MAX=()=>(DB&&DB.config&&DB.config.SUBZONAS_MAX)||6;
+const j5pills=nv=>S5.map(s=>`<span class="j5s ${s.k<=nv?"ok":s.k===nv+1?"next":""}" title="${s.n}">${s.k<=nv?"✓":s.k}S</span>`).join("");
 const REV_PREMIO=5;
 const esRevisorActual=(e,uid)=>(e.rev==="PENDIENTE"&&e.revisor===uid)||(e.rev==="APELACION"&&e.revisor2===uid);
 // Revisiones anónimas que me tocan (se piden al servidor para no mostrar quién es el autor ni quién revisa)
@@ -2295,10 +2314,15 @@ let J5=null;   // estado de la hoja de evidencia abierta
 function vEvid5(u){
   const mias=[]; planosDB().forEach(p=>p.zonas.forEach(z=>{ if(z.resp===u.id) mias.push({p,z}); }));
   const hist=evid5().filter(e=>u.admin||e.uid===u.id).sort((a,b)=>b.ts-a.ts).slice(0,12);
-  const tarjetas=mias.length?mias.map(({p,z})=>{ const nv=nivelZona(z.id);
+  const tarjetas=mias.length?mias.map(({p,z})=>{ const nv=nivelZona(z.id), subs=subzonasDe(p.id,z.id);
     return `<div class="j5zona"><div class="j5zh"><span class="sw" style="background:${col5(u.id)}"></span><b>${esc(z.n)}</b><span class="pl">${esc(p.nombre)}</span></div>
-      <div class="j5ss">${S5.map(s=>`<span class="j5s ${s.k<=nv?"ok":s.k===nv+1?"next":""}" title="${s.n}">${s.k<=nv?"✓":s.k}S</span>`).join("")}</div>
-      <button class="btn sm" data-act="j5abrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir antes y después</button></div>`; }).join("")
+      <div class="j5ss">${j5pills(nv)}</div>
+      <button class="btn sm" data-act="j5abrir" data-p="${p.id}" data-z="${z.id}">${ic("camera",16)} Subir antes y después</button>
+      ${subs.length?`<div class="j5subs">${subs.map(sz=>`<div class="j5sub">
+        <div class="j5subh"><span class="j5subn">${esc(sz.n)}</span><button class="j5subm" data-act="j5subMenu" data-p="${p.id}" data-z="${z.id}" data-sz="${sz.id}" aria-label="Opciones de ${esc(sz.n)}">⋯</button></div>
+        <div class="j5ss sm">${j5pills(nivelZona(z.id,sz.id))}</div>
+        <button class="btn sm ghost" data-act="j5abrir" data-p="${p.id}" data-z="${z.id}" data-sz="${sz.id}">${ic("camera",15)} Subir antes y después</button></div>`).join("")}</div>`:""}
+      ${subs.length<SUB_MAX()?`<button class="j5subadd" data-act="j5subNueva" data-p="${p.id}" data-z="${z.id}">+ Agregar gaveta o rincón</button>`:""}</div>`; }).join("")
     :`<div class="empty">No tienes zonas 5S asignadas. El administrador las reparte en Ajustes → Zonas 5S.</div>`;
   return `<div class="j5"><div class="eyebrow" style="margin:18px 0 8px">Evidencia 5S · el juez revisa cada foto</div>
     ${vAdic5(u)}
@@ -2316,15 +2340,16 @@ function vAdic5(u){
     <button class="btn sm" data-act="j5adicAbrir">Subir fotos</button></div>`;
 }
 
-function abrirEvid5(planoId,zonaId){
+function abrirEvid5(planoId,zonaId,subId){
   const p=planosDB().find(x=>x.id===planoId), z=p&&p.zonas.find(x=>x.id===zonaId); if(!z) return;
-  const nivel=nivelZona(z.id);
-  J5={p,z,nivel,s:Math.min(5,nivel+1),antes:null,despues:null,enviando:false};
+  const sz=subId?subzonasDe(planoId,zonaId).find(x=>x.id===subId):null; if(subId&&!sz) return;
+  const nivel=nivelZona(z.id,sz?sz.id:"");
+  J5={p,z,sz,nivel,s:Math.min(5,nivel+1),antes:null,despues:null,enviando:false};
   pintaEvid5();
 }
 function pintaEvid5(){
-  const {z,p,s}=J5, info=S5[s-1];
-  openSheet(`${phead("Evidencia 5S · "+esc(z.n))}<div class="pbody">
+  const {z,p,s,sz}=J5, info=S5[s-1];
+  openSheet(`${phead("Evidencia 5S · "+esc(z.n)+(sz?" · "+esc(sz.n):""))}<div class="pbody">
     <div class="j5pick">${S5.map(x=>{ const bloq=x.k>J5.nivel+1;
       return `<button data-act="j5s" data-s="${x.k}" aria-pressed="${x.k===s}" ${bloq?"disabled title=\"Se desbloquea al aprobar la anterior\"":""}>${bloq?"🔒":x.k+"S"}<small>${x.n}</small></button>`; }).join("")}</div>
     <p class="j5tip"><b>${info.k}S ${info.n}</b> (${info.j}). ${info.t}${s<=J5.nivel?" <em>Ya la aprobaste: sirve como chequeo de mantención.</em>":""}</p>
@@ -2338,7 +2363,7 @@ function pintaEvid5(){
     <label class="fl" for="j5com">Comentario para el juez (opcional)</label>
     <textarea class="inp" id="j5com" rows="2" maxlength="300" placeholder="Qué hiciste en esta zona">${esc(J5.com||"")}</textarea>
     <div class="saverow"><button class="btn" data-act="j5enviar" ${J5.antes&&J5.despues?"":"disabled"}>${ic("chk",18)} Pedir evaluación al juez</button></div>
-    <p class="j5nota">Plano ${esc(p.nombre)}. Las fotos quedan guardadas como respaldo para el auditor.</p></div>`);
+    <p class="j5nota">Plano ${esc(p.nombre)}.${sz?` Subzona de ${esc(z.n)}: avanza por su cuenta, separada de la zona.`:""} Las fotos quedan guardadas como respaldo para el auditor.</p></div>`);
 }
 // Reduce la foto: una versión para el juez (1024 px) y una miniatura para el historial
 function prepFoto(file){ return new Promise((ok,mal)=>{
@@ -2365,6 +2390,21 @@ function veredicto5(r){
     ${!ok&&r.perdida?`<p class="perd">La zona no mantuvo el estándar: se descuentan ${r.perdida} monedas. Lo ya logrado (tus S aprobadas) no se pierde.</p>`:""}
     ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide Haiku.</p>`:""}
   </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
+}
+function subzonaSheet(pid,zid,sid){
+  const p=planosDB().find(x=>x.id===pid), z=p&&p.zonas.find(x=>x.id===zid); if(!z) return;
+  const sz=sid?subzonasDe(pid,zid).find(x=>x.id===sid):null;
+  const at=`data-p="${pid}" data-z="${zid}"${sz?` data-sz="${sz.id}"`:""}`;
+  openSheet(`${phead(sz?"Subzona":"Nueva subzona")}<div class="pbody">
+    <p class="j5tip">${sz?"":`Agrega una gaveta, repisa o rincón de <b>${esc(z.n)}</b> que no se ve en el plano. Tendrá su propio avance de 1S a 5S, para que puedas trabajarla por partes.`}</p>
+    <label class="fl" for="szNom">Nombre</label>
+    <input class="inp" id="szNom" maxlength="40" value="${esc(sz?sz.n:"")}" placeholder="Ej: Gaveta superior, Repisa de reactivos">
+    <div class="saverow"><button class="btn" data-act="j5subGuardar" ${at}>${ic("chk",18)} ${sz?"Guardar nombre":"Agregar"}</button><button class="btn ghost" data-close>Cancelar</button></div>
+    ${sz?`<div style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px">
+      <button class="linklike" data-act="j5subArchivarPide">Archivar esta subzona</button>
+      <div id="szConf" hidden><p class="j5nota">Deja de aparecer en tu lista. Sus fotos y evaluaciones quedan guardadas en el historial.</p>
+      <button class="btn sm ghost" data-act="j5subArchivar" ${at}>Sí, archivar</button></div></div>`:""}</div>`);
+  setTimeout(()=>{ const i=$("#szNom"); if(i&&!sz) i.focus(); },50);
 }
 let J5A=null;   // estado de la hoja de evidencia "5S adicional" abierta
 function abrirAdic5(){
@@ -2479,7 +2519,16 @@ const JACT={
     if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
     EF=null; render(); veredictoEF(r.resultado);
   },
-  j5abrir(d){ abrirEvid5(d.p,d.z); },
+  j5abrir(d){ abrirEvid5(d.p,d.z,d.sz); },
+  j5subNueva(d){ subzonaSheet(d.p,d.z,null); },
+  j5subMenu(d){ subzonaSheet(d.p,d.z,d.sz); },
+  async j5subGuardar(d,btn){
+    const nombre=(($("#szNom")||{}).value||"").trim(); if(!nombre){ toast("Ponle un nombre","!"); return; }
+    btn.disabled=true; const r=await call("subzona5s",{accion:d.sz?"renombrar":"crear",planoId:d.p,zonaId:d.z,id:d.sz||"",nombre});
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; return; } closeSheet(); render(); toast(d.sz?"Nombre actualizado":"Subzona agregada","★"); },
+  j5subArchivarPide(d){ const box=$("#szConf"); if(box) box.hidden=false; },
+  async j5subArchivar(d,btn){ btn.disabled=true; const r=await call("subzona5s",{accion:"archivar",planoId:d.p,zonaId:d.z,id:d.sz});
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; return; } closeSheet(); render(); toast("Subzona archivada"); },
   j5adicAbrir(){ abrirAdic5(); },
   async j5adicEnviar(d,btn){
     if(!J5A||J5A.enviando) return;
@@ -2497,7 +2546,7 @@ const JACT={
   async j5enviar(d,btn){
     if(!J5||J5.enviando) return; J5.enviando=true; J5.com=($("#j5com")||{}).value||"";
     btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está mirando tus fotos…`;
-    const r=await call("juez5s",{planoId:J5.p.id,zonaId:J5.z.id,s:J5.s,comentario:J5.com,
+    const r=await call("juez5s",{planoId:J5.p.id,zonaId:J5.z.id,subzonaId:J5.sz?J5.sz.id:"",s:J5.s,comentario:J5.com,
       antes:J5.antes.full,despues:J5.despues.full,miniAntes:J5.antes.mini,miniDespues:J5.despues.mini});
     J5.enviando=false;
     if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir evaluación al juez`; return; }
@@ -3401,7 +3450,7 @@ function seedDemo(){
   ];
   return {config:{MEDICINA:40,DECAY_DIAS:21,PREMIOS:null,EMERG:{eime:null,s5:null},INACT:{activa:false,dias:21,cada:7},COMIDA:{costo:10,pct:50},ADIC:{bajo:{monedas:10,estrellas:1},medio:{monedas:20,estrellas:2},alto:{monedas:35,estrellas:3}},RINCONES:{hoy:false,monedas:5},DESAFIO:{activo:false,monedas:50,estrellas:5,sMin:3,intentos:3,fotos:3,inicio:"2026-11-04",grupos:{},asign:{},estado:{}}},usuarios:us,
     equipos:JSON.parse(JSON.stringify(EQUIPOS_SEED)),verif:[],hist:[],mov:[],evid5s:[],estrellaFugaz:[],hallazgos:[],
-    planos5s:JSON.parse(JSON.stringify(PLANOS_SEED))};
+    planos5s:JSON.parse(JSON.stringify(PLANOS_SEED)),subzonas5s:[]};
 }
 function aplicaEvento(u,ev){
   const t=Date.now(), e=energia(u,t), enf=!!u.enferma||e<=0;
@@ -3599,13 +3648,16 @@ const LOCAL={
   juez5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
     if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id) return err("NO_ES_TUYA","Esta zona tiene otro responsable.");
+    const sid=String(p.subzonaId||""), sz=sid?subzonasDe(pl.id,z.id).find(x=>x.id===sid):null;
+    if(sid&&!sz) return err("SIN_SUBZONA","Subzona no encontrada.");
+    const zn=z.n+(sz?" · "+sz.n:"");
     if(p.antes===p.despues) return err("IGUALES","La foto del antes y la del después son la misma.");
-    if(Number(p.s)>nivelZona(z.id)+1) return err("S_BLOQUEADA",`Primero aprueba la ${nivelZona(z.id)+1}S en esta zona.`);
-    const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="e"+t, nv=nivelZona(z.id);
+    if(Number(p.s)>nivelZona(z.id,sid)+1) return err("S_BLOQUEADA",`Primero aprueba la ${nivelZona(z.id,sid)+1}S aquí.`);
+    const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), id="e"+t, nv=nivelZona(z.id,sid);
     const mis=ok?misionActiva(hoyS()):null, bono=!!mis&&!evid5().some(e=>e.uid===u.id&&e.ver==="APROBADO"&&e.fecha>=mis.ini&&e.fecha<=mis.fecha);
     const perdida=!ok&&Number(p.s)<=nv?Math.min(misionCfg().penal,Math.max(0,u.monedas||0)):0;
     const monedas=ok?20+(bono?MISION_BONUS.monedas:0):0, estrellas=ok?2+(bono?MISION_BONUS.estrellas:0):0;
-    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,zn:z.n,s:Number(p.s),com:p.comentario||"",
+    const r={id,ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,sub:sid,zn,s:Number(p.s),com:p.comentario||"",
       ver:ok?"APROBADO":"RECHAZADO",puntaje:ok?4:2,
       motivo:ok?"Se nota el cambio entre el antes y el después: la superficie quedó despejada.":"No se aprecia diferencia suficiente entre las dos fotos.",
       orient:ok?"Mantén este orden y agrega rótulos visibles.":"Retira lo que no se usa y saca la foto desde el mismo ángulo.",
@@ -3613,9 +3665,21 @@ const LOCAL={
     if(ok&&Math.random()<(window.__revP??1/3)){ const o=activos().filter(x=>x.id!==u.id&&x.tienePin!==false); if(o.length){ r.rev="PENDIENTE"; r.revisor=o[Math.floor(Math.random()*o.length)].id; } }
     (DB.evid5s=DB.evid5s||[]).push(r); (DB.fotos5=DB.fotos5||{})[id]={antes:p.miniAntes,despues:p.miniDespues};
     u.ultimaActividad=t;
-    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S "+r.s+"S "+z.n+(bono?" + misión sorpresa":"")});
-    else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+z.n+": la zona no mantuvo el estándar"});
+    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"5S "+r.s+"S "+zn+(bono?" + misión sorpresa":"")});
+    else if(perdida) aplicaEvento(u,{comida:0,monedas:-perdida,estrellas:0,motivo:"5S "+r.s+"S "+zn+": la zona no mantuvo el estándar"});
     return okd({resultado:Object.assign({demo:true,orientacion:r.orient},r)}); },
+  subzona5s(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId);
+    if(!z) return err("SIN_ZONA","Zona no encontrada."); if(z.resp!==u.id&&!u.admin) return err("NO_ES_TUYA","Solo el responsable de la zona puede agregarle subzonas.");
+    const L=DB.subzonas5s=DB.subzonas5s||[], de=subzonasDe(pl.id,z.id), nom=String(p.nombre||"").replace(/\s+/g," ").trim().slice(0,40);
+    const rep=id=>de.some(x=>x.id!==id&&x.n.toLowerCase()===nom.toLowerCase());
+    if(p.accion==="crear"){ if(!nom) return err("NOMBRE","Ponle un nombre."); if(de.length>=SUB_MAX()) return err("MAX",`Esta zona ya tiene ${SUB_MAX()} subzonas, que es el máximo.`);
+      if(rep("")) return err("REPETIDO","Ya hay una subzona con ese nombre en esta zona.");
+      const t=Date.now(); L.push({id:"SZ"+t,ts:t,plano:pl.id,zona:z.id,n:nom,uid:u.id}); return okd(); }
+    const sz=de.find(x=>x.id===p.id); if(!sz) return err("SIN_SUBZONA","Subzona no encontrada.");
+    if(p.accion==="renombrar"){ if(!nom) return err("NOMBRE","El nombre no puede quedar vacío."); if(rep(sz.id)) return err("REPETIDO","Ya hay una subzona con ese nombre en esta zona."); sz.n=nom; return okd(); }
+    if(p.accion==="archivar"){ DB.subzonas5s=L.filter(x=>x.id!==sz.id); return okd(); }
+    return err("ACCION","Acción desconocida."); },
   juez5sAdicional(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const sinZona=!p.planoId&&!p.zonaId;
     const pl=sinZona?null:planosDB().find(x=>x.id===p.planoId), z=sinZona?null:pl&&pl.zonas.find(x=>x.id===p.zonaId);
