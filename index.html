@@ -3262,6 +3262,12 @@ function persist(){ try{ localStorage.setItem(KEY,JSON.stringify({ST,DB})); }cat
 
 /* ----- reloj de la mascota: misma fórmula en la app y en el servidor ----- */
 const DECAY=()=>(DB&&DB.config&&DB.config.DECAY_DIAS)||21;
+const EST_N=()=>Math.min(12,Math.max(1,Math.round((DB&&DB.config&&DB.config.ESTRELLAS_MESES)||1)));   // cada cuántos meses se reinician las estrellas
+const EST_DESDE=()=>{ const f=hoyS(), n=EST_N(), m=+f.slice(5,7)-1, ini=Math.floor(m/n)*n+1; return f.slice(0,5)+String(ini).padStart(2,"0"); };
+const MESES_C=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function estPeriodoTxt(){ const n=EST_N(); if(n===1){ const m=MESES_C[+hoyS().slice(5,7)-1]; return m; }
+  const a=+EST_DESDE().slice(5,7)-1, b=Math.min(11,a+n-1); return MESES_C[a]+" a "+MESES_C[b]; }
+const ACUM=()=>!!(DB&&DB.config&&DB.config.ESTRELLAS_ACUM);   // estrellas acumuladas (sin reinicio mensual)
 const MEDICINA=()=>(DB&&DB.config&&DB.config.MEDICINA)||40;
 const COMIDA=()=>(DB&&DB.config&&DB.config.COMIDA)||{costo:10,pct:50};
 function diasActivos(t0,t1,pausas){
@@ -3376,11 +3382,11 @@ function premioCicloEime(atraso){
 const err=(code,msg)=>({ok:false,code,msg});
 const okd=(x)=>Object.assign({ok:true,datos:DB,ahora:Date.now()},x||{});
 function recalc(){
-  const mes=hoyS().slice(0,7);
+  const mes=EST_DESDE();
   DB.usuarios.forEach(u=>{ u.monedas=0;u.estrellasMes=0;u.estrellasTotal=0; u.tienePin=!!u.pin; });
   DB.mov.forEach(m=>{ const u=U(m.uid); if(!u) return;
     u.monedas+=m.monedas||0; u.estrellasTotal+=m.estrellas||0;
-    if(d2s(new Date(m.ts)).slice(0,7)===mes) u.estrellasMes+=m.estrellas||0; });
+    if(ACUM()||d2s(new Date(m.ts)).slice(0,7)>=mes) u.estrellasMes+=m.estrellas||0; });
 }
 function seedDemo(){
   const t=Date.now();
@@ -3855,7 +3861,7 @@ function vMi(u){
       <div class="namerow"><h2>${esc(nomMascota(u))}</h2>${stPill(i.est)}
         <button class="iconbtn" data-act="editPet" aria-label="Editar mascota">${ic("pencil",16)}</button>
         <span class="sub">${ESPECIES[u.especie].n} de ${esc(u.nombre)} · ${esc(u.cargo)}</span></div>
-      <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>estrellas este mes</span></div></div>
+      <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>${ACUM()?"estrellas acumuladas":EST_N()>1?"estrellas del período":"estrellas este mes"}</span></div></div>
         <div class="tl coin"><span class="ico">${coin}</span><div><b>${u.monedas||0}</b><span>monedas</span></div></div></div>
       <div class="emeter"><div class="top"><b>Barriga</b><span class="mono" style="font-size:12px;color:var(--fg-mute)">${pct} %</span></div>
         <div class="ebar" role="img" aria-label="Energía ${pct} por ciento"><i style="width:${pct}%"></i><u style="left:33%"></u><u style="left:50%"></u><u style="left:75%"></u></div>
@@ -3871,7 +3877,7 @@ function vMi(u){
   <div class="hubgrid">
     ${B("go-eime","eime","var(--m-eime)","Verificar EIME",`${misEq(u.id).length} equipos a tu cargo`,pend.length?`<span class="bdg pill ${venc?"bad":"warn"}">${pend.length}</span>`:`<span class="bdg pill ok">✓</span>`)}
     ${B("go-s5","cinco","var(--m-s5)","Gestión 5S",`${misZonas(u.id)} zona${misZonas(u.id)===1?"":"s"} a tu cargo`,emerg("s5").st==="on"?`<span class="bdg pill warn">Activa</span>`:`<span class="bdg pill mute">En espera</span>`)}
-    ${B("go-rank","rank","var(--m-rank)","Ranking del mes","Estrellas del equipo")}
+    ${B("go-rank","rank","var(--m-rank)",ACUM()?"Ranking":EST_N()>1?"Ranking del período":"Ranking del mes","Estrellas del equipo")}
     ${B("tienda","bag","var(--m-exp)","Tienda",`${(u.accesorios||[]).length} de ${Object.keys(ACCESORIOS).length} accesorios`)}
     ${rzMision().hoy?B("go-rincones","camera","var(--m-rz)","Rincones Ocultos",`Misión de hoy: +${rzMision().monedas} monedas por foto en tu zona`,`<span class="bdg pill warn">Hoy</span>`):""}
     ${(()=>{ const m=dsMio(u); return m&&!m.est.aprobado&&m.quedan?B("dsIr","chk","var(--m-ds)","Desafío del miércoles",`${esc(m.as.zonaNombre)} · +${dsCfg().monedas} monedas y +${dsCfg().estrellas} ★`,`<span class="bdg pill warn">Vence vie</span>`):""; })()}
@@ -3912,9 +3918,9 @@ function vRank(me){
   let mes=new Date(nowMs()).toLocaleDateString("es-CL",{month:"long",year:"numeric"}).replace(" de "," "); mes=mes.charAt(0).toUpperCase()+mes.slice(1);
   const F=jugadores().map(u=>({u,i:info(u)})).sort((a,b)=>(b.u.estrellasMes||0)-(a.u.estrellasMes||0)||(b.u.estrellasTotal||0)-(a.u.estrellasTotal||0));
   const top=F.slice(0,3), ord=[top[1],top[0],top[2]].filter(Boolean);
-  return `<div class="pagehead"><div><h2>Cuadro de honor</h2><p>Los reconocimientos del ciclo y la tabla de estrellas del mes</p></div></div>
+  return `<div class="pagehead"><div><h2>Cuadro de honor</h2><p>Los reconocimientos del ciclo y la tabla de estrellas ${ACUM()?"acumuladas":EST_N()>1?"del período":"del mes"}</p></div></div>
   ${cuadroHonor()}
-  <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">Estrellas de ${mes.toLowerCase()}</h3>
+  <h3 style="margin:22px 0 2px;font-family:var(--f-disp);font-size:19px">${ACUM()?"Estrellas acumuladas":EST_N()>1?"Estrellas de "+estPeriodoTxt():"Estrellas de "+mes.toLowerCase()}</h3>
   <p style="margin:0 0 14px;font-size:13px;color:var(--fg-mute)">Las estrellas son el juego del corral: sirven para tu mascota, no son un premio del ciclo.</p>
   <div class="podium">${ord.map(f=>{ const k=F.indexOf(f);
     return `<div class="pod ${k===0?"first":""}" data-st="${f.i.est}"><span class="rk">${["1.º","2.º","3.º"][k]}</span>
@@ -3925,7 +3931,7 @@ function vRank(me){
     <span class="pos">${k+1}</span><span class="pm">${petOf(f.u,{info:f.i})}</span>
     <span class="nm"><b>${esc(f.u.nombre)}</b><span>${esc(nomMascota(f.u))} · ${EST_NOM[f.i.est].toLowerCase()} · ${misEq(f.u.id).length} equipos · ${cumplimiento(f.u.id)} % al día</span></span>
     <span class="pts">${f.u.estrellasMes||0}<span>estrellas</span></span></div>`).join("")}</div>
-  <div class="note"><b>Cómo se juntan estrellas:</b> verificar un EIME en fecha da 3 estrellas, hasta 3 días tarde 2, y más tarde 1. Las estrellas no se pierden ni se gastan, y se reinician cada mes. Las monedas son aparte y sirven para la mascota.</div>`;
+  <div class="note"><b>Cómo se juntan estrellas:</b> verificar un EIME en fecha da 3 estrellas, hasta 3 días tarde 2, y más tarde 1. Las estrellas no se pierden ni se gastan${ACUM()?" y se van acumulando, sin reinicio mensual":(EST_N()>1?`, y se reinician cada ${EST_N()} meses`:", y se reinician cada mes")}. Las monedas son aparte y sirven para la mascota.</div>`;
 }
 
 /* ---------- 5S ---------- */
@@ -4299,7 +4305,7 @@ function abrirFicha(uid){ const u=U(uid), i=info(u);
   openSheet(`${phead(esc(nomMascota(u)))}<div class="pbody" data-st="${i.est}">
     <div class="bigstage" style="margin-bottom:12px"><div class="bubble">“${esc(frase(u,i.est))}”</div><div class="petwrap" style="width:100%;display:grid;place-items:center">${petOf(u,{info:i})}${bebesHTML(u)}</div></div>
     <div class="namerow" style="margin-bottom:10px">${stPill(i.est)}<span class="sub">${ESPECIES[u.especie].n} de ${esc(u.nombre)} · ${esc(u.cargo)}</span></div>
-    <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>estrellas este mes</span></div></div>
+    <div class="tally"><div class="tl star"><span class="ico">${star(1)}</span><div><b>${u.estrellasMes||0}</b><span>${ACUM()?"estrellas acumuladas":EST_N()>1?"estrellas del período":"estrellas este mes"}</span></div></div>
       <div class="tl"><div><b>${cumplimiento(u.id)} %</b><span>equipos al día</span></div></div></div></div>`);
 }
 
@@ -4344,7 +4350,7 @@ function abrirTienda(){
       :`<span class="price">${coin}${a.p}</span><button class="btn coin" data-sh="comprar" data-item="${k}" ${u.monedas<a.p?"disabled":""}>Comprar</button>`}</div>`; }).join("");
   const pintar=()=>{ $("#shopBody").innerHTML=`<div class="shop">${cuerpo()}</div>`; $("#shopCoins").innerHTML=`${coin}${U(u.id).monedas}`; };
   openSheet(`${phead("Tienda",`<span class="cnt coin" id="shopCoins" style="font-size:15px"></span>`)}<div class="pbody"><div id="shopBody"></div>
-    <div class="note">Los accesorios se compran con monedas y son solo para presumir. Las estrellas del mes no se gastan.</div></div>`);
+    <div class="note">Los accesorios se compran con monedas y son solo para presumir. Las estrellas no se gastan.</div></div>`);
   pintar();
   $("#sheet").addEventListener("click",async ev=>{ const b=ev.target.closest("[data-sh]"); if(!b) return;
     const r=await call("tienda",{item:b.dataset.item,accion:b.dataset.sh});
