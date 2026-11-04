@@ -396,6 +396,8 @@ td.num{font-family:var(--f-mono);text-align:right}
 .colopt{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
 .colopt[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--accent)}
 .shop{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.shopsec{grid-column:1/-1;margin:10px 0 0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-mute);font-weight:700}
+.shopsec:first-child{margin-top:0}
 .item{border:1px solid var(--line);border-radius:15px;background:var(--surface);padding:8px 8px 11px;display:flex;flex-direction:column;gap:6px;text-align:center}
 .item .stage{padding:4px 10px 0}
 .item .stage .pet{max-width:92px}
@@ -1120,7 +1122,37 @@ const ACCESORIOS={
  luces_navidad:{n:"Luces de Navidad",p:65,slot:"cuerpo"},
  moto:{n:"Moto (fondo)",p:350,slot:"fondo"},
  auto:{n:"Auto (fondo)",p:600,slot:"fondo"},
- ropa_bebe:{n:"Pechera para tus bebés",p:25,slot:"bebe"}
+ ropa_bebe:{n:"Pechera para tus bebés",p:25,slot:"bebe"},
+ gorra:{n:"Gorra azul",p:35,slot:"cabeza"},
+ boina:{n:"Boina",p:40,slot:"cabeza"},
+ gorro_lana:{n:"Gorro de lana",p:40,slot:"cabeza"},
+ gorro_chef:{n:"Gorro de chef",p:45,slot:"cabeza"},
+ mono_pelo:{n:"Moño rosado",p:30,slot:"cabeza"},
+ corona_flores:{n:"Corona de flores",p:60,slot:"cabeza"},
+ audifonos:{n:"Audífonos",p:55,slot:"cabeza"},
+ sombrero_vaquero:{n:"Sombrero vaquero",p:65,slot:"cabeza"},
+ sombrero_copa:{n:"Sombrero de copa",p:80,slot:"cabeza"},
+ lentes_sol:{n:"Lentes de sol",p:40,slot:"cara"},
+ bigote:{n:"Bigote",p:30,slot:"cara"},
+ antifaz:{n:"Antifaz de héroe",p:35,slot:"cara"},
+ corbata:{n:"Corbata",p:35,slot:"cuello"},
+ panuelo:{n:"Pañuelo azul",p:35,slot:"cuello"},
+ collar_perlas:{n:"Collar de perlas",p:60,slot:"cuello"},
+ medalla:{n:"Medalla de oro",p:75,slot:"cuello"},
+ vestido:{n:"Vestido rosado",p:70,slot:"cuerpo"},
+ sudadera:{n:"Sudadera con capucha",p:60,slot:"cuerpo"},
+ chaleco:{n:"Chaleco reflectante",p:50,slot:"cuerpo"},
+ capa_heroe:{n:"Capa de héroe",p:80,slot:"cuerpo"},
+ delantal:{n:"Delantal de cocina",p:45,slot:"cuerpo"},
+ rayas:{n:"Polera de rayas",p:40,slot:"cuerpo"},
+ traje:{n:"Traje con corbata",p:90,slot:"cuerpo"},
+ cartera_rosa:{n:"Cartera rosada",p:55,slot:"mano"},
+ bolso_cruzado:{n:"Bolso cruzado",p:60,slot:"mano"},
+ mochila:{n:"Mochila",p:70,slot:"mano"},
+ maletin:{n:"Maletín",p:75,slot:"mano"},
+ cartera_dorada:{n:"Cartera dorada",p:110,slot:"mano"},
+ canasta:{n:"Canasta de picnic",p:50,slot:"mano"},
+ bolsa_compras:{n:"Bolsa de compras",p:40,slot:"mano"}
 };
 
 function petSVG(sp,col,est,usando,uid,esBebe){
@@ -1244,6 +1276,16 @@ function petSVG(sp,col,est,usando,uid,esBebe){
       <path d="M${60+hw-3} ${hy+hh-6}L${60+hw+7} ${hy-10}L${60+hw-15} ${hy-2}Z" fill="#1E1B24" stroke="#0E0C12" stroke-width="1"/>`;
   }
 
+
+  /* accesorio de cuerpo: capa de héroe (detrás del cuerpo) */
+  if(usando.includes("capa_heroe")){
+    back+=`<path d="M${60-bw+3} ${by-bh+5}Q${60-bw-14} ${by+bh+6} 60 ${by+bh+12}Q${60+bw+14} ${by+bh+6} ${60+bw-3} ${by-bh+5}Z" fill="#D8352F" stroke="#A31F1A" stroke-width="1.4" stroke-linejoin="round"/><path d="M60 ${by-bh+8}Q${60-6} ${by+bh*.5} ${60-bw*.5} ${by+bh+8}" fill="none" stroke="#A31F1A" stroke-width="1.2" opacity=".5"/>`;
+  }
+  /* mochila (detrás del cuerpo) */
+  if(usando.includes("mochila")){
+    back+=`<path d="M${60-bw*.35} ${by-bh-8}q${bw*.35} -9 ${bw*.7} 0" fill="none" stroke="#2A7A4D" stroke-width="3" stroke-linecap="round"/><rect x="${60-bw-5}" y="${by-bh-6}" width="${2*bw+10}" height="${2*bh+2}" rx="10" fill="#3FA66B" stroke="#2A7A4D" stroke-width="1.6"/><rect x="${60-bw-5}" y="${by+bh*.2}" width="9" height="${bh*.9}" rx="3" fill="#2F8A57"/><rect x="${60+bw-4}" y="${by+bh*.2}" width="9" height="${bh*.9}" rx="3" fill="#2F8A57"/>`;
+  }
+
   /* ---- cuerpo ---- */
   const belly = sp==="pinguino" ? "#F5F8FA" : lt;
   const bodyCol = sp==="pinguino" ? dk : md;
@@ -1280,6 +1322,36 @@ function petSVG(sp,col,est,usando,uid,esBebe){
       <circle cx="${60-bw*.15}" cy="${by+bh*.42}" r="3" fill="#F4B400"/>
       <circle cx="${60+bw*.2}" cy="${by+bh*.32}" r="3" fill="#2E7BD6"/>
       <circle cx="${60+bw*.5}" cy="${by-bh*.05}" r="3" fill="#43A047"/>`;
+  }
+
+  /* ---- ropa nueva (cuerpo) ---- */
+  const bclip=`<clipPath id="cb${uid}"><ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}"/></clipPath>`;
+  if(usando.includes("vestido")){
+    body+=`<path d="M${60-bw} ${by-4}Q${60-bw-6} ${by+bh-2} ${60-bw-9} ${by+bh+1}Q60 ${by+bh+9} ${60+bw+9} ${by+bh+1}Q${60+bw+6} ${by+bh-2} ${60+bw} ${by-4}Q60 ${by-bh-2} ${60-bw} ${by-4}Z" fill="#E879A6" stroke="#C2527F" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M${60-bw+1} ${by+2}Q60 ${by+9} ${60+bw-1} ${by+2}" fill="none" stroke="#C2527F" stroke-width="2.4"/>
+      <path d="M${60-8} ${by-bh+3}Q60 ${by-bh+11} ${60+8} ${by-bh+3}" fill="none" stroke="#C2527F" stroke-width="1.6"/>
+      ${[[-.55,12],[-.1,15],[.4,11],[.7,16],[-.3,6]].map(a=>`<circle cx="${60+bw*a[0]}" cy="${by+a[1]*bh/20+1}" r="1.7" fill="#fff"/>`).join("")}`;
+  }
+  if(usando.includes("sudadera")){
+    body+=`<ellipse cx="60" cy="${by-bh+2}" rx="${bw*.62}" ry="5.5" fill="#4A5BC9"/><ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}" fill="#5B6EE1" stroke="#4655B8" stroke-width="1.6"/>
+      <path d="M${60-bw*.5} ${by+3}H${60+bw*.5}L${60+bw*.64} ${by+bh-3}H${60-bw*.64}Z" fill="#4655B8" opacity=".85"/>
+      <path d="M${60-5} ${by-bh+5}V${by-3}M${60+5} ${by-bh+5}V${by-3}" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`;
+  }
+  if(usando.includes("chaleco")){
+    body+=`${bclip}<ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}" fill="#F28C28" stroke="#C26A12" stroke-width="1.6"/><g clip-path="url(#cb${uid})" stroke="#E9EFF3" stroke-width="3.2"><path d="M${60-bw} ${by+4}H${60+bw}"/><path d="M${60-bw*.45} ${by-bh}V${by+bh}M${60+bw*.45} ${by-bh}V${by+bh}"/></g><path d="M60 ${by-bh+3}V${by+bh-3}" stroke="#C26A12" stroke-width="1.4"/>`;
+  }
+  if(usando.includes("delantal")){
+    body+=`<path d="M${60-bw*.5} ${by-bh+3}L${60+bw*.5} ${by-bh+3}L${60+bw*.78} ${by+bh-1}Q60 ${by+bh+3} ${60-bw*.78} ${by+bh-1}Z" fill="#FFF1CC" stroke="#D9BE7A" stroke-width="1.4" stroke-linejoin="round"/><path d="M${60-bw*.5} ${by-bh+4}Q60 ${by-bh-3} ${60+bw*.5} ${by-bh+4}" fill="none" stroke="#D9BE7A" stroke-width="1.6"/><rect x="${60-8}" y="${by+4}" width="16" height="9" rx="2" fill="none" stroke="#D9BE7A" stroke-width="1.4"/><path d="M${60-bw*.7} ${by+bh-4}Q60 ${by+bh+1} ${60+bw*.7} ${by+bh-4}" fill="none" stroke="#E5484D" stroke-width="1.6" stroke-dasharray="3 3"/>`;
+  }
+  if(usando.includes("rayas")){
+    body+=`${bclip}<ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}" fill="#fff" stroke="#1F3A6E" stroke-width="1.4"/><g clip-path="url(#cb${uid})" fill="#1F3A6E">${[-3,-1,1,3].map(k=>`<rect x="${60-bw}" y="${by+k*5.2-2.4}" width="${2*bw}" height="4.2"/>`).join("")}</g>`;
+  }
+  if(usando.includes("traje")){
+    body+=`<ellipse cx="60" cy="${by}" rx="${bw}" ry="${bh}" fill="#2B3441" stroke="#1B222C" stroke-width="1.6"/><path d="M${60-8} ${by-bh+2}L60 ${by+4}L${60+8} ${by-bh+2}Z" fill="#fff"/><path d="M${60-2.6} ${by-bh+5}h5.2l2 14l-4.6 4l-4.6-4z" fill="#C2312F"/><path d="M${60-8} ${by-bh+2}L${60-11} ${by+7}M${60+8} ${by-bh+2}L${60+11} ${by+7}" stroke="#1B222C" stroke-width="1.6" stroke-linecap="round"/><circle cx="60" cy="${by+9}" r="1.4" fill="#8A97A6"/><circle cx="60" cy="${by+15}" r="1.4" fill="#8A97A6"/>`;
+  }
+  if(usando.includes("capa_heroe")){
+    const sx=60, sy=by-1, st=[0,1,2,3,4].map(i=>{ const a1=-Math.PI/2+i*4*Math.PI/5; return `${(sx+6*Math.cos(a1)).toFixed(1)} ${(sy+6*Math.sin(a1)).toFixed(1)}`; }).join("L");
+    body+=`<path d="M${st}Z" fill="#F4B400" stroke="#B8860B" stroke-width="1" stroke-linejoin="round"/><circle cx="${60-bw*.5}" cy="${by-bh+5}" r="2.4" fill="#F4B400" stroke="#B8860B" stroke-width="1"/><circle cx="${60+bw*.5}" cy="${by-bh+5}" r="2.4" fill="#F4B400" stroke="#B8860B" stroke-width="1"/>`;
   }
 
   /* ---- detrás de la cabeza (orejas, aleta) ---- */
@@ -1547,6 +1619,88 @@ function petSVG(sp,col,est,usando,uid,esBebe){
   if(esBebe&&usando.includes("ropa_bebe")){
     const by2=hy+hh+2;
     over+=`<path d="M${60-11} ${by2-2}Q60 ${by2+5} ${60+11} ${by2-2}L${60+9} ${by2+16}Q60 ${by2+22} ${60-9} ${by2+16}Z" fill="#F7D04A" stroke="#D9A91E" stroke-width="1.4" stroke-linejoin="round"/><circle cx="60" cy="${by2+8}" r="2.6" fill="#fff"/><circle cx="${60-7}" cy="${by2+12}" r="2" fill="#fff"/><circle cx="${60+7}" cy="${by2+12}" r="2" fill="#fff"/>`;
+  }
+
+  /* ---- accesorios nuevos: cabeza ---- */
+  if(usando.includes("gorra")){
+    over+=`<path d="M${hx0+3} ${top+12}Q${hx0+3} ${top-12} 60 ${top-13}Q${hx1-3} ${top-12} ${hx1-3} ${top+12}Z" fill="#2E7BD6" stroke="#1F5796" stroke-width="1.2" stroke-linejoin="round"/><path d="M${hx0+2} ${top+11}Q60 ${top+24} ${hx1-2} ${top+11}Q60 ${top+15} ${hx0+2} ${top+11}Z" fill="#1F5796"/><circle cx="60" cy="${top-13}" r="2.6" fill="#1F5796"/>`;
+  }
+  if(usando.includes("boina")){
+    over+=`<g transform="rotate(-8 60 ${top+4})"><ellipse cx="60" cy="${top+4}" rx="${hw*.98}" ry="10.5" fill="#B23A48" stroke="#8A2A36" stroke-width="1.2"/><path d="M60 ${top-6}l3 -5" stroke="#8A2A36" stroke-width="2.6" stroke-linecap="round"/></g>`;
+  }
+  if(usando.includes("gorro_lana")){
+    over+=`<path d="M${hx0+2} ${top+10}Q${hx0+3} ${top-14} 60 ${top-15}Q${hx1-3} ${top-14} ${hx1-2} ${top+10}Z" fill="#1FA2A8" stroke="#138086" stroke-width="1.2" stroke-linejoin="round"/><rect x="${hx0-1}" y="${top+4}" width="${2*hw+2}" height="9" rx="4.5" fill="#138086"/><path d="M${60-8} ${top-12}V${top+4}M60 ${top-14}V${top+4}M${60+8} ${top-12}V${top+4}" stroke="#138086" stroke-width="1.2" opacity=".6"/><circle cx="60" cy="${top-17}" r="6" fill="#fff" stroke="#D5DDE2" stroke-width="1"/>`;
+  }
+  if(usando.includes("gorro_chef")){
+    over+=`<g fill="#fff" stroke="#CBD5DB" stroke-width="1.2"><circle cx="${60-12}" cy="${top-6}" r="10"/><circle cx="${60+12}" cy="${top-6}" r="10"/><circle cx="60" cy="${top-13}" r="11"/><rect x="${60-17}" y="${top-4}" width="34" height="16" rx="3"/></g><rect x="${60-15.5}" y="${top-3}" width="31" height="13" rx="2.2" fill="#fff"/>`;
+  }
+  if(usando.includes("mono_pelo")){
+    const mxp=60+hw*.5, myp=top+4;
+    over+=`<g transform="rotate(14 ${mxp} ${myp})"><path d="M${mxp} ${myp}L${mxp-14} ${myp-8}V${myp+8}ZM${mxp} ${myp}L${mxp+14} ${myp-8}V${myp+8}Z" fill="#F06292" stroke="#C2185B" stroke-width="1.1" stroke-linejoin="round"/><circle cx="${mxp}" cy="${myp}" r="3.8" fill="#C2185B"/></g>`;
+  }
+  if(usando.includes("corona_flores")){
+    const cols=["#F06292","#F4B400","#fff","#9C6ADE","#F06292"];
+    over+=`<path d="M${hx0+3} ${top+10}Q60 ${top-6} ${hx1-3} ${top+10}" fill="none" stroke="#3E9B4F" stroke-width="3" stroke-linecap="round"/>`+
+      cols.map((c,i)=>{ const t=i/4, x=hx0+8+t*(2*hw-16), y=top+9-Math.sin(t*Math.PI)*12;
+        return `<g><circle cx="${x}" cy="${y-3.4}" r="3.2" fill="${c}" stroke="#00000022" stroke-width=".8"/><circle cx="${x+3.4}" cy="${y}" r="3.2" fill="${c}" stroke="#00000022" stroke-width=".8"/><circle cx="${x}" cy="${y+3.4}" r="3.2" fill="${c}" stroke="#00000022" stroke-width=".8"/><circle cx="${x-3.4}" cy="${y}" r="3.2" fill="${c}" stroke="#00000022" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="2.2" fill="#F4B400"/></g>`; }).join("");
+  }
+  if(usando.includes("audifonos")){
+    over+=`<path d="M${hx0-1} ${hy-2}Q${hx0-3} ${top-14} 60 ${top-14}Q${hx1+3} ${top-14} ${hx1+1} ${hy-2}" fill="none" stroke="#3A3F4B" stroke-width="4.2" stroke-linecap="round"/><rect x="${hx0-7}" y="${hy-9}" width="10" height="19" rx="5" fill="#E5484D" stroke="#9E2A2E" stroke-width="1.2"/><rect x="${hx1-3}" y="${hy-9}" width="10" height="19" rx="5" fill="#E5484D" stroke="#9E2A2E" stroke-width="1.2"/>`;
+  }
+  if(usando.includes("sombrero_vaquero")){
+    over+=`<path d="M${hx0+8} ${top+7}Q${hx0+8} ${top-13} 60 ${top-11}Q${hx1-8} ${top-13} ${hx1-8} ${top+7}Z" fill="#BE8A3E" stroke="#8A5E22" stroke-width="1.2" stroke-linejoin="round"/><path d="M${60-8} ${top-9}Q60 ${top-3} ${60+8} ${top-9}" fill="none" stroke="#8A5E22" stroke-width="1.4"/><path d="M${hx0-15} ${top+6}Q${hx0-4} ${top+17} 60 ${top+13}Q${hx1+4} ${top+17} ${hx1+15} ${top+6}Q${hx1+4} ${top+4} ${hx1-6} ${top+4}L${hx0+6} ${top+4}Q${hx0-4} ${top+4} ${hx0-15} ${top+6}Z" fill="#A8742F" stroke="#8A5E22" stroke-width="1.2" stroke-linejoin="round"/><path d="M${hx0+8} ${top+3}Q60 ${top+9} ${hx1-8} ${top+3}" fill="none" stroke="#5A3A14" stroke-width="2.4"/>`;
+  }
+  if(usando.includes("sombrero_copa")){
+    over+=`<ellipse cx="60" cy="${top+9}" rx="${hw+5}" ry="4.8" fill="#1E1B24" stroke="#0E0C12" stroke-width="1.2"/><rect x="${60-15}" y="${top-20}" width="30" height="29" rx="2.5" fill="#26222E" stroke="#0E0C12" stroke-width="1.2"/><ellipse cx="60" cy="${top-20}" rx="15" ry="3.4" fill="#3A3444" stroke="#0E0C12" stroke-width="1"/><rect x="${60-15}" y="${top+1}" width="30" height="6.5" fill="#C2312F"/>`;
+  }
+  /* ---- accesorios nuevos: cara ---- */
+  if(usando.includes("lentes_sol")){
+    over+=`<g fill="#1B1F27" fill-opacity=".93" stroke="#0B0D12" stroke-width="2.2"><rect x="${L-10}" y="${ey-7.5}" width="20" height="15" rx="6"/><rect x="${R-10}" y="${ey-7.5}" width="20" height="15" rx="6"/></g><path d="M${L+10} ${ey-1}H${R-10}M${L-10} ${ey-1}l-4 -1M${R+10} ${ey-1}l4 -1" stroke="#0B0D12" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M${L-6} ${ey-4}l4 -1M${R-6} ${ey-4}l4 -1" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/>`;
+  }
+  if(usando.includes("antifaz")){
+    over+=`<path d="M${L-15} ${ey-6}Q60 ${ey-11} ${R+15} ${ey-6}L${R+15} ${ey+5}Q${R+9} ${ey+10} ${R+3} ${ey+6}Q60 ${ey+3} ${L-3} ${ey+6}Q${L-9} ${ey+10} ${L-15} ${ey+5}Z" fill="#2B2B36" stroke="#14141B" stroke-width="1.2" stroke-linejoin="round"/><ellipse cx="${L}" cy="${ey}" rx="6.4" ry="5.2" fill="#fff"/><ellipse cx="${R}" cy="${ey}" rx="6.4" ry="5.2" fill="#fff"/><circle cx="${L}" cy="${ey+.4}" r="3" fill="${INK}"/><circle cx="${R}" cy="${ey+.4}" r="3" fill="${INK}"/>`;
+  }
+  if(usando.includes("bigote")){
+    const y0=(G.ny??hy+9)+3;
+    over+=`<path d="M60 ${y0}Q${60-7} ${y0-3} ${60-15} ${y0+1}Q${60-9} ${y0+5} 60 ${y0+2}Q${60+9} ${y0+5} ${60+15} ${y0+1}Q${60+7} ${y0-3} 60 ${y0}Z" fill="#3B2A20" stroke="#21160F" stroke-width="1" stroke-linejoin="round"/>`;
+  }
+  /* ---- accesorios nuevos: cuello ---- */
+  const nk=hy+hh+1;
+  if(usando.includes("corbata")){
+    over+=`<path d="M60 ${nk-1}L${60-11} ${nk-7}L${60-8} ${nk+4}ZM60 ${nk-1}L${60+11} ${nk-7}L${60+8} ${nk+4}Z" fill="#fff" stroke="#C3CED4" stroke-width="1"/><path d="M${60-4} ${nk-1}h8l-1 5h-6z" fill="#1F5796"/><path d="M${60-3} ${nk+4}h6l3 17l-6 4l-6-4z" fill="#2E7BD6" stroke="#1F5796" stroke-width="1" stroke-linejoin="round"/>`;
+  }
+  if(usando.includes("panuelo")){
+    over+=`<path d="M${hx0+5} ${nk-6}Q60 ${nk+3} ${hx1-5} ${nk-6}L60 ${nk+19}Z" fill="#2E7BD6" stroke="#1F5796" stroke-width="1.2" stroke-linejoin="round"/>${[[-14,-1],[-6,4],[4,2],[12,-2],[-1,11]].map(a=>`<circle cx="${60+a[0]}" cy="${nk+a[1]}" r="1.5" fill="#fff"/>`).join("")}`;
+  }
+  if(usando.includes("collar_perlas")){
+    over+=[0,1,2,3,4,5,6,7,8].map(i=>{ const t=i/8, x=hx0+9+t*(2*hw-18), y=nk-4+Math.sin(t*Math.PI)*10;
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.7" fill="#F6F1E8" stroke="#C9BFAE" stroke-width="1"/>`; }).join("");
+  }
+  if(usando.includes("medalla")){
+    over+=`<path d="M${hx0+10} ${nk-5}Q60 ${nk+14} ${hx1-10} ${nk-5}" fill="none" stroke="#E0B000" stroke-width="2"/><circle cx="60" cy="${nk+12}" r="6.6" fill="#F4B400" stroke="#B8860B" stroke-width="1.4"/><circle cx="60" cy="${nk+12}" r="3.6" fill="none" stroke="#B8860B" stroke-width="1"/><circle cx="60" cy="${nk+12}" r="1.4" fill="#B8860B"/>`;
+  }
+  /* ---- carteras y bolsos (en la mano) ---- */
+  const cx=60+bw+3, cy=by+bh*.4+6;
+  if(usando.includes("cartera_rosa")){
+    over+=`<path d="M${cx-5} ${cy-5}C${cx-5} ${cy-17} ${cx+5} ${cy-17} ${cx+5} ${cy-5}" fill="none" stroke="#B83A6B" stroke-width="2.4" stroke-linecap="round"/><path d="M${cx-9} ${cy-5}h18l3 14q0 3 -3 3h-18q-3 0 -3 -3z" fill="#F06292" stroke="#C2185B" stroke-width="1.4" stroke-linejoin="round"/><circle cx="${cx}" cy="${cy-1}" r="2" fill="#F4C430" stroke="#B8860B" stroke-width=".8"/>`;
+  }
+  if(usando.includes("bolso_cruzado")){
+    over+=`<path d="M${60-bw*.5} ${by-bh+4}L${cx-4} ${cy-4}" stroke="#7A4B2A" stroke-width="2.6" stroke-linecap="round"/><rect x="${cx-9}" y="${cy-5}" width="18" height="14" rx="3" fill="#C98A4B" stroke="#8C5A2B" stroke-width="1.4"/><path d="M${cx-9} ${cy-4}h18v6q-9 5 -18 0z" fill="#B5733A" stroke="#8C5A2B" stroke-width="1.2" stroke-linejoin="round"/><rect x="${cx-2}" y="${cy+1}" width="4" height="3.4" rx=".8" fill="#F4C430" stroke="#B8860B" stroke-width=".7"/>`;
+  }
+  if(usando.includes("mochila")){
+    over+=`<path d="M${60-bw*.5} ${by-bh+3}Q${60-bw*.6} ${by} ${60-bw*.5} ${by+bh*.7}M${60+bw*.5} ${by-bh+3}Q${60+bw*.6} ${by} ${60+bw*.5} ${by+bh*.7}" fill="none" stroke="#2A7A4D" stroke-width="3.4" stroke-linecap="round"/>`;
+  }
+  if(usando.includes("maletin")){
+    over+=`<path d="M${cx-4} ${cy-5}v-4h8v4" fill="none" stroke="#4E342E" stroke-width="2.2" stroke-linejoin="round"/><rect x="${cx-10}" y="${cy-5}" width="20" height="14" rx="2.4" fill="#7B5236" stroke="#4E342E" stroke-width="1.4"/><path d="M${cx-10} ${cy+1}h20" stroke="#4E342E" stroke-width="1.2"/><rect x="${cx-6}" y="${cy-1}" width="3" height="4" rx=".6" fill="#F4C430"/><rect x="${cx+3}" y="${cy-1}" width="3" height="4" rx=".6" fill="#F4C430"/>`;
+  }
+  if(usando.includes("cartera_dorada")){
+    over+=`<path d="M${cx-6} ${cy-4}Q${cx} ${cy-19} ${cx+6} ${cy-4}" fill="none" stroke="#E0B000" stroke-width="2" stroke-dasharray="2.2 1.6" stroke-linecap="round"/><path d="M${cx-8} ${cy-4}h16q2 0 2 2v9q0 2 -2 2h-16q-2 0 -2 -2v-9q0 -2 2 -2z" fill="#F4C430" stroke="#B8860B" stroke-width="1.4"/><path d="M${cx-10} ${cy-2}L${cx} ${cy+4}L${cx+10} ${cy-2}" fill="none" stroke="#B8860B" stroke-width="1.2" stroke-linejoin="round"/><circle cx="${cx}" cy="${cy+4}" r="2" fill="#E5484D" stroke="#9E2A2E" stroke-width=".7"/>`;
+  }
+  if(usando.includes("canasta")){
+    over+=`<path d="M${cx-9} ${cy} Q${cx} ${cy-20} ${cx+9} ${cy}" fill="none" stroke="#8B5A2B" stroke-width="2.6" stroke-linecap="round"/><path d="M${cx-3} ${cy-3}v-5M${cx+3} ${cy-3}v-6" stroke="#3E9B4F" stroke-width="1.4"/><circle cx="${cx-3}" cy="${cy-9}" r="2.7" fill="#F06292"/><circle cx="${cx+3}" cy="${cy-10}" r="2.7" fill="#F4B400"/><path d="M${cx-10} ${cy-2}h20l-3 11q-.5 2 -2.5 2h-9q-2 0 -2.5 -2z" fill="#D9A45B" stroke="#A9742E" stroke-width="1.3" stroke-linejoin="round"/><path d="M${cx-8} ${cy+3}h16M${cx-7} ${cy+7}h14" stroke="#A9742E" stroke-width="1" opacity=".8"/>`;
+  }
+  if(usando.includes("bolsa_compras")){
+    over+=`<rect x="${cx-2.4}" y="${cy-19}" width="4.8" height="16" rx="2.4" fill="#E0A85C" stroke="#B87F34" stroke-width="1" transform="rotate(14 ${cx} ${cy-6})"/><path d="M${cx-4} ${cy-6}q0 -8 4 -8t4 8" fill="none" stroke="#8F6E43" stroke-width="1.6"/><path d="M${cx-8} ${cy-6}h16l1 16h-18z" fill="#D2B48C" stroke="#8F6E43" stroke-width="1.3" stroke-linejoin="round"/><path d="M${cx} ${cy+6}q-4 -2 -3 -6q4 0 3 6z" fill="#4CAF50"/>`;
   }
   if(est==="radiante"){
     over+=`<g fill="#F4B400"><path class="spk" d="M16 34l2.2 5.4 5.4 2.2-5.4 2.2L16 49.2l-2.2-5.4-5.4-2.2 5.4-2.2z"/><path class="spk s2" d="M104 24l1.8 4.4 4.4 1.8-4.4 1.8-1.8 4.4-1.8-4.4-4.4-1.8 4.4-1.8z"/><path class="spk s3" d="M100 62l1.5 3.6 3.6 1.5-3.6 1.5-1.5 3.6-1.5-3.6-3.6-1.5 3.6-1.5z"/></g>`;
@@ -4668,12 +4822,15 @@ function abrirEditPet(bienvenida){
 /* ----- tienda ----- */
 function abrirTienda(){
   const u=yo();
-  const cuerpo=()=>Object.keys(ACCESORIOS).map(k=>{ const a=ACCESORIOS[k], tengo=u.accesorios.includes(k), puesto=u.usando.includes(k);
+  const SLOTS=[["cabeza","Sombreros y cabeza"],["cara","Cara"],["cuello","Cuello"],["cuerpo","Ropa"],["mano","Carteras y bolsos"],["fondo","Vehículos"],["bebe","Para tus bebés"]];
+  const cuerpo=()=>SLOTS.map(([sl,tit])=>{ const ks=Object.keys(ACCESORIOS).filter(k=>ACCESORIOS[k].slot===sl);
+    return ks.length?`<h4 class="shopsec">${tit}</h4>`+ks.map(item).join(""):""; }).join("");
+  const item=k=>{ const a=ACCESORIOS[k], tengo=u.accesorios.includes(k), puesto=u.usando.includes(k);
     const bloq=tengo&&!accesoriosActivos(u).includes(k);
     const vis=[...u.usando.filter(x=>ACCESORIOS[x].slot!==a.slot),k];
     return `<div class="item" data-st="contenta"><span class="stage">${petSVG(u.especie,u.color,"contenta",vis,"it"+(++PU))}</span><b>${a.n}</b>
       ${tengo?(bloq?`<span class="own bad">Bloqueado por inactividad</span>`:`<span class="own">${puesto?"Lo estás usando":"Ya lo tienes"}</span><button class="btn ${puesto?"ghost":""}" data-sh="${puesto?"quitar":"usar"}" data-item="${k}">${puesto?"Quitar":"Usar"}</button>`)
-      :`<span class="price">${coin}${a.p}</span><button class="btn coin" data-sh="comprar" data-item="${k}" ${u.monedas<a.p?"disabled":""}>Comprar</button>`}</div>`; }).join("");
+      :`<span class="price">${coin}${a.p}</span><button class="btn coin" data-sh="comprar" data-item="${k}" ${u.monedas<a.p?"disabled":""}>Comprar</button>`}</div>`; };
   const pintar=()=>{ $("#shopBody").innerHTML=`<div class="shop">${cuerpo()}</div>`; $("#shopCoins").innerHTML=`${coin}${U(u.id).monedas}`; };
   openSheet(`${phead("Tienda",`<span class="cnt coin" id="shopCoins" style="font-size:15px"></span>`)}<div class="pbody"><div id="shopBody"></div>
     <div class="note">Los accesorios se compran con monedas y son solo para presumir. Las estrellas no se gastan.</div></div>`);
