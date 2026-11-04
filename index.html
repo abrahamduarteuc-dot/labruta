@@ -19,7 +19,7 @@
   --accent:#0B6B74; --accent-d:#064B52; --accent-soft:#D9ECEE;
   --brass:#A8761F; --brass-soft:#F5E8D0;
   --ok:#17704A; --ok-soft:#D7EEE2; --warn:#A6681A; --warn-soft:#F8E9D1; --bad:#A93A31; --bad-soft:#F8DEDB;
-  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0; --m-rz:#B2460C; --m-ds:#946200;
+  --m-eime:#0B6B74; --m-s5:#6B46C1; --m-rank:#A8761F; --m-exp:#1565C0; --m-rz:#B2460C; --m-ds:#946200; --m-tr:#B23A48;
   --shadow:0 1px 2px rgba(19,33,42,.06), 0 8px 24px -12px rgba(19,33,42,.22);
   --r:14px;
   --f-disp:'Archivo','Helvetica Neue',Arial,sans-serif;
@@ -32,7 +32,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341; --m-tr:#E8707E;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }}
@@ -42,7 +42,7 @@
   --accent:#45BCC6; --accent-d:#7FD6DD; --accent-soft:#0F3338;
   --brass:#D9A441; --brass-soft:#3629104D;
   --ok:#4FB37B; --ok-soft:#10301F; --warn:#DFA544; --warn-soft:#33260F; --bad:#E0756A; --bad-soft:#381B18;
-  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341;
+  --m-eime:#2F9BA6; --m-s5:#8B6BE0; --m-rank:#D9A441; --m-exp:#4A8FE0; --m-rz:#E08A4F; --m-ds:#E8B341; --m-tr:#E8707E;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }
@@ -981,6 +981,42 @@ td.num{font-family:var(--f-mono);text-align:right}
 @keyframes cnconf{to{transform:translateY(380px) rotate(540deg)}}
 @keyframes cnspark{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 @media(prefers-reduced-motion:reduce){.cine{display:none}}
+/* ====================== TERRITORIO ====================== */
+.trmap{cursor:pointer}
+.trmap .trz:focus{outline:none}
+.trmap .trz:focus .z-sh,.trmap .trz:hover .z-sh{stroke-width:3.2}
+.trcamp{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:9px 12px;font-size:13px;margin-bottom:10px}
+.trrank{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.trchip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:12.5px}
+.trchip i{width:10px;height:10px;border-radius:50%;flex:none}
+.trchip b{font-variant-numeric:tabular-nums}
+.trchip.me{border-color:var(--m-tr);box-shadow:0 0 0 1px var(--m-tr) inset}
+.trvacio{font-size:12.5px;color:var(--fg-mute)}
+.trley{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--fg-mute);margin-top:8px}
+.trley span{display:inline-flex;align-items:center;gap:5px}
+.trley i{width:14px;height:10px;border-radius:3px;display:inline-block}
+.trley i.lb{background:var(--surface-2);border:1px dashed var(--fg-mute)}
+.trley i.fr{background:var(--m-tr)}
+.trley i.vi{background:var(--m-tr);opacity:.3;border:1px dashed var(--m-tr)}
+.trnota{font-size:12px;color:var(--fg-mute);margin:10px 0 0;line-height:1.45}
+.trlist{display:flex;flex-direction:column;gap:8px}
+.trrow{display:flex;flex-direction:column;gap:6px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.trrow.sub{margin-left:14px;background:var(--surface-2)}
+.trrow.sub .trrh b{font-size:13px;font-weight:600}
+.trrh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.trrh b{min-width:0;overflow-wrap:anywhere}
+.trown{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;flex:none}
+.trown i{width:10px;height:10px;border-radius:50%}
+.trown.libre{color:var(--fg-mute);font-weight:500}
+.trrn{font-size:12px;color:var(--fg-mute);line-height:1.4}
+.trbl{font-size:12px;color:var(--fg-mute);font-style:italic}
+.trrow .btn{align-self:flex-start}
+.trpasos{margin:0 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--fg-mute)}
+.trpasos li.now{color:var(--fg)}
+.trpasos li.ok{color:var(--ok);text-decoration:line-through;text-decoration-thickness:1px}
+.j5foto.off{opacity:.45;cursor:not-allowed}
+.trwait{text-align:center;font-size:13px;color:var(--fg-dim);margin:10px 0 0}
+.trwait b{font-variant-numeric:tabular-nums;font-size:15px}
 
 </style>
 
@@ -2590,10 +2626,13 @@ const sigPeriodo=(freq,per)=>periodoEime(freq,addDays(per.finCal,1));
 const verifEn=(e,per)=>DB.verif.some(v=>v.eq===e.id&&v.fecha>=per.ini&&v.fecha<=per.finCal);
 
 /* ---- obstáculos de la carretera ---- */
-// 5S: todos los miércoles desde el inicio
-function obst5S(desde,hasta){ const L=[]; let d=desde<RUTA_INICIO?RUTA_INICIO:desde;
-  while(parse(d).getDay()!==3) d=addDays(d,1);
-  for(;d<=hasta;d=addDays(d,7)) L.push({tipo:"5s",fecha:d,id:"5s"+d,titulo:"Gestión 5S",ini:addDays(d,-6)});
+// 5S: un hito en cada día configurado (por defecto, los miércoles). Se cambia en CONFIG → DIAS_5S (ej.: lun,vie).
+// La ventana de cada hito parte el día siguiente al hito anterior, así una misma foto no cuenta para dos.
+const DIAS5S=()=>{ const d=DB&&DB.config&&DB.config.DIAS_5S; return Array.isArray(d)&&d.length?d:[3]; };
+function obst5S(desde,hasta){ const L=[], dias=DIAS5S(); let d=desde<RUTA_INICIO?RUTA_INICIO:desde;
+  for(;d<=hasta;d=addDays(d,1)){ if(!dias.includes(parse(d).getDay())) continue;
+    let prev=addDays(d,-7); for(let k=1;k<=7;k++){ const x=addDays(d,-k); if(dias.includes(parse(x).getDay())){ prev=x; break; } }
+    L.push({tipo:"5s",fecha:d,id:"5s"+d,titulo:"Gestión 5S",ini:addDays(prev,1)}); }
   return L; }
 // EIME: cierre de cada período (mensual y quincenal, según los equipos que existan)
 function obstEime(desde,hasta){
@@ -2668,7 +2707,7 @@ function vRuta(){
       ${fichas}${copa}
     </svg>
     <div class="rt-pets">${pets}</div>
-    <div class="rt-ley"><span><i style="background:#6B4BB8"></i>5S (miércoles)</span><span><i style="background:#0B6B72"></i>EIME</span><span><i style="background:#E3A21A"></i>Misión</span><span>🏆 Meta del equipo</span></div></div>`;
+    <div class="rt-ley"><span><i style="background:#6B4BB8"></i>5S (${DIAS5S().map(n=>["","lun","mar","mié","jue","vie"][n]).join(" y ")})</span><span><i style="background:#0B6B72"></i>EIME</span><span><i style="background:#E3A21A"></i>Misión</span><span>🏆 Meta del equipo</span></div></div>`;
 }
 function abrirObst(id){
   const hoy=hoyS(), o=obstaculos(addDays(hoy,-7),addDays(hoy,40)).find(x=>x.id===id); if(!o) return;
@@ -3233,6 +3272,204 @@ function cineJuega(){
   at(4650,()=>fin(false));
 }
 
+/* ====================== TERRITORIO (conquista de zonas) ======================
+   Botón fijo en el inicio de cada persona. El mapa se puede mirar siempre; solo se conquista
+   en el horario de la estrella fugaz (lunes a viernes, 15:00 a 18:00).
+   Conquistar = ANTES (avisa al dueño) + DESPUÉS + IA juez. Las banderas no se reinician;
+   con más de TERR_RANCIO_DIAS días se ven más claras ("atacables") y pierden la fortaleza.
+   No toca la Gestión 5S: solo lee los planos y las subzonas. */
+const terrCfg=()=>Object.assign({activo:true,prueba:false,max:3,intentos:6,minMin:2,rancio:30,monedas:10,extra:5,estrellas:1,premioM:50,premioE:5},(DB&&DB.config&&DB.config.TERR)||{});
+const terrDB=()=>(DB&&DB.terr)||{u:[],at:[],hoy:{},campeon:null};
+const tKey=(zid,sid)=>zid+(sid?"|"+sid:"");
+const T_ATAQUE_MS=2*3600*1000;
+let tPlano="", TA=null, tTimer=null;
+
+/* --- estado calculado --- */
+function tDuenos(){ const m={}; terrDB().u.forEach(x=>{ m[x.k]=x; }); return m; }
+const tRancio=x=>!!x&&(nowMs()-x.ts)>terrCfg().rancio*864e5;
+function tFortaleza(st,zid,atacante){
+  const due=st[tKey(zid,"")]; if(!due||tRancio(due)) return false;
+  let sd=0, sa=0; Object.values(st).forEach(x=>{ if(x.zona!==zid||!x.sub) return;
+    if(x.o===due.o&&!tRancio(x)) sd++; if(x.o===atacante) sa++; });
+  return sd>=2&&sa===0;
+}
+const tAtaques=k=>terrDB().at.filter(a=>a.k===k&&nowMs()-a.ts<T_ATAQUE_MS);
+const tHoy=uid=>terrDB().hoy[uid]||{ok:0,fail:0};
+function tBanderas(){ const c={}; terrDB().u.forEach(x=>{ if(U(x.o)) c[x.o]=(c[x.o]||0)+1; }); return c; }
+const tVentana=()=>efVentanaAbierta();
+const tPuedeJugar=u=>!!u&&!u.observador&&(tVentana()||(terrCfg().prueba&&u.admin));
+// Razón por la que NO se puede atacar (vacío = se puede)
+function tBloqueo(u,zid,sid){
+  const st=tDuenos(), due=st[tKey(zid,sid)], c=terrCfg(), h=tHoy(u.id);
+  if(u.observador) return "El modo observador no juega";
+  if(!tPuedeJugar(u)) return "Se conquista de lunes a viernes, de 15:00 a 18:00";
+  if(due&&due.o===u.id) return "Ya es tuya";
+  if(due&&due.fecha===hoyS()) return "Conquistada hoy: candado hasta mañana";
+  if(h.ok>=c.max) return `Ya hiciste tus ${c.max} conquistas de hoy`;
+  if(h.fail>=c.intentos) return "Sin intentos por hoy";
+  if(!sid&&tFortaleza(st,zid,u.id)) return "Fortaleza: conquista primero una de sus gavetas";
+  return "";
+}
+
+/* --- inicio: botón fijo --- */
+function tBoton(u){
+  if(!terrCfg().activo) return "";
+  const n=tBanderas()[u.id]||0, abierto=tVentana(), h=tHoy(u.id);
+  const sub=abierto?(u.observador?"Mira quién domina cada zona":`¡Abierto hasta las 18:00! Llevas ${h.ok} de ${terrCfg().max} conquistas hoy`)
+    :`Abre de lunes a viernes a las 15:00 · Tienes ${n} bandera${n===1?"":"s"}`;
+  return `<button class="hubbtn" data-act="go-terr" style="--c:var(--m-tr)"><span class="ic">${ic("flag",27)}</span><h3>Territorio</h3><span class="sb">${sub}</span>${abierto?`<span class="bdg pill warn">Abierto</span>`:`<span class="bdg pill mute">🚩 ${n}</span>`}</button>`;
+}
+
+/* --- vista principal --- */
+function vTerritorio(u){
+  const L=planosDB(), c=terrCfg();
+  if(!L.some(p=>p.id===tPlano)) tPlano=((L[0])||{}).id||"";
+  const pl=L.find(p=>p.id===tPlano), band=tBanderas(), h=tHoy(u.id), camp=terrDB().campeon;
+  const rank=personas5().map(p=>({...p,n2:band[p.id]||0})).filter(p=>p.n2>0).sort((a,b)=>b.n2-a.n2);
+  const estado=tVentana()?`<b>¡Horario de conquista abierto!</b> Elige una zona en el plano, saca el antes, limpia y saca el después. Llevas ${h.ok} de ${c.max} conquistas hoy.`
+    :c.prueba&&u.admin?`<b>Modo prueba (administrador).</b> Fuera de horario: el juez evalúa, pero no se guarda nada ni se avisa a nadie.`
+    :`<b>Cerrado ahora.</b> Se conquista de lunes a viernes, de 15:00 a 18:00. Mientras, mira quién domina cada zona.`;
+  return `<div class="pagehead"><div><h2>Territorio</h2><p>Limpia una zona, gana su bandera. Las banderas no se borran: hay que quitárselas a su dueño.</p></div></div>
+    <div class="s5st" data-s="${tVentana()?"on":""}" style="border-left-color:var(--m-tr)"><p>${estado}</p></div>
+    ${camp&&camp.uids&&camp.uids.length?`<div class="trcamp">🏆 Conquistador de ${esc(camp.mes)}: <b>${camp.uids.map(id=>esc(primer((U(id)||{}).nombre||"?"))).join(", ")}</b> · ${camp.banderas} banderas</div>`:""}
+    <div class="trrank">${rank.length?rank.map((p,i)=>`<span class="trchip ${p.id===u.id?"me":""}"><i style="background:${p.c}"></i>${i===0?"👑 ":""}${esc(p.n)} <b>${p.n2}</b></span>`).join(""):`<span class="trvacio">Nadie tiene banderas todavía. ¡Sé el primero!</span>`}</div>
+    ${L.length?`<div class="ptabs">${L.map(p=>`<button data-act="trPlano" data-id="${p.id}" aria-pressed="${p.id===tPlano}">${esc(p.nombre)}</button>`).join("")}</div>
+    <div class="zcard"><div class="zcanvas">${tMapa(pl,u)}</div></div>
+    <div class="trley"><span><i class="lb"></i>Libre</span><span><i class="fr"></i>Bandera fresca</span><span><i class="vi"></i>Bandera antigua: atacable</span><span>🔒 Hoy</span><span>⚔️ Bajo ataque</span><span>🛡 Fortaleza</span></div>
+    <p class="trnota">Premio del mes: quien tenga más banderas al cerrar el mes gana +${c.premioM} monedas y +${c.premioE} ★. Primera conquista del día: +${c.monedas} monedas y +${c.estrellas} ★; las siguientes, +${c.extra} monedas.</p>`
+    :`<div class="empty">Aún no hay planos de zonas. El administrador los crea en Ajustes → Zonas 5S.</div>`}`;
+}
+
+function tMapa(pl,u){
+  if(!pl) return `<div class="empty">Sin planos.</div>`;
+  const st=tDuenos(), hoy=hoyS();
+  let h=`<svg class="trmap" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Territorio ${esc(pl.nombre)}"><defs><pattern id="trg" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#trg)"/>`;
+  if(pl.contorno) h+=`<polygon class="z-cont" points="${zPts(pl.contorno)}"/>`;
+  pl.zonas.forEach(z=>{
+    const due=st[tKey(z.id,"")], subs=subzonasDe(pl.id,z.id), cz=zCentro(z);
+    const col=due?col5(due.o):null, viejo=tRancio(due);
+    const mias=due?subs.filter(s=>{ const x=st[tKey(z.id,s.id)]; return x&&x.o===due.o; }).length:0;
+    const op=!due?0:viejo?.28:subs.length?(.5+.5*mias/subs.length):.78;
+    const fa=due?`fill="${col}" fill-opacity="${op.toFixed(2)}" stroke="${col}"${viejo?` stroke-dasharray="6 4"`:""}`:"";
+    let sh;
+    if(z.tipo==="rect") sh=`<rect class="z-sh ${due?"":"vacia"}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${fa}/>`;
+    else if(z.tipo==="circ") sh=`<circle class="z-sh ${due?"":"vacia"}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${fa}/>`;
+    else sh=`<polygon class="z-sh ${due?"":"vacia"}" points="${zPts(z.pts)}" ${fa}/>`;
+    const fuerte=due&&!viejo&&op>=.78, txt=fuerte?zContraste(col):"var(--fg)";
+    const ataque=[tKey(z.id,""),...subs.map(s=>tKey(z.id,s.id))].some(k=>tAtaques(k).length);
+    const marcas=(due&&due.fecha===hoy?"🔒":"")+(ataque?"⚔️":"")+(due&&tFortaleza(st,z.id,u.id)?"🛡":"");
+    const linea2=due?`🚩 ${esc(primer((U(due.o)||{}).nombre||"?"))}${marcas?" "+marcas:""}`:(marcas||"Libre");
+    const dots=subs.slice(0,8).map((s,i)=>{ const x=st[tKey(z.id,s.id)], dx=(i-(Math.min(subs.length,8)-1)/2)*10;
+      return `<circle cx="${cz.x+dx}" cy="${cz.y+22}" r="3.6" fill="${x?col5(x.o):"none"}" stroke="${x?"#fff":"var(--fg-mute)"}" stroke-width="1.2"/>`; }).join("");
+    h+=`<g class="z-g trz" data-act="trAbrir" data-p="${pl.id}" data-z="${z.id}" tabindex="0" role="button"><title>${esc(z.n)}${due?" · bandera de "+esc((U(due.o)||{}).nombre||""):" · libre"}</title>${sh}
+      <text class="z-lb" x="${cz.x}" y="${cz.y-7}" fill="${txt}">${esc(z.n)}</text>
+      <text class="z-lb sub" x="${cz.x}" y="${cz.y+8}" fill="${txt}">${linea2}</text>${dots}</g>`;
+  });
+  return h+"</svg>";
+}
+
+/* --- ficha de una zona: zona principal + subzonas --- */
+function tAbrirZona(pid,zid){
+  const pl=planosDB().find(p=>p.id===pid), z=pl&&pl.zonas.find(x=>x.id===zid), u=yo(); if(!z||!u) return;
+  const st=tDuenos(), subs=subzonasDe(pid,zid);
+  const fila=(sid,nombre,esSub)=>{ const k=tKey(zid,sid), due=st[k], bl=tBloqueo(u,zid,sid), at=tAtaques(k);
+    const quien=due?`<span class="trown"><i style="background:${col5(due.o)}"></i>${esc(primer((U(due.o)||{}).nombre||"?"))}</span>`:`<span class="trown libre">Libre</span>`;
+    const notas=[due?(due.fecha===hoyS()?"🔒 Conquistada hoy":tRancio(due)?`Bandera antigua (${fmt(due.fecha)}): atacable`:`Desde el ${fmt(due.fecha)}`):"Nadie la ha conquistado",
+      ...at.map(a=>`⚔️ ${esc(primer((U(a.uid)||{}).nombre||"Alguien"))} la está atacando`),
+      !esSub&&tFortaleza(st,zid,u.id)?"🛡 Fortaleza":""].filter(Boolean).join(" · ");
+    const enCurso=TA&&TA.k===k;
+    return `<div class="trrow ${esSub?"sub":""}"><div class="trrh"><b>${esSub?"↳ ":""}${esc(nombre)}</b>${quien}</div>
+      <span class="trrn">${notas}</span>
+      ${enCurso?`<button class="btn sm" data-act="trSeguir">${ic("camera",15)} Seguir mi ataque</button>`
+        :bl?`<span class="trbl">${esc(bl)}</span>`
+        :`<button class="btn sm" data-act="trAtacar" data-p="${pid}" data-z="${zid}" data-sz="${sid}">${ic("flag",15)} Conquistar</button>`}</div>`; };
+  openSheet(`${phead("🚩 "+esc(z.n))}<div class="pbody">
+    <p style="margin:0 0 10px;font-size:12.5px;color:var(--fg-mute)">${esc(pl.nombre)}${subs.length?" · cada gaveta o rincón es un territorio aparte":""}</p>
+    <div class="trlist">${fila("",z.n,false)}${subs.map(s=>fila(s.id,s.n,true)).join("")}</div>
+    ${!subs.length?`<p class="j5nota">Las gavetas y rincones las agrega el responsable de la zona desde Gestión 5S.</p>`:""}</div>`);
+}
+
+/* --- ataque: antes → espera → después → juez --- */
+function tIniciar(pid,zid,sid){
+  const pl=planosDB().find(p=>p.id===pid), z=pl&&pl.zonas.find(x=>x.id===zid); if(!z) return;
+  const sz=sid?subzonasDe(pid,zid).find(x=>x.id===sid):null;
+  if(TA&&TA.k!==tKey(zid,sid)&&TA.registrado) toast("Dejaste otro ataque a medias: se perderá","!");
+  TA={pl,z,sz,k:tKey(zid,sid),antes:null,despues:null,registrado:false,tAtaque:0,enviando:false};
+  tPinta();
+}
+function tFaltaMs(){ return TA&&TA.registrado?Math.max(0,TA.tAtaque+terrCfg().minMin*60000-nowMs()):0; }
+function tPinta(){
+  if(!TA) return; clearInterval(tTimer);
+  const {z,sz}=TA, falta=tFaltaMs(), mm=Math.floor(falta/60000), ss=String(Math.floor(falta/1000)%60).padStart(2,"0");
+  const foto=(k,lbl,hab)=>`<label class="j5foto ${TA[k]?"lleno":""} ${hab?"":"off"}">
+      <input type="file" accept="image/*" capture="environment" data-tfoto="${k}" ${hab?"":"disabled"} hidden>
+      ${TA[k]?`<img src="${TA[k].mini}" alt="Foto ${lbl}">`:`<span>${ic("camera",28)}</span>`}
+      <b>${lbl}</b><small>${TA[k]?"Toca para cambiar":hab?"Toca para sacar la foto":k==="despues"&&TA.registrado?"Espera la cuenta regresiva":k==="antes"?"Ya enviada":"Primero el antes"}</small></label>`;
+  openSheet(`${phead("Conquistar · "+esc(z.n)+(sz?" · "+esc(sz.n):""))}<div class="pbody">
+    <ol class="trpasos">
+      <li class="${TA.registrado?"ok":"now"}"><b>Foto del antes.</b> Tal como está ahora. Al enviarla, el dueño recibe el aviso «te están atacando».</li>
+      <li class="${TA.registrado&&!TA.despues?"now":TA.despues?"ok":""}"><b>Limpia y ordena.</b> Mínimo ${terrCfg().minMin} minutos.</li>
+      <li class="${TA.despues?"now":""}"><b>Foto del después,</b> desde el mismo ángulo. El juez compara con la última foto de esta zona.</li></ol>
+    <div class="j5fotos">${foto("antes","Antes",!TA.registrado)}${foto("despues","Después",TA.registrado&&!falta)}</div>
+    ${TA.registrado&&falta?`<p class="trwait">Puedes sacar el después en <b id="trCuenta">${mm}:${ss}</b></p>`:""}
+    <div class="saverow">${!TA.registrado
+      ?`<button class="btn" data-act="trEmpezar" ${TA.antes?"":"disabled"}>${ic("flag",18)} Empezar el ataque</button>`
+      :`<button class="btn" data-act="trJuez" ${TA.despues&&!falta?"":"disabled"}>${ic("chk",18)} Pedir veredicto al juez</button>`}
+      <button class="btn ghost" data-close>Cerrar</button></div>
+    <p class="j5nota">Las fotos deben ser recién sacadas con la cámara. El antes solo lo ve el juez; el después queda como nueva referencia de la zona y se borra solo después de un tiempo.</p></div>`);
+  if(TA.registrado&&falta) tTimer=setInterval(()=>{ const f=tFaltaMs(), el=$("#trCuenta");
+    if(!el||!TA){ clearInterval(tTimer); return; }
+    if(!f){ clearInterval(tTimer); tPinta(); return; }
+    el.textContent=Math.floor(f/60000)+":"+String(Math.floor(f/1000)%60).padStart(2,"0"); },1000);
+}
+document.addEventListener("change",async ev=>{
+  const inp=ev.target.closest("[data-tfoto]"); if(!inp||!TA||!inp.files[0]) return;
+  const f=inp.files[0];
+  if(f.lastModified&&Date.now()-f.lastModified>3*3600*1000){ toast("Esa foto es antigua. Sácala ahora con la cámara.","!"); inp.value=""; return; }
+  try{ TA[inp.dataset.tfoto]=await prepFoto(f); tPinta(); }catch(e){ toast(e.message,"!"); }
+});
+function tVeredicto(r){
+  const ok=r.ver==="APROBADO";
+  openSheet(`${phead(ok?"¡Zona conquistada!":"El juez no la aprobó")}<div class="pbody"><div class="j5res" data-v="${r.ver}">
+    <div class="big">${ok?"🚩":"✗"}</div><b>${esc(r.zn)}</b>
+    <p><b>Motivo:</b> ${esc(r.motivo)}</p>
+    ${ok&&(r.monedas||r.estrellas)?`<p class="prem">+${r.monedas} monedas${r.estrellas?` · +${r.estrellas} ★`:""}</p>`:""}
+    ${r.prueba?`<p class="j5nota">Modo prueba: no se guardó nada ni se avisó a nadie.</p>`:""}
+    ${r.demo?`<p class="j5nota">Vista previa: este veredicto es simulado. Con el juez conectado lo decide la IA.</p>`:""}
+  </div><div class="saverow"><button class="btn" data-close>Listo</button></div></div>`);
+}
+
+const TRACT={
+  "go-terr"(){ go("territorio"); },
+  trPlano(d){ tPlano=d.id; render(); },
+  trAbrir(d){ tAbrirZona(d.p,d.z); },
+  trAtacar(d){ tIniciar(d.p,d.z,d.sz||""); },
+  trSeguir(){ tPinta(); },
+  async trEmpezar(d,btn){
+    if(!TA||!TA.antes) return; btn.disabled=true; btn.innerHTML=`<span class="spin"></span> Registrando…`;
+    const r=await call("terrAtaque",{planoId:TA.pl.id,zonaId:TA.z.id,subzonaId:TA.sz?TA.sz.id:""});
+    if(!r.ok){ toast(r.msg,"!"); tPinta(); return; }
+    TA.registrado=true; TA.prueba=!!r.prueba; TA.tAtaque=r.prueba?nowMs()-terrCfg().minMin*60000:nowMs();
+    toast(r.prueba?"Modo prueba: sin aviso al dueño":"¡Ataque iniciado! Ahora limpia y ordena","⚔"); render(); tPinta(); },
+  async trJuez(d,btn){
+    if(!TA||!TA.despues||TA.enviando) return; TA.enviando=true;
+    btn.disabled=true; btn.innerHTML=`<span class="spin"></span> El juez está comparando…`;
+    const r=await call("terrConquista",{planoId:TA.pl.id,zonaId:TA.z.id,subzonaId:TA.sz?TA.sz.id:"",antes:TA.antes.full,despues:TA.despues.full});
+    TA.enviando=false;
+    if(!r.ok){ toast(r.msg,"!"); btn.disabled=false; btn.innerHTML=`${ic("chk",18)} Pedir veredicto al juez`; return; }
+    TA=null; clearInterval(tTimer); render(); tVeredicto(r.resultado); }
+};
+
+/* Modo demo: calcula lo mismo que manda el servidor, a partir del registro local */
+function tCalcLocal(){
+  const log=(DB.terrLog||[]).slice().sort((a,b)=>a.ts-b.ts), st={}, at={}, hoy={}, h=hoyS(), ahora=Date.now();
+  log.forEach(e=>{ const k=tKey(e.zona,e.sub), key=e.uid+"@"+k;
+    if(e.tipo==="CONQUISTA"&&e.ver==="APROBADO") st[k]={k,plano:e.plano,zona:e.zona,sub:e.sub,o:e.uid,ts:e.ts,fecha:e.fecha};
+    if(e.tipo==="ATAQUE"&&ahora-e.ts<T_ATAQUE_MS) at[key]={k,uid:e.uid,ts:e.ts};
+    if(e.tipo==="CONQUISTA"){ delete at[key]; if(e.fecha===h){ const x=hoy[e.uid]=hoy[e.uid]||{ok:0,fail:0}; e.ver==="APROBADO"?x.ok++:x.fail++; } } });
+  DB.terr={u:Object.values(st),at:Object.values(at),hoy,campeon:(DB.terr&&DB.terr.campeon)||null};
+}
+
 "use strict";
 /* ============================================================
    CFG — al publicar, pega aquí la URL de la aplicación web del
@@ -3270,6 +3507,7 @@ const primer=n=>String(n||"").split(" ")[0];
 
 /* ====================== ÍCONOS ====================== */
 const ICO={
+  flag:'<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',
   camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
  eime:`<path d="M9 3v5.5L4.8 16.8A2.4 2.4 0 0 0 6.9 20.5h10.2a2.4 2.4 0 0 0 2.1-3.7L15 8.5V3"/><path d="M7.5 3h9M7 14h10"/>`,
  cinco:`<path d="M4 20V9m5 11V4m5 16v-7m5 7V7"/>`,
@@ -3738,6 +3976,24 @@ const LOCAL={
       medio:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.medio?.monedas))||20)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.medio?.estrellas))||2))},
       alto:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.alto?.monedas))||35)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.alto?.estrellas))||3))}};
     return okd({}); },
+  terrAtaque(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    if(!tPuedeJugar(u)&&!window.__terrAbierto) return err("HORA","Solo se conquista de lunes a viernes, entre las 15:00 y las 18:00.");
+    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId); if(!z) return err("SIN_ZONA","Esa zona ya no existe.");
+    tCalcLocal(); const bl=window.__terrAbierto&&!tVentana()?"":tBloqueo(u,z.id,p.subzonaId||""); if(bl&&!/lunes a viernes/.test(bl)) return err("NO",bl);
+    const t=Date.now(); (DB.terrLog=DB.terrLog||[]).push({ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,sub:p.subzonaId||"",tipo:"ATAQUE"});
+    tCalcLocal(); return okd(); },
+  terrConquista(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
+    const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId); if(!z) return err("SIN_ZONA","Esa zona ya no existe.");
+    const sid=p.subzonaId||"", sz=sid?subzonasDe(pl.id,z.id).find(x=>x.id===sid):null;
+    tCalcLocal(); const st=tDuenos(), due=st[tKey(z.id,sid)];
+    if(due&&due.o===u.id) return err("NO","Esta zona ya es tuya."); if(due&&due.fecha===hoyS()) return err("NO","Esta zona fue conquistada hoy: queda con candado hasta mañana.");
+    const ok=Math.random()<(window.__juezOk??0.7), t=Date.now(), c=terrCfg(), primera=!tHoy(u.id).ok;
+    const monedas=ok?(primera?c.monedas:c.extra):0, estrellas=ok&&primera?c.estrellas:0, zn=z.n+(sz?" · "+sz.n:"");
+    DB.terrLog.push({ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,sub:sid,tipo:"CONQUISTA",ver:ok?"APROBADO":"RECHAZADO"});
+    if(ok) aplicaEvento(u,{comida:0,monedas,estrellas,motivo:"Territorio: conquistó "+zn});
+    tCalcLocal();
+    return okd({resultado:{demo:true,ver:ok?"APROBADO":"RECHAZADO",zn,monedas,estrellas,
+      motivo:ok?"El antes mostraba desorden y el después se ve despejado y limpio, desde el mismo ángulo.":"El antes ya se veía ordenado: no se nota un trabajo de limpieza entre las dos fotos."}}); },
   estrellaFugaz(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
     const cfg=efCfg(); if(!cfg.activa) return err("EF_OFF","La estrella fugaz no está activada.");
     if(!efVentanaAbierta()) return err("EF_HORA","La estrella fugaz solo se puede ganar entre las 15:00 y las 18:00, de lunes a viernes.");
@@ -3847,7 +4103,7 @@ function render(){
   renderTop();
   const u=yo(), V=$("#view");
   V.innerHTML = vista==="corral"?vCorral() : vista==="obs"?vObservador() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
-    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vista==="rincones"?vRincones(u) : vCorral();
+    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vista==="rincones"?vRincones(u) : vista==="territorio"?vTerritorio(u) : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
   if(vista==="ajustes"&&ajTab==="premios") pInitPremios();
   if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
@@ -3944,6 +4200,7 @@ function vMi(u){
     ${B("go-rank","rank","var(--m-rank)",ACUM()?"Ranking":EST_N()>1?"Ranking del período":"Ranking del mes","Estrellas del equipo")}
     ${B("tienda","bag","var(--m-exp)","Tienda",`${(u.accesorios||[]).length} de ${Object.keys(ACCESORIOS).length} accesorios`)}
     ${rzMision().hoy?B("go-rincones","camera","var(--m-rz)","Rincones Ocultos",`Misión de hoy: +${rzMision().monedas} monedas por foto en tu zona`,`<span class="bdg pill warn">Hoy</span>`):""}
+    ${tBoton(u)}
     ${(()=>{ const m=dsMio(u); return m&&!m.est.aprobado&&m.quedan?B("dsIr","chk","var(--m-ds)","Desafío del miércoles",`${esc(m.as.zonaNombre)} · +${dsCfg().monedas} monedas y +${dsCfg().estrellas} ★`,`<span class="bdg pill warn">Vence vie</span>`):""; })()}
   </div>
   ${pend.length?`<div class="nextup"><h4>Lo primero que te toca</h4>${pend.slice(0,3).map(e=>{const st=estado(e);
@@ -4603,7 +4860,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]||DACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]||DACT[t.dataset.act]||TRACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
