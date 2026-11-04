@@ -3274,11 +3274,11 @@ function cineJuega(){
 
 /* ====================== TERRITORIO (conquista de zonas) ======================
    Botón fijo en el inicio de cada persona. El mapa se puede mirar siempre; solo se conquista
-   en el horario de la estrella fugaz (lunes a viernes, 15:00 a 18:00).
+   en el horario de la estrella fugaz (configurable en CONFIG).
    Conquistar = ANTES (avisa al dueño) + DESPUÉS + IA juez. Las banderas no se reinician;
    con más de TERR_RANCIO_DIAS días se ven más claras ("atacables") y pierden la fortaleza.
    No toca la Gestión 5S: solo lee los planos y las subzonas. */
-const terrCfg=()=>Object.assign({activo:true,prueba:false,max:3,intentos:6,minMin:2,rancio:30,monedas:10,extra:5,estrellas:1,premioM:50,premioE:5},(DB&&DB.config&&DB.config.TERR)||{});
+const terrCfg=()=>Object.assign({hIni:900,hFin:1080,dias:[1,2,3,4,5],activo:true,prueba:false,max:3,intentos:6,minMin:2,rancio:30,monedas:10,extra:5,estrellas:1,premioM:50,premioE:5},(DB&&DB.config&&DB.config.TERR)||{});
 const terrDB=()=>(DB&&DB.terr)||{u:[],at:[],hoy:{},campeon:null};
 const tKey=(zid,sid)=>zid+(sid?"|"+sid:"");
 const T_ATAQUE_MS=2*3600*1000;
@@ -3296,13 +3296,18 @@ function tFortaleza(st,zid,atacante){
 const tAtaques=k=>terrDB().at.filter(a=>a.k===k&&nowMs()-a.ts<T_ATAQUE_MS);
 const tHoy=uid=>terrDB().hoy[uid]||{ok:0,fail:0};
 function tBanderas(){ const c={}; terrDB().u.forEach(x=>{ if(U(x.o)) c[x.o]=(c[x.o]||0)+1; }); return c; }
-const tVentana=()=>efVentanaAbierta();
+const T_DN={1:"lunes",2:"martes",3:"miércoles",4:"jueves",5:"viernes",6:"sábado",7:"domingo"};
+const tHH=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+function tVentana(){ const c=terrCfg(), d=new Date(), dow=d.getDay()||7, m=d.getHours()*60+d.getMinutes();
+  return c.dias.includes(dow)&&m>=c.hIni&&m<c.hFin; }
+function tHorarioTxt(){ const c=terrCfg(), d=c.dias.join()==="1,2,3,4,5"?"de lunes a viernes":c.dias.map(x=>T_DN[x]).join(", ");
+  return `${d}, de ${tHH(c.hIni)} a ${tHH(c.hFin)}`; }
 const tPuedeJugar=u=>!!u&&!u.observador&&(tVentana()||(terrCfg().prueba&&u.admin));
 // Razón por la que NO se puede atacar (vacío = se puede)
 function tBloqueo(u,zid,sid){
   const st=tDuenos(), due=st[tKey(zid,sid)], c=terrCfg(), h=tHoy(u.id);
   if(u.observador) return "El modo observador no juega";
-  if(!tPuedeJugar(u)) return "Se conquista de lunes a viernes, de 15:00 a 18:00";
+  if(!tPuedeJugar(u)) return "Se conquista "+tHorarioTxt();
   if(due&&due.o===u.id) return "Ya es tuya";
   if(due&&due.fecha===hoyS()) return "Conquistada hoy: candado hasta mañana";
   if(h.ok>=c.max) return `Ya hiciste tus ${c.max} conquistas de hoy`;
@@ -3315,8 +3320,8 @@ function tBloqueo(u,zid,sid){
 function tBoton(u){
   if(!terrCfg().activo) return "";
   const n=tBanderas()[u.id]||0, abierto=tVentana(), h=tHoy(u.id);
-  const sub=abierto?(u.observador?"Mira quién domina cada zona":`¡Abierto hasta las 18:00! Llevas ${h.ok} de ${terrCfg().max} conquistas hoy`)
-    :`Abre de lunes a viernes a las 15:00 · Tienes ${n} bandera${n===1?"":"s"}`;
+  const sub=abierto?(u.observador?"Mira quién domina cada zona":`¡Abierto hasta las ${tHH(terrCfg().hFin)}! Llevas ${h.ok} de ${terrCfg().max} conquistas hoy`)
+    :`Abre ${tHorarioTxt()} · Tienes ${n} bandera${n===1?"":"s"}`;
   return `<button class="hubbtn" data-act="go-terr" style="--c:var(--m-tr)"><span class="ic">${ic("flag",27)}</span><h3>Territorio</h3><span class="sb">${sub}</span>${abierto?`<span class="bdg pill warn">Abierto</span>`:`<span class="bdg pill mute">🚩 ${n}</span>`}</button>`;
 }
 
@@ -3328,7 +3333,7 @@ function vTerritorio(u){
   const rank=personas5().map(p=>({...p,n2:band[p.id]||0})).filter(p=>p.n2>0).sort((a,b)=>b.n2-a.n2);
   const estado=tVentana()?`<b>¡Horario de conquista abierto!</b> Elige una zona en el plano, saca el antes, limpia y saca el después. Llevas ${h.ok} de ${c.max} conquistas hoy.`
     :c.prueba&&u.admin?`<b>Modo prueba (administrador).</b> Fuera de horario: el juez evalúa, pero no se guarda nada ni se avisa a nadie.`
-    :`<b>Cerrado ahora.</b> Se conquista de lunes a viernes, de 15:00 a 18:00. Mientras, mira quién domina cada zona.`;
+    :`<b>Cerrado ahora.</b> Se conquista ${tHorarioTxt()}. Mientras, mira quién domina cada zona.`;
   return `<div class="pagehead"><div><h2>Territorio</h2><p>Limpia una zona, gana su bandera. Las banderas no se borran: hay que quitárselas a su dueño.</p></div></div>
     <div class="s5st" data-s="${tVentana()?"on":""}" style="border-left-color:var(--m-tr)"><p>${estado}</p></div>
     ${camp&&camp.uids&&camp.uids.length?`<div class="trcamp">🏆 Conquistador de ${esc(camp.mes)}: <b>${camp.uids.map(id=>esc(primer((U(id)||{}).nombre||"?"))).join(", ")}</b> · ${camp.banderas} banderas</div>`:""}
@@ -3977,7 +3982,7 @@ const LOCAL={
       alto:{monedas:Math.min(100,Math.max(1,Math.round(Number(p.adic.alto?.monedas))||35)),estrellas:Math.min(10,Math.max(0,Math.round(Number(p.adic.alto?.estrellas))||3))}};
     return okd({}); },
   terrAtaque(p){ const u=authL(p); if(!u) return err("PIN_INVALIDO","Vuelve a ingresar.");
-    if(!tPuedeJugar(u)&&!window.__terrAbierto) return err("HORA","Solo se conquista de lunes a viernes, entre las 15:00 y las 18:00.");
+    if(!tPuedeJugar(u)&&!window.__terrAbierto) return err("HORA","Solo se conquista "+tHorarioTxt()+".");
     const pl=planosDB().find(x=>x.id===p.planoId), z=pl&&pl.zonas.find(x=>x.id===p.zonaId); if(!z) return err("SIN_ZONA","Esa zona ya no existe.");
     tCalcLocal(); const bl=window.__terrAbierto&&!tVentana()?"":tBloqueo(u,z.id,p.subzonaId||""); if(bl&&!/lunes a viernes/.test(bl)) return err("NO",bl);
     const t=Date.now(); (DB.terrLog=DB.terrLog||[]).push({ts:t,fecha:hoyS(),uid:u.id,plano:pl.id,zona:z.id,sub:p.subzonaId||"",tipo:"ATAQUE"});
