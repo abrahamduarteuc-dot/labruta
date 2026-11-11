@@ -1019,6 +1019,27 @@ td.num{font-family:var(--f-mono);text-align:right}
 .j5foto.off{opacity:.45;cursor:not-allowed}
 .trwait{text-align:center;font-size:13px;color:var(--fg-dim);margin:10px 0 0}
 .trwait b{font-variant-numeric:tabular-nums;font-size:15px}
+/* ====================== ESTATUS DEL LABORATORIO ====================== */
+.pz{cursor:pointer}
+.pz-ver{flex:1 0 100%;margin:-4px 0 0;font-size:12.5px;font-weight:700;color:var(--accent);text-align:right}
+.esresumen{margin:0 0 12px;font-size:14px;color:var(--fg-dim)}
+.esresumen p{margin:0 0 6px}
+.esresumen b{color:var(--fg);font-variant-numeric:tabular-nums}
+.esresumen b.mal{color:var(--bad)}
+.eschips{display:flex;flex-wrap:wrap;gap:6px}
+.eschip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:12.5px}
+.eschip i,.trley i.esn{width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--m-s5);opacity:calc(.2 + .16*var(--n))}
+.trley i.esn{width:14px;height:10px}
+.eslista{display:flex;flex-direction:column;gap:6px}
+.esrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.esrow .nm{display:flex;flex-direction:column;min-width:0}
+.esrow .nm b{font-size:14px;overflow-wrap:anywhere}
+.esrow .nm span{font-size:12px;color:var(--fg-mute)}
+.esrow .st{flex:none}
+.esresp{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;font-size:14px}
+.esresp .sw{width:12px;height:12px;border-radius:50%;flex:none}
+.esresp span:last-child{margin-left:auto;font-size:12.5px;color:var(--fg-mute)}
+.trrh .j5pills{display:flex;gap:3px;flex:none}
 
 </style>
 
@@ -2966,7 +2987,7 @@ function vMetaEquipo(){
   const msg=ganado?`¡Ya ganamos ${ganado.n.toLowerCase()}!${sig?` Vamos por ${sig.n.toLowerCase()}.`:""}`:"Cada tarea cumplida suma para todos.";
   const chk=(ok,t)=>`<li class="${ok?"ok":""}"><span>${ok?"✓":"○"}</span>${t}</li>`;
   const esAdmin=yo()&&yo().admin;
-  return `<section class="pz" aria-label="Meta del equipo">
+  return `<section class="pz" data-act="go-estatus" role="button" tabindex="0" aria-label="Meta del equipo: ver estatus EIME y 5S">
     <div class="pz-tx"><span class="eyebrow">Meta del equipo · ciclo ${c.n}${esAdmin?`<button class="iconbtn" data-act="metaCfg" title="Configurar metas y carretera" aria-label="Configurar metas y carretera">${ic("gear",14)}</button>`:""}</span>
       <h3>Si cumplimos todos, celebramos todos</h3>
       <p>${fmt(c.ini)} al ${fmt(c.fin)} · quedan ${dias} días. ${msg}</p>
@@ -2980,6 +3001,7 @@ function vMetaEquipo(){
       </ul></div>
     <div class="pz-premios">${PR.map(p=>`<div class="pz-p ${a.pct>=p.pct?"ok":""}" data-k="${p.k}" title="${esc(p.req)}">
       ${ilustracion(p.k)}<b>${p.n}</b><span>${p.pct}%</span></div>`).join("")}</div>
+    <span class="pz-ver">Ver estatus EIME y 5S ›</span>
   </section>`;
 }
 
@@ -3629,6 +3651,86 @@ function tCalcLocal(){
   DB.terr={u:Object.values(st),at:Object.values(at),hoy,campeon:(DB.terr&&DB.terr.campeon)||null};
 }
 
+/* ====================== ESTATUS DEL LABORATORIO (EIME y 5S) ======================
+   Se abre tocando la tarjeta "Meta del equipo". Es de solo lectura y la ve todo el mundo
+   (también los observadores). Solo lee datos que ya llegan a la app; no escribe nada. */
+let eTab="eime", ePlano="";
+const E_NV=n=>Math.max(0,Math.min(5,n));
+const eUnidades=(pl,z)=>[{sid:"",n:z.n,sub:null},...subzonasDe(pl.id,z.id).map(s=>({sid:s.id,n:s.n,sub:s}))];
+const eMaxNivel=(pl,z)=>Math.max(...eUnidades(pl,z).map(x=>nivelZona(z.id,x.sid)));
+function eUltimaFecha(zid,sid){ return evid5().filter(e=>e.zona===zid&&(e.sub||"")===(sid||"")&&e.ver==="APROBADO"&&e.s>0).reduce((f,e)=>e.fecha>f?e.fecha:f,""); }
+const eRespNom=z=>{ const o=z.resp?U(z.resp):null; return o?primer(o.nombre):""; };
+
+function vEstatus(){
+  const tabs=`<div class="tabs"><button data-act="esTab" data-t="eime" aria-pressed="${eTab==="eime"}">Estatus EIME</button><button data-act="esTab" data-t="s5" aria-pressed="${eTab==="s5"}">Estatus 5S</button></div>`;
+  return `<div class="pagehead"><div><h2>Estatus del laboratorio</h2><p>${eTab==="eime"?"Todos los equipos y su verificación":"Dónde hay 5S en los planos"}</p></div>${tabs}</div>
+    ${eTab==="eime"?eEime():e5S()}`;
+}
+
+/* --- EIME: todos los equipos activos, de lo más urgente a lo más al día --- */
+function eEime(){
+  const L=DB.equipos.filter(activoEq).map(e=>({e,st:estado(e)}));
+  if(!L.length) return `<div class="empty">Aún no hay equipos cargados.</div>`;
+  const n=k=>L.filter(x=>x.st.k===k).length, ord={bad:0,warn:1,ok:2};
+  L.sort((a,b)=>ord[a.st.k]-ord[b.st.k]||diffDias(vence(a.e))-diffDias(vence(b.e)));
+  const fila=({e,st})=>{ const o=e.resp?U(e.resp):null, d=st.d, t=st.k==="ok"?"":d<0?`${Math.abs(d)} d. de atraso`:d===0?"vence hoy":`vence en ${d} d.`;
+    return `<div class="esrow"><span class="nm"><b>${esc(e.n)}</b><span>${o?esc(primer(o.nombre)):"Sin asignar"}${t?" · "+t:""}</span></span><span class="st pill ${st.k}">${st.t}</span></div>`; };
+  return `<p class="esresumen"><b>${n("ok")}</b> de <b>${L.length}</b> equipos al día${n("warn")?` · <b>${n("warn")}</b> por verificar`:""}${n("bad")?` · <b class="mal">${n("bad")}</b> vencido${n("bad")===1?"":"s"}`:""}</p>
+    <div class="eslista">${L.map(fila).join("")}</div>`;
+}
+
+/* --- 5S: resumen corto + plano con banderita y la S alcanzada --- */
+function e5S(){
+  const P=planosDB().filter(p=>p.zonas.length);
+  if(!P.length) return `<div class="empty">Aún no hay planos de zonas.</div>`;
+  if(!P.some(p=>p.id===ePlano)) ePlano=P[0].id;
+  const pl=P.find(p=>p.id===ePlano);
+  const todas=P.flatMap(p=>p.zonas.map(z=>({p,z,nv:eMaxNivel(p,z)})));
+  const act=todas.filter(x=>x.nv>=1), por=[1,2,3,4,5].map(k=>[k,act.filter(x=>x.nv===k).length]).filter(a=>a[1]);
+  const resumen=`<div class="esresumen"><p><b>${act.length}</b> de <b>${todas.length}</b> áreas tienen alguna S${act.length?"":". Aún no parte nadie"}</p>
+    ${por.length?`<div class="eschips">${por.map(([k,c])=>`<span class="eschip"><i style="--n:${k}"></i>${k}S <b>${c}</b></span>`).join("")}</div>`:""}</div>`;
+  return `${resumen}
+    <div class="ptabs">${P.map(p=>`<button data-act="esPlano" data-id="${p.id}" aria-pressed="${p.id===ePlano}">${esc(p.nombre)}</button>`).join("")}</div>
+    <div class="zcard"><div class="zcanvas">${eMapa(pl)}</div></div>
+    <div class="trley"><span><i class="lb"></i>Sin 5S</span>${[1,2,3,4,5].map(k=>`<span><i class="esn" style="--n:${k}"></i>${k}S</span>`).join("")}</div>
+    <p class="trnota">Toca una zona para ver su responsable. La S es la última etapa seguida que tiene aprobada (si tiene gavetas o rincones, la mejor de ellos).</p>`;
+}
+function eMapa(pl){
+  let h=`<svg class="trmap" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Estatus 5S ${esc(pl.nombre)}"><defs><pattern id="esg" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="z-grid"/></pattern></defs><rect width="900" height="600" fill="url(#esg)"/>`;
+  if(pl.contorno) h+=`<polygon class="z-cont" points="${zPts(pl.contorno)}"/>`;
+  pl.zonas.forEach(z=>{
+    const uns=eUnidades(pl,z), nv=eMaxNivel(pl,z), cz=zCentro(z), subs=uns.slice(1);
+    const op=nv?(.2+.16*nv):0, st=nv?`style="fill:var(--m-s5);fill-opacity:${op.toFixed(2)};stroke:var(--m-s5)"`:"";
+    let sh;
+    if(z.tipo==="rect") sh=`<rect class="z-sh ${nv?"":"vacia"}" x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" rx="9" ${st}/>`;
+    else if(z.tipo==="circ") sh=`<circle class="z-sh ${nv?"":"vacia"}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" ${st}/>`;
+    else sh=`<polygon class="z-sh ${nv?"":"vacia"}" points="${zPts(z.pts)}" ${st}/>`;
+    const txt=nv>=3?"#fff":"var(--fg)";
+    const dots=subs.slice(0,8).map((s,i)=>{ const k=nivelZona(z.id,s.sid), dx=(i-(Math.min(subs.length,8)-1)/2)*10;
+      return `<circle cx="${cz.x+dx}" cy="${cz.y+22}" r="3.6" style="fill:${k?"var(--m-s5)":"none"};stroke:${k?"#fff":"var(--fg-mute)"}" stroke-width="1.2"/>`; }).join("");
+    h+=`<g class="z-g trz" data-act="esAbrir" data-p="${pl.id}" data-z="${z.id}" tabindex="0" role="button"><title>${esc(z.n)}${nv?" · "+nv+"S":" · sin 5S"}</title>${sh}
+      <text class="z-lb" x="${cz.x}" y="${cz.y-7}" fill="${txt}">${esc(z.n)}</text>
+      <text class="z-lb sub" x="${cz.x}" y="${cz.y+8}" fill="${txt}">${nv?`🚩 ${nv}S`:"Sin 5S"}</text>${dots}</g>`;
+  });
+  return h+"</svg>";
+}
+function eAbrirZona(pid,zid){
+  const pl=planosDB().find(p=>p.id===pid), z=pl&&pl.zonas.find(x=>x.id===zid); if(!z) return;
+  const resp=eRespNom(z), uns=eUnidades(pl,z);
+  const fila=x=>{ const nv=nivelZona(zid,x.sid), f=eUltimaFecha(zid,x.sid), dueno=x.sub&&x.sub.uid&&U(x.sub.uid)?primer(U(x.sub.uid).nombre):"";
+    return `<div class="trrow ${x.sub?"sub":""}"><div class="trrh"><b>${x.sub?"↳ ":""}${esc(x.n)}</b><span class="j5pills">${j5pills(nv)}</span></div>
+      <span class="trrn">${nv?`Última evidencia aprobada: ${fmt(f)}`:"Sin evidencias aprobadas"}${dueno&&dueno!==resp?` · de ${esc(dueno)}`:""}</span></div>`; };
+  openSheet(`${phead("🚩 "+esc(z.n))}<div class="pbody">
+    <p class="esresp"><span class="sw" style="background:${z.resp?col5(z.resp):"var(--fg-mute)"}"></span>${resp?`Responsable: <b>${esc(resp)}</b>`:"Sin responsable asignado"}<span>${esc(pl.nombre)}</span></p>
+    <div class="trlist">${uns.map(fila).join("")}</div></div>`);
+}
+const ESACT={
+  "go-estatus"(){ go("estatus"); },
+  esTab(d){ eTab=d.t; render(); },
+  esPlano(d){ ePlano=d.id; render(); },
+  esAbrir(d){ eAbrirZona(d.p,d.z); }
+};
+
 "use strict";
 /* ============================================================
    CFG — al publicar, pega aquí la URL de la aplicación web del
@@ -4233,7 +4335,7 @@ function proximoCambio(u,i){
 
 /* ====================== NAVEGACIÓN ====================== */
 let vista="corral", filtro="mias", ajTab="personas", gearBack=null;   // gearBack: cómo se entró a Ajustes desde el engranaje del inicio
-const PADRE={mi:"corral",eime:"mi",s5:"mi",rank:"mi",ajustes:"mi",rincones:"mi"};
+const PADRE={mi:"corral",eime:"mi",s5:"mi",rank:"mi",ajustes:"mi",rincones:"mi",estatus:"corral"};
 function go(v){ vista=v; render(); $("main").scrollTop=0; }
 function toast(m,i){ i=i||"✓"; const t=$("#toast"); t.innerHTML=`<span>${i}</span><span>${esc(m)}</span>`; t.classList.add("show");
   clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2800); }
@@ -4258,11 +4360,11 @@ function renderTop(){
 function render(){
   if(!DB){ return; }
   if(vista!=="corral"&&!yo()) vista="corral";
-  if(yo()&&yo().observador) vista="obs";   // el observador siempre ve su resumen de solo lectura, nunca pantallas con botones
+  if(yo()&&yo().observador&&vista!=="estatus") vista="obs";   // el observador siempre ve su resumen de solo lectura, nunca pantallas con botones
   renderTop();
   const u=yo(), V=$("#view");
   V.innerHTML = vista==="corral"?vCorral() : vista==="obs"?vObservador() : vista==="mi"?vMi(u) : vista==="eime"?vEime(u) : vista==="rank"?vRank(u)
-    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vista==="rincones"?vRincones(u) : vista==="territorio"?vTerritorio(u) : vCorral();
+    : vista==="s5"?vS5() : vista==="ajustes"?vAjustes() : vista==="rincones"?vRincones(u) : vista==="territorio"?vTerritorio(u) : vista==="estatus"?vEstatus() : vCorral();
   if(vista==="ajustes"&&ajTab==="zonas") zInit();
   if(vista==="ajustes"&&ajTab==="premios") pInitPremios();
   if(u&&(vista==="corral"||vista==="s5")) cargaRevisiones();
@@ -5022,7 +5124,7 @@ const ACT={
 document.addEventListener("click",ev=>{
   if(ev.target.closest("[data-close]")){ closeSheet(); PIN=null; return; }
   const t=ev.target.closest("[data-act]"); if(!t) return;
-  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]||DACT[t.dataset.act]||TRACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
+  const fn=ACT[t.dataset.act]||ZACT[t.dataset.act]||EACT[t.dataset.act]||RACT[t.dataset.act]||JACT[t.dataset.act]||RTACT[t.dataset.act]||HACT[t.dataset.act]||DACT[t.dataset.act]||TRACT[t.dataset.act]||ESACT[t.dataset.act]; if(fn) fn(t.dataset,t,ev);
 });
 document.addEventListener("change",async ev=>{
   const f=ev.target.closest("[data-act-change='eqTipo'],[data-act-change='eqPasa']");
